@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: ggoo-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ggoo}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-ggoo}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: ggoo-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/ggoo?schema=public}
+      NODE_ENV: development
+    ports:
+      - "${PORT_APP:-5173}:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    restart: unless-stopped
+
+  app-production:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: ggoo-app-production
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/ggoo?schema=public}
+      NODE_ENV: production
+      ORIGIN: ${ORIGIN_PROD:-http://localhost:3000}
+    ports:
+      - "${PORT_APP:-5173}:3000"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
