@@ -29,6 +29,7 @@
 		"svelte": "^5.54.0",
 		"svelte-check": "^4.4.2",
 		"svelte-sonner": "^1.1.0",
+		"sveltekit-sse": "^0.14.3",
 		"tailwind-merge": "^3.5.0",
 		"tailwind-variants": "^3.2.2",
 		"ts-node": "^10.9.2",
