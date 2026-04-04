@@ -15,7 +15,6 @@ export const handle: Handle = async ({ event, resolve }) => {
             es_admin: user.es_admin,
         };
     }
-    console.log("handle", event.locals.user);
 
 	const response = await resolve(event);
 	return response;

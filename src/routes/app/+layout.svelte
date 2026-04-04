@@ -18,7 +18,7 @@
                 <h1 class="text-2xl font-bold">{page.data.name_page}</h1>
             {/if}
         </header>
-        <main class="p-4">
+        <main class="p-4 h-full">
             {@render children()}
         </main>
     </SidebarInset>
