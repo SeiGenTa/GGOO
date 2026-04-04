@@ -3,13 +3,61 @@ import type { PageServerLoad } from "./$types";
 import { prisma } from "$utils/prisma.js";
 import type { Pichanga } from "$generated/prisma/client.js";
 
-export const load: PageServerLoad = async ({ url }) => {
+export const load: PageServerLoad = async ({ url, depends }) => {
+    depends("pichangas:load");
     const page = url.searchParams.get("page");
     if (!page) {
         redirect(302, `/app/pichangas?page=1`);
     }
 
-    return {}
+    //? Si se quiere hacer async la carga, se debe sacar el await
+    return {
+        name_page: "Pichangas",
+        pichangas: await load_pichangas_promise(page),
+    }
+}
+
+const load_pichangas_promise = async (page:string) => {
+    const data_pichangas = await prisma.pichanga.findMany({
+        where: {
+            fecha: {
+                gt: new Date()
+            }
+        },
+        include: {
+            admins: true,
+            inscripciones: {
+                include: {
+                    user: {
+                        select: {
+                            id: true,
+                            nombre: true
+                        }
+                    }
+                }
+            }
+        },
+        orderBy: {
+            fecha: "asc"
+        },
+        skip: (parseInt(page) - 1) * 10,
+        take: 10
+    })
+
+    const pichangas: Pichanga_struct[] = [
+        ...data_pichangas.map(pichanga => ({
+            id: pichanga.id,
+            name: pichanga.nombre?.toString() || null,
+            admins_name: pichanga.admins.map(admin => admin.nombre),
+            date: pichanga.fecha.toISOString(),
+            limit_members: pichanga.maxJugadores,
+            members: pichanga.inscripciones.map(inscripcion => ({
+                id: inscripcion.user.id,
+                name: inscripcion.user.nombre
+            }))
+        }))
+    ]
+    return pichangas;
 }
 
 export const actions = {
@@ -32,8 +80,6 @@ export const actions = {
         if (!(date_init_register instanceof Date)) {
             return fail(400, { error: "La fecha de inicio de registro es requerida si no se habilita el registro inmediato" });
         }
-
-        console.log({ name, date, location, admins, max_players, habilitar, date_init_register });
 
         if (!date || !admins || admins.length === 0 || !max_players || !date_init_register) {
             return fail(

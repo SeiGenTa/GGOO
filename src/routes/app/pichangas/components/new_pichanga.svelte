@@ -45,9 +45,10 @@
             class="space-y-4"
             use:enhance={({ formData }) => {
                 loading = true;
-                const date_pichanga = formData.get("date") as string;
+                const date_pichanga = formData.get("date-pichanga") as string;
                 const date_init_register = formData.get("date-init-register") as string;
-                formData.set("date", new Date(date_pichanga).toISOString());
+                formData.set("date-pichanga", new Date(date_pichanga).toISOString());
+
                 if (date_init_register) {
                     formData.set("date-init-register", new Date(date_init_register).toISOString());
                 }
