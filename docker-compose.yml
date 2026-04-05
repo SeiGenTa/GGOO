@@ -26,9 +26,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    environment:
-      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/ggoo?schema=public}
-      NODE_ENV: development
+    env_file:
+      - .env
     ports:
       - "${PORT_APP:-5173}:5173"
     volumes:
@@ -42,10 +41,8 @@ services:
       dockerfile: Dockerfile
       target: production
     container_name: ggoo-app-production
-    environment:
-      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/ggoo?schema=public}
-      NODE_ENV: production
-      ORIGIN: ${ORIGIN_PROD:-http://localhost:3000}
+    env_file:
+      - .env
     ports:
       - "${PORT_APP:-5173}:3000"
     restart: unless-stopped
