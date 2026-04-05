@@ -1,7 +1,7 @@
 import { fail, redirect } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
 import { prisma } from "$utils/prisma";
-import { Permissions } from "../permissions/permissions";
+import { Permissions } from "../../../lib/permissions";
 import type { Prisma } from "$generated/prisma/client";
 import { sendEmail } from "$lib/email/resend";
 
@@ -82,29 +82,10 @@ export const load: PageServerLoad = async ({ locals, url }) => {
         redirect(302, "/auth");
     }
 
-    const canView = await canUseAny(locals.user.id, [Permissions.VerMiembros, Permissions.AceptarMiembros]);
-    const canModerate = await canUseAny(locals.user.id, [Permissions.AceptarMiembros]);
-
-    if (!canView) {
-        return {
-            name_page: "Usuarios",
-            users: [],
-            blocked: true,
-            canModerate: false,
-            filters: {
-                q: "",
-                status: "all",
-            },
-            pagination: {
-                page: 1,
-                pageSize: PAGE_SIZE,
-                totalItems: 0,
-                totalPages: 1,
-                hasPrev: false,
-                hasNext: false,
-            },
-        };
+    if (!locals.user.permisos.includes(Permissions.VerMiembros)) {
+        redirect(302, "/app?error=No tienes permisos para acceder a esta página.");
     }
+
 
     const q = (url.searchParams.get("q") ?? "").trim();
     const status = parseStatus(url.searchParams.get("status"));
@@ -168,6 +149,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
         take: PAGE_SIZE,
     });
 
+    const canModerate = locals.user!.permisos.includes(Permissions.AceptarMiembros)
+
     return {
         name_page: "Usuarios",
         users,
@@ -194,8 +177,7 @@ export const actions: Actions = {
             return fail(401, { message: "No autorizado." });
         }
 
-        const canModerate = await canUseAny(locals.user.id, [Permissions.AceptarMiembros]);
-        if (!canModerate) {
+        if (!locals.user.permisos.includes(Permissions.AceptarMiembros)) {
             return fail(403, { message: "No tienes permisos para aceptar miembros." });
         }
 
@@ -263,8 +245,7 @@ export const actions: Actions = {
             return fail(401, { message: "No autorizado." });
         }
 
-        const canModerate = await canUseAny(locals.user.id, [Permissions.AceptarMiembros]);
-        if (!canModerate) {
+        if (!locals.user.permisos.includes(Permissions.AceptarMiembros)) {
             return fail(403, { message: "No tienes permisos para rechazar miembros." });
         }
 

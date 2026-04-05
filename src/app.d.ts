@@ -10,6 +10,7 @@ declare global {
 				nombre: string;
 				apodo: string | null;
 				es_admin: boolean;
+				permisos: string[];
 			}
 		}
 		// interface PageData {}

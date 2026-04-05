@@ -7,6 +7,7 @@
     import { ChevronDown } from "@lucide/svelte";
     import ModalAddPichanga from "./components/new_pichanga.svelte";
     import type { PageProps } from "./$types";
+    import { Permissions } from "$lib/permissions";
 
     let { data }: PageProps = $props();
 
@@ -26,7 +27,10 @@
 </script>
 
 <section class="pichangas-view">
-    <ModalAddPichanga />
+    {#if data.user!.permisos.includes(Permissions.CrearPartidos)}
+        <ModalAddPichanga />
+    {/if}
+    
     {#await data.pichangas}
         <p>Cargando pichangas...</p>
     {:then pichangas}

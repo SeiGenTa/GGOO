@@ -30,6 +30,7 @@ model Rol {
   users    User[]   @relation("UserRoles")
   nombre   String
   permisos String[]
+  default  Boolean  @default(false)
 }
 
 model Pichanga {

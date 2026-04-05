@@ -13,6 +13,7 @@ export const handle: Handle = async ({ event, resolve }) => {
             nombre: user.nombre,
             apodo: user.apodo,
             es_admin: user.es_admin,
+            permisos: await UserUtils.get_user_permissions(user),
         };
     }
 

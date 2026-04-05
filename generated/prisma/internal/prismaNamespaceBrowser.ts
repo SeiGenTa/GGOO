@@ -94,7 +94,8 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 export const RolScalarFieldEnum = {
   id: 'id',
   nombre: 'nombre',
-  permisos: 'permisos'
+  permisos: 'permisos',
+  default: 'default'
 } as const
 
 export type RolScalarFieldEnum = (typeof RolScalarFieldEnum)[keyof typeof RolScalarFieldEnum]

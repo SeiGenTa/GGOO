@@ -2,9 +2,14 @@ import { fail, redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { prisma } from "$utils/prisma.js";
 import type { Pichanga } from "$generated/prisma/client.js";
+import { Permissions } from "$lib/permissions.js";
+import { toast } from "svelte-sonner";
 
-export const load: PageServerLoad = async ({ url, depends }) => {
+export const load: PageServerLoad = async ({ url, depends, locals }) => {
     depends("pichangas:load");
+    if (!locals.user!.permisos.includes(Permissions.VerPartidos)) {
+        redirect(302, "/app?error=No tienes permisos para ver esta página");
+    }
     const page = url.searchParams.get("page");
     if (!page) {
         redirect(302, `/app/pichangas?page=1`);
@@ -17,7 +22,7 @@ export const load: PageServerLoad = async ({ url, depends }) => {
     }
 }
 
-const load_pichangas_promise = async (page:string) => {
+const load_pichangas_promise = async (page: string) => {
     const data_pichangas = await prisma.pichanga.findMany({
         where: {
             fecha: {
@@ -61,7 +66,10 @@ const load_pichangas_promise = async (page:string) => {
 }
 
 export const actions = {
-    add_pichanga: async ({ request }) => {
+    add_pichanga: async ({ request, locals }) => {
+        if (!locals.user!.permisos.includes(Permissions.CrearPartidos)) {
+            return fail(403, { error: "No tienes permisos para crear una pichanga" });
+        }
         const form = await request.formData();
         const name = form.get("name-pichanga");
         const date = form.get("date-pichanga");

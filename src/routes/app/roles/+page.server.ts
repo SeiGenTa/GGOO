@@ -2,6 +2,7 @@ import { fail, redirect } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
 import { prisma } from "$utils/prisma";
 import type { Prisma } from "$generated/prisma/client";
+import { Permissions } from "../../../lib/permissions";
 
 type SortBy = "nombre" | "id";
 type SortDirection = "asc" | "desc";
@@ -56,27 +57,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
         redirect(302, "/auth");
     }
 
-    if (!locals.user.es_admin) {
-        return {
-            name_page: "Roles",
-            users: [],
-            roles: [],
-            filters: {
-                q: "",
-                sortBy: "nombre",
-                sortDir: "asc",
-                selectedRoleIds: [],
-            },
-            pagination: {
-                page: 1,
-                pageSize: PAGE_SIZE,
-                totalItems: 0,
-                totalPages: 1,
-                hasPrev: false,
-                hasNext: false,
-            },
-            blocked: true,
-        };
+    if (!locals.user.permisos.includes(Permissions.VerRolesUsuarios)) {
+        redirect(302, "/app?error=No tienes permisos para acceder a esta página.");
     }
 
     const q = (url.searchParams.get("q") ?? "").trim();
@@ -190,8 +172,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
 export const actions: Actions = {
     assign_roles: async ({ request, locals }) => {
-        if (!locals.user?.es_admin) {
-            return fail(403, { message: "No tienes permisos para asignar roles." });
+        if (!locals.user!.permisos.includes(Permissions.AsigarRoles)) {
+            redirect(302, "/app?error=No tienes permisos para acceder a esta página.");
         }
 
         const form = await request.formData();

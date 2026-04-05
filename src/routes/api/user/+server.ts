@@ -1,7 +1,7 @@
+import { Permissions } from "$lib/permissions.js";
 import { prisma } from "$utils/prisma.js";
 
 const avalible_options_selects = ["id", "nombre", "email", "apodo"];
-
 
 export const GET = async ({ url, locals }) => {
     if (!locals.user) {
@@ -12,7 +12,7 @@ export const GET = async ({ url, locals }) => {
             }
         });
     }
-    if (!locals.user.es_admin) {
+    if (!locals.user.permisos.includes(Permissions.CrearPartidos)) {
         return new Response(JSON.stringify({ error: "Forbidden" }), {
             status: 403,
             headers: {

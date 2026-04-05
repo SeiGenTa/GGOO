@@ -1,7 +1,7 @@
 import { fail, redirect } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
 import { prisma } from "$utils/prisma";
-import { Permissions } from "./permissions";
+import { Permissions } from "../../../lib/permissions";
 
 const ALL_PERMISSIONS = Object.values(Permissions);
 
@@ -37,19 +37,6 @@ const getUserPermissions = async (userId: string) => {
     };
 };
 
-const canUseAny = async (userId: string, requiredPermissions: string[]) => {
-    const userPermissions = await getUserPermissions(userId);
-    if (!userPermissions) {
-        return false;
-    }
-
-    if (userPermissions.isAdmin) {
-        return true;
-    }
-
-    return requiredPermissions.some((permission) => userPermissions.permissions.has(permission));
-};
-
 const parsePermissions = (form: FormData) => {
     const selected = form.getAll("permisos").map((permission) => String(permission));
     return selected.filter((permission) => ALL_PERMISSIONS.includes(permission as Permissions));
@@ -60,20 +47,8 @@ export const load: PageServerLoad = async ({ locals }) => {
         redirect(302, "/auth");
     }
 
-    const canView = await canUseAny(locals.user.id, [
-        Permissions.VerRolesUsuarios,
-        Permissions.CrearRoles,
-        Permissions.EditarRoles,
-        Permissions.EliminarRoles,
-    ]);
-
-    if (!canView) {
-        return {
-            name_page: "Permisos",
-            roles: [],
-            permissions: ALL_PERMISSIONS,
-            blocked: true,
-        };
+    if (!locals.user.permisos.includes(Permissions.VerRolesUsuarios)) {
+        redirect(302, "/app?error=No tienes permisos para acceder a esta página.");
     }
 
     const roles = await prisma.rol.findMany({
@@ -110,8 +85,7 @@ export const actions: Actions = {
             return fail(401, { message: "No autorizado." });
         }
 
-        const canCreate = await canUseAny(locals.user.id, [Permissions.CrearRoles]);
-        if (!canCreate) {
+        if (!locals.user.permisos.includes(Permissions.CrearRoles)) {
             return fail(403, { message: "No tienes permisos para crear roles." });
         }
 
@@ -157,8 +131,7 @@ export const actions: Actions = {
             return fail(401, { message: "No autorizado." });
         }
 
-        const canEdit = await canUseAny(locals.user.id, [Permissions.EditarRoles]);
-        if (!canEdit) {
+        if (!locals.user.permisos.includes(Permissions.EditarRoles)) {
             return fail(403, { message: "No tienes permisos para editar roles." });
         }
 
@@ -226,8 +199,7 @@ export const actions: Actions = {
             return fail(401, { message: "No autorizado." });
         }
 
-        const canDelete = await canUseAny(locals.user.id, [Permissions.EliminarRoles]);
-        if (!canDelete) {
+        if (!locals.user.permisos.includes(Permissions.EliminarRoles)) {
             return fail(403, { message: "No tienes permisos para eliminar roles." });
         }
 
