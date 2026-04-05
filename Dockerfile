@@ -3,7 +3,7 @@ FROM node:24-bookworm as base
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 
 COPY . .
 

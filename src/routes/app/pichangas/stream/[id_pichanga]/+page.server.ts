@@ -39,8 +39,6 @@ export const load: PageServerLoad = async ({ params }) => {
         }
     });
 
-    console.log("fetching pichanga data", pichanga_data?.fecha.toString());
-
     if (!pichanga_data) {
         throw new Error("Pichanga no encontrada");
     }
