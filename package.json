@@ -46,6 +46,7 @@
 		"jsonwebtoken": "^9.0.3",
 		"mode-watcher": "^1.1.0",
 		"pg": "^8.20.0",
+		"resend": "^6.10.0",
 		"tailwindcss": "^4.2.2"
 	}
 }

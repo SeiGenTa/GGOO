@@ -3,6 +3,7 @@ import type { Actions, PageServerLoad } from "./$types";
 import { prisma } from "$utils/prisma";
 import { Permissions } from "../permissions/permissions";
 import type { Prisma } from "$generated/prisma/client";
+import { sendEmail } from "$lib/email/resend";
 
 const ALL_PERMISSIONS = Object.values(Permissions);
 const PAGE_SIZE = 10;
@@ -232,6 +233,24 @@ export const actions: Actions = {
                 rechazado_por_admin: false,
             },
         });
+
+        const userEmail = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { email: true },
+        });
+
+        const subject = "Cuenta aprobada en GGOO";
+
+        const html = `
+            <p>¡Hola!</p>
+            <p>Nos complace informarte que tu cuenta en GGOO ha sido aprobada por un administrador. Ahora puedes iniciar sesión y comenzar a disfrutar de todas las funcionalidades de la plataforma.</p>
+            <p>Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos.</p>
+            <p>¡Bienvenido a GGOO!</p>
+        `;
+
+        if (userEmail?.email) {
+            await sendEmail(userEmail.email, subject, html);
+        }
 
         return {
             success: true,

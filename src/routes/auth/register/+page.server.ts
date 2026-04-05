@@ -61,8 +61,37 @@ export const actions = {
             },
         });
 
+        await sendEmailValidator(email);
+
         return {
             success: true,
         };
     }
 } satisfies Actions;
+
+import { createCipheriv, createHash } from "node:crypto";
+import { sendEmail } from "$lib/email/resend";
+import { encript_string } from "$utils/encript";
+
+const sendEmailValidator = async (to: string) => {
+    const validationKey = encript_string(to);
+
+    const uriDirectory = process.env.URI_DIRECTORY || "http://localhost:3000/";
+
+    const subject = "Bienvenido a GGOO";
+    const html = `<p>Hola ${to},</p>
+    <h1> ¡Bienvenido a GGOO!</h1>
+    <p>Gracias por registrarte en GGOO. Estamos emocionados de tenerte con nosotros.</p>
+    <p>¡Esperamos que disfrutes de la experiencia!</p>
+    <p>Saludos,<br/>El equipo de GGOO</p>
+
+    <h3>Para validar tu cuenta, haz clic en el siguiente enlace:</h3>
+    <a href="${uriDirectory}auth/verify?code=${validationKey}">Validar cuenta</a>
+    <h3>Una vez validada tu cuenta, podrás iniciar sesión deberas esperar a que un administrador acepte tu ingreso</h3>
+    
+    <h3>Si no te registraste en GGOO, puedes ignorar este correo electrónico.</h3>
+
+    
+    `;
+    await sendEmail(to, subject, html);
+}

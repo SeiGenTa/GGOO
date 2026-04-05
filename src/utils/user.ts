@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import jwt, { type Jwt, type JwtPayload } from 'jsonwebtoken';
+import jwt, { type JwtPayload } from 'jsonwebtoken';
 import { type User } from "$generated/prisma/client";
 import { prisma } from "./prisma";
 
