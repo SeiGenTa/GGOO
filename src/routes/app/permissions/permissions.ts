@@ -4,6 +4,8 @@ export enum Permissions {
     EditarPartidos = 'editar_partidos',
     InscribirsePichanga = 'inscribirse_pichanga',
     AdministrarPichanga = 'administrar_pichanga',
+    VerMiembros = 'ver_miembros',
+    AceptarMiembros = 'aceptar_miembros',
     CrearRoles = 'crear_roles',
     EditarRoles = 'editar_roles',
     EliminarRoles = 'eliminar_roles',

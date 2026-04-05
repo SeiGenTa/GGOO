@@ -8,20 +8,21 @@ datasource db {
 }
 
 model User {
-  id                 String        @id @default(uuid())
-  nombre             String
-  email              String        @unique
-  apodo              String?
-  password           String
-  createdAt          DateTime      @default(now())
-  updatedAt          DateTime      @updatedAt
-  es_admin           Boolean       @default(false)
-  es_valido          Boolean       @default(false)
-  aprobado_por_admin Boolean       @default(false)
-  pichangas          Pichanga[]    @relation("PichangaAdmins")
-  inscripciones      Inscripcion[]
-  permisos           String[]
-  roles              Rol[]         @relation("UserRoles")
+  id                  String        @id @default(uuid())
+  nombre              String
+  email               String        @unique
+  apodo               String?
+  password            String
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  es_admin            Boolean       @default(false)
+  es_valido           Boolean       @default(false)
+  aprobado_por_admin  Boolean       @default(false)
+  rechazado_por_admin Boolean       @default(false)
+  pichangas           Pichanga[]    @relation("PichangaAdmins")
+  inscripciones       Inscripcion[]
+  permisos            String[]
+  roles               Rol[]         @relation("UserRoles")
 }
 
 model Rol {

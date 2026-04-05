@@ -84,6 +84,7 @@ export const UserScalarFieldEnum = {
   es_admin: 'es_admin',
   es_valido: 'es_valido',
   aprobado_por_admin: 'aprobado_por_admin',
+  rechazado_por_admin: 'rechazado_por_admin',
   permisos: 'permisos'
 } as const
 
