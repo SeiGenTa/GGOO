@@ -21,5 +21,10 @@
         <main class="p-4 h-full">
             {@render children()}
         </main>
+        <footer class="p-4 border-t text-center text-sm">
+            &copy; {new Date().getFullYear()} GGOO. Todos los derechos reservados.
+            <a href="/app/extras/contributors" class="text-blue-500 hover:underline ml-2">Contribuidores</a>
+            <a href="/app/extras/contributions_money" class="text-blue-500 hover:underline ml-2">Contribuciones monetarias</a>
+        </footer>
     </SidebarInset>
 </SidebarProvider>

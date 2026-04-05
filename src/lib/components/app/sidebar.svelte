@@ -12,7 +12,7 @@
             title: "General",
             items: [
                 { icon: Volleyball, label: "Pichangas", href: "/app/pichangas" },
-                { icon: BadgeAlertIcon, label: "Mis tarjetas", href: "/app/profile" },
+                { icon: BadgeAlertIcon, label: "Mis tarjetas", href: "/app/tarjetas" },
             ],
         },
         {
@@ -21,6 +21,7 @@
                 { icon: User, label: "Usuarios", href: "/app/users" },
                 { icon: Key, label: "Roles", href: "/app/roles" },
                 { icon: Users, label: "Permisos", href: "/app/permissions" },
+                { icon: BadgeAlertIcon, label: "Gestion de tarjetas", href: "/app/gestion_tarjetas" },
             ],
         },
     ];
