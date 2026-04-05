@@ -2,6 +2,7 @@
     import * as Sidebar from "$lib/components/ui/sidebar";
     import Button from "../ui/button/button.svelte";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
+    import * as Dialog from "$lib/components/ui/dialog";
     import { User, Key, Users, Volleyball, BadgeAlertIcon } from "@lucide/svelte/icons";
     import { toggleMode } from "mode-watcher";
     import { House } from "@lucide/svelte/icons";
@@ -32,6 +33,8 @@
     }
 
     const { user }: { user: userInfo | undefined } = $props();
+
+    let showCloseSessionDialog = $state(false);
 </script>
 
 <Sidebar.Root variant="floating" collapsible="icon">
@@ -100,8 +103,25 @@
                 </DropdownMenu.Item>
                 <DropdownMenu.Item onSelect={toggleMode}>Cambiar tema</DropdownMenu.Item>
                 <DropdownMenu.Separator />
-                <DropdownMenu.Item onSelect={() => {}}>Cerrar sesión</DropdownMenu.Item>
+                <DropdownMenu.Item onSelect={() => (showCloseSessionDialog = true)}>Cerrar sesión</DropdownMenu.Item>
             </DropdownMenu.Content>
         </DropdownMenu.Root>
     </Sidebar.Footer>
 </Sidebar.Root>
+
+<Dialog.Root bind:open={showCloseSessionDialog}>
+    <Dialog.Content>
+        <Dialog.Header>
+            <Dialog.Title>¿Cerrar sesión?</Dialog.Title>
+            <Dialog.Description>¿Estás seguro de que quieres cerrar sesión?</Dialog.Description>
+        </Dialog.Header>
+        <Dialog.Footer>
+            <Dialog.Close>
+                <Button variant="outline">Cancelar</Button>
+            </Dialog.Close>
+            <form method="POST" action="/auth?/logout">
+                <Button type="submit" variant="destructive">Cerrar sesión</Button>
+            </form>
+        </Dialog.Footer>
+    </Dialog.Content>
+</Dialog.Root>

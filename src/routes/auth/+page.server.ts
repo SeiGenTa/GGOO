@@ -33,7 +33,7 @@ export const actions = {
             });
         }
 
-        const isPasswordValid = await UserUtils.verifyPassword(password, user.password);
+        const isPasswordValid = UserUtils.verifyPassword(password, user.password);
 
         if (!isPasswordValid) {
             return fail(400, {

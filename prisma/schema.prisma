@@ -2,44 +2,54 @@ generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
 }
+
 datasource db {
   provider = "postgresql"
 }
 
 model User {
-  id    String  @id @default(uuid())
-  nombre  String
-  email String  @unique
-  apodo String?
-  password String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  es_admin Boolean @default(false)
-  es_valido Boolean @default(false)
-  aprobado_por_admin Boolean @default(false)
-  pichangas Pichanga[] @relation("PichangaAdmins")
-  inscripciones Inscripcion[]
+  id                 String        @id @default(uuid())
+  nombre             String
+  email              String        @unique
+  apodo              String?
+  password           String
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  es_admin           Boolean       @default(false)
+  es_valido          Boolean       @default(false)
+  aprobado_por_admin Boolean       @default(false)
+  pichangas          Pichanga[]    @relation("PichangaAdmins")
+  inscripciones      Inscripcion[]
+  permisos           String[]
+  roles              Rol[]         @relation("UserRoles")
+}
+
+model Rol {
+  id       String   @id @default(uuid())
+  users    User[]   @relation("UserRoles")
+  nombre   String
+  permisos String[]
 }
 
 model Pichanga {
-  id String @id @default(uuid())
-  nombre String?
-  lugar String?
-  fecha DateTime
-  admins User[] @relation("PichangaAdmins")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  maxJugadores Int @default(18)
+  id                    String        @id @default(uuid())
+  nombre                String?
+  lugar                 String?
+  fecha                 DateTime
+  admins                User[]        @relation("PichangaAdmins")
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  maxJugadores          Int           @default(18)
   fechaInicioIncripcion DateTime
-  inscripciones Inscripcion[]
+  inscripciones         Inscripcion[]
 }
 
 model Inscripcion {
-  id String @id @default(uuid())
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-  pichanga Pichanga @relation(fields: [pichangaId], references: [id], onDelete: Cascade)
+  id         String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  pichanga   Pichanga @relation(fields: [pichangaId], references: [id], onDelete: Cascade)
   pichangaId String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
