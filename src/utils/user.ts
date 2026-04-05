@@ -26,6 +26,13 @@ class UserUtils{
         return [token, refreshToken];
     }
 
+    public static has_permission = (user: User, permission: Permissions): boolean => {
+        if (user.es_admin) {
+            return true;
+        }
+        return false;
+    }
+
     public static verifyToken = (token: string) => {
         const secretKey = process.env.SECRET_KEY || "your_secret_key_here";
         let decoded;

@@ -47,6 +47,11 @@ export { Prisma }
  */
 export type User = Prisma.UserModel
 /**
+ * Model Rol
+ * 
+ */
+export type Rol = Prisma.RolModel
+/**
  * Model Pichanga
  * 
  */
