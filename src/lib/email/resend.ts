@@ -4,7 +4,14 @@ const apiKey = process.env.RESEND_KEY;
 const fromEmail = process.env.FROM_EMAIL || "dev"
 const logsEmails = process.env.LOGS_EMAILS ? process.env.LOGS_EMAILS.toLowerCase() === 'true' : true;
 
-const resend = new Resend(apiKey ?? "");
+let resednInstance: Resend | null = null;
+
+export const get_resend = () => {
+    if (!apiKey) {
+        console.warn('Resend API key is not set. Please set RESEND_KEY in your environment variables to enable email sending.');
+    }
+    return resednInstance || (resednInstance = new Resend(apiKey!));
+}
 
 export const sendEmail = async (to: string, subject: string, html: string) => {
     if (!apiKey) {
@@ -15,7 +22,7 @@ export const sendEmail = async (to: string, subject: string, html: string) => {
         console.log(`HTML: ${html}`);
         return;
     }
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await get_resend().emails.send({
         from: fromEmail,
         to,
         subject,

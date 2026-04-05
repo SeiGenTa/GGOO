@@ -1,8 +1,8 @@
 <script lang="ts">
     const { data } = $props()
 
-    const title = data.title;
-    const body = data.message;
+    const title = $derived(data.title);
+    const body = $derived(data.message);
 </script>
 
 <div class="flex flex-col items-center justify-center h-screen">
