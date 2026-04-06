@@ -64,7 +64,7 @@
 
     const isRouteActive = (href: string) => {
         if (href === "/app") {
-            return page.url.pathname === "/app" || page.url.pathname === "/app/";
+            return false;
         }
 
         return page.url.pathname === href || page.url.pathname.startsWith(`${href}/`);
