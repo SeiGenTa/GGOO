@@ -6,22 +6,47 @@
     import { User, Key, Users, Volleyball, BadgeAlertIcon } from "@lucide/svelte/icons";
     import { toggleMode } from "mode-watcher";
     import { House } from "@lucide/svelte/icons";
+    import { page } from "$app/state";
 
     const sections = [
         {
             title: "General",
             items: [
-                { icon: Volleyball, label: "Pichangas", href: "/app/pichangas" },
-                { icon: BadgeAlertIcon, label: "Mis tarjetas", href: "/app/tarjetas" },
+                {
+                    icon: Volleyball,
+                    label: "Pichangas",
+                    href: "/app/pichangas",
+                },
+                {
+                    icon: BadgeAlertIcon,
+                    label: "Mis tarjetas",
+                    href: "/app/tarjetas"
+                },
             ],
         },
         {
             title: "Administración",
             items: [
-                { icon: User, label: "Usuarios", href: "/app/users" },
-                { icon: Key, label: "Roles", href: "/app/roles" },
-                { icon: Users, label: "Permisos", href: "/app/permissions" },
-                { icon: BadgeAlertIcon, label: "Gestion de tarjetas", href: "/app/gestion_tarjetas" },
+                {
+                    icon: User,
+                    label: "Usuarios",
+                    href: "/app/users"
+                },
+                {
+                    icon: Key,
+                    label: "Roles",
+                    href: "/app/roles"
+                },
+                {
+                    icon: Users,
+                    label: "Permisos",
+                    href: "/app/permissions"
+                },
+                {
+                    icon: BadgeAlertIcon,
+                    label: "Gestion de tarjetas",
+                    href: "/app/gestion_tarjetas"
+                },
             ],
         },
     ];
@@ -36,13 +61,21 @@
     const { user }: { user: userInfo | undefined } = $props();
 
     let showCloseSessionDialog = $state(false);
+
+    const isRouteActive = (href: string) => {
+        if (href === "/app") {
+            return page.url.pathname === "/app" || page.url.pathname === "/app/";
+        }
+
+        return page.url.pathname === href || page.url.pathname.startsWith(`${href}/`);
+    };
 </script>
 
 <Sidebar.Root variant="floating" collapsible="icon">
     <Sidebar.Header>
         <Sidebar.Menu>
             <Sidebar.MenuItem>
-                <Sidebar.MenuButton class="h-12">
+                <Sidebar.MenuButton class="h-12" isActive={isRouteActive("/app")}>
                     {#snippet child({ props })}
                         <a href="/app" {...props}>
                             <House />
@@ -64,7 +97,7 @@
                     <Sidebar.Menu>
                         {#each section.items as item}
                             <Sidebar.MenuItem>
-                                <Sidebar.MenuButton>
+                                <Sidebar.MenuButton isActive={isRouteActive(item.href)}>
                                     {#snippet child({ props })}
                                         <a href={item.href} {...props}>
                                             {#if item.icon}

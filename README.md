@@ -15,7 +15,7 @@ En esta sección se muestran los objetivos actuales del proyecto. Los elementos 
 - [X] Crear pichangas en las que los miembros puedan registrarse y ver el estado de la lista en tiempo real.
 - [X] Gestor de miembros.
 - [X] Gestor de permisos para administradores.
-- [O] Aplicación de permisos dentro de toda la app.
+- [X] Aplicación de permisos dentro de toda la app.
 - [O] Sistema de registro de tarjetas y consecuencias dentro del sistema de pichangas.
 - [O] Vista de contribuyentes.
 

@@ -1,6 +1,8 @@
 import { subscribePichangaStream } from "$lib/server/pichanga-stream";
 import { produce } from "sveltekit-sse";
 
+
+
 export function GET({ url }: { url: URL }) {
     const pichangaId = url.searchParams.get("id_pichanga");
 
