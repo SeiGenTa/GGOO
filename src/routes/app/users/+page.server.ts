@@ -64,19 +64,6 @@ const getUserPermissions = async (userId: string): Promise<UserPermissions | nul
     };
 };
 
-const canUseAny = async (userId: string, requiredPermissions: string[]) => {
-    const userPermissions = await getUserPermissions(userId);
-    if (!userPermissions) {
-        return false;
-    }
-
-    if (userPermissions.isAdmin) {
-        return true;
-    }
-
-    return requiredPermissions.some((permission) => userPermissions.permissions.has(permission));
-};
-
 export const load: PageServerLoad = async ({ locals, url }) => {
     if (!locals.user) {
         redirect(302, "/auth");
@@ -207,12 +194,23 @@ export const actions: Actions = {
             };
         }
 
+        const defaultRole = await prisma.rol.findFirst({
+            where: {
+                is_default: true,
+            },
+        });
+
         await prisma.user.update({
             where: { id: userId },
             data: {
                 es_valido: true,
                 aprobado_por_admin: true,
                 rechazado_por_admin: false,
+                roles: defaultRole ? {
+                    connect: {
+                        id: defaultRole.id,
+                    },
+                } : undefined,
             },
         });
 
