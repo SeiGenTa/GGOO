@@ -17,11 +17,11 @@ FROM base as builder
 
 RUN npm run build
 
-CMD ["sh", "-c", "npx prisma migrate deploy"]
+RUN npx prisma migrate deploy
 
 FROM node:24-bookworm as production
 WORKDIR /app
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/node_modules ./node_modules
 
-CMD ["sh", "-c", "npx prisma migrate deploy && node build --port 5173"]
+CMD ["sh", "-c", "node build --port 5173"]
