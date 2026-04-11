@@ -3,10 +3,11 @@
     import Button from "../ui/button/button.svelte";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
     import * as Dialog from "$lib/components/ui/dialog";
-    import { User, Key, Users, Volleyball, BadgeAlertIcon } from "@lucide/svelte/icons";
+    import { User, Key, Users, Volleyball, BadgeAlertIcon, BadgeCheckIcon, ChevronRightIcon } from "@lucide/svelte/icons";
     import { toggleMode } from "mode-watcher";
     import { House } from "@lucide/svelte/icons";
     import { page } from "$app/state";
+    import * as Item from "$lib/components/ui/item";
 
     const sections = [
         {
@@ -20,7 +21,7 @@
                 {
                     icon: BadgeAlertIcon,
                     label: "Mis tarjetas",
-                    href: "/app/tarjetas"
+                    href: "/app/tarjetas",
                 },
             ],
         },
@@ -30,22 +31,22 @@
                 {
                     icon: User,
                     label: "Usuarios",
-                    href: "/app/users"
+                    href: "/app/users",
                 },
                 {
                     icon: Key,
                     label: "Roles",
-                    href: "/app/roles"
+                    href: "/app/roles",
                 },
                 {
                     icon: Users,
                     label: "Permisos",
-                    href: "/app/permissions"
+                    href: "/app/permissions",
                 },
                 {
                     icon: BadgeAlertIcon,
                     label: "Gestion de tarjetas",
-                    href: "/app/gestion_tarjetas"
+                    href: "/app/gestion_tarjetas",
                 },
             ],
         },
@@ -69,6 +70,8 @@
 
         return page.url.pathname === href || page.url.pathname.startsWith(`${href}/`);
     };
+
+    import logo from "/src/public/logo.jpg";
 </script>
 
 <Sidebar.Root variant="floating" collapsible="icon">
@@ -78,7 +81,7 @@
                 <Sidebar.MenuButton class="h-12" isActive={isRouteActive("/app")}>
                     {#snippet child({ props })}
                         <a href="/app" {...props}>
-                            <House />
+                            <img src={logo} alt="GGOO Logo" class="w-8 h-8 mr-2 border rounded-lg object-cover" />
                             <div>
                                 <h2 class="text-xl">GGOO</h2>
                                 <h3>Gestión de pichangas</h3>
@@ -118,15 +121,15 @@
         <DropdownMenu.Root>
             <DropdownMenu.Trigger>
                 {#snippet child({ props })}
-                    <Button variant="outline" class="w-full h-12 overflow-hidden" {...props}>
-                        <div class="flex flex-row items-center gap-2 w-full">
-                            <User class="mr-2" />
-                            <div class="flex flex-col items-start">
-                                <span class="text-sm font-medium">{user?.nombre}</span>
-                                <span class="text-xs text-muted-foreground">{user?.email}</span>
-                            </div>
-                        </div>
-                    </Button>
+                    <Item.Root variant="outline" size="default" {...props} class="w-full flex">
+                        <Item.Media>
+                            <User class="size-5" />
+                        </Item.Media>
+                        <Item.Content>
+                            <Item.Title>{user?.nombre}</Item.Title>
+                            <Item.Description>{user?.apodo}</Item.Description>
+                        </Item.Content>
+                    </Item.Root>
                 {/snippet}
             </DropdownMenu.Trigger>
             <DropdownMenu.Content class="min-w-40">

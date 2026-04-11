@@ -24,4 +24,4 @@ WORKDIR /app
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/node_modules ./node_modules
 
-CMD ["sh", "-c", "node build --port 5173"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node build --port 5173"]
