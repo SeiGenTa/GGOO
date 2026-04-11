@@ -40,8 +40,8 @@ services:
       context: .
       dockerfile: Dockerfile
       target: production
-    args:
-      - DATABASE_URL=${DATABASE_URL}
+      args:
+        - DATABASE_URL=${DATABASE_URL}
     container_name: ggoo-app-production
     env_file:
       - .env

@@ -17,7 +17,7 @@ FROM base as builder
 
 RUN npm run build
 
-RUN npx prisma migrate deploy
+CMD ["sh", "-c", "npx prisma migrate deploy && npm run build"]
 
 FROM node:24-bookworm as production
 WORKDIR /app
