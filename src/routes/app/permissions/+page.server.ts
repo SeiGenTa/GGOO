@@ -5,44 +5,14 @@ import { Permissions } from "../../../lib/permissions";
 
 const ALL_PERMISSIONS = Object.values(Permissions);
 
-const getUserPermissions = async (userId: string) => {
-    const user = await prisma.user.findUnique({
-        where: { id: userId },
-        select: {
-            es_admin: true,
-            permisos: true,
-            roles: {
-                select: {
-                    permisos: true,
-                },
-            },
-        },
-    });
-
-    if (!user) {
-        return null;
-    }
-
-    if (user.es_admin) {
-        return {
-            isAdmin: true,
-            permissions: new Set(ALL_PERMISSIONS),
-        };
-    }
-
-    const rolePermissions = user.roles.flatMap((role) => role.permisos);
-    return {
-        isAdmin: false,
-        permissions: new Set([...user.permisos, ...rolePermissions]),
-    };
-};
-
 const parsePermissions = (form: FormData) => {
     const selected = form.getAll("permisos").map((permission) => String(permission));
     return selected.filter((permission) => ALL_PERMISSIONS.includes(permission as Permissions));
 };
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load: PageServerLoad = async ({ locals, depends }) => {
+    depends("app:permissions");
+    
     if (!locals.user) {
         redirect(302, "/auth");
     }

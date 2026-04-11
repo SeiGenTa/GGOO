@@ -9,6 +9,7 @@
     import type { PageProps } from "./$types";
     import { Label } from "$lib/components/ui/label";
     import Switch from "$lib/components/ui/switch/switch.svelte";
+    import { invalidate } from "$app/navigation";
 
     let { data }: PageProps = $props();
 
@@ -111,7 +112,7 @@
                             <form
                                 action="?/set_predeterminated"
                                 class="flex items-center gap-2"
-								id={`default-role-form-${role.id}`}
+                                id={`default-role-form-${role.id}`}
                                 method="POST"
                                 use:enhance={() => {
                                     return async ({ result, update }) => {
@@ -138,14 +139,14 @@
                             >
                                 <Label>predeterminado</Label>
                                 <input type="hidden" name="roleId" value={role.id} />
-								<input type="hidden" name="is_default" value={role.is_default ? "false" : "true"} />
+                                <input type="hidden" name="is_default" value={role.is_default ? "false" : "true"} />
                                 <Switch
                                     id="predeterminated"
                                     onCheckedChange={() => {
                                         const form = document.getElementById(`default-role-form-${role.id}`) as HTMLFormElement | null;
-										if (form) {
-											form.requestSubmit();
-										}
+                                        if (form) {
+                                            form.requestSubmit();
+                                        }
                                     }}
                                     value={role.id}
                                     checked={role.is_default}
@@ -154,7 +155,29 @@
                         </Card.Action>
                     </Card.Header>
                     <Card.Content>
-                        <form method="POST" action="?/update_role" class="space-y-4" use:enhance={withFeedback("Rol actualizado")}>
+                        <form
+                            method="POST"
+                            action="?/update_role"
+                            class="space-y-4"
+                            use:enhance={() => {
+                                return async ({ result, update }) => {
+                                    if (result.type === "success") {
+                                        await invalidate("app:permissions");
+                                        toast("Rol actualizado", { description: "Los cambios en el rol se han guardado correctamente." });
+                                        return;
+                                    }
+
+                                    if (result.type === "failure") {
+                                        const message = (result.data as { message?: string } | null)?.message ?? "No fue posible actualizar el rol.";
+                                        toast("Error", { description: message });
+                                        await update();
+                                        return;
+                                    }
+
+                                    await update();
+                                };
+                            }}
+                        >
                             <input type="hidden" name="roleId" value={role.id} />
 
                             <div class="space-y-2">
