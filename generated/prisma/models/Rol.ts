@@ -27,20 +27,20 @@ export type AggregateRol = {
 export type RolMinAggregateOutputType = {
   id: string | null
   nombre: string | null
-  default: boolean | null
+  is_default: boolean | null
 }
 
 export type RolMaxAggregateOutputType = {
   id: string | null
   nombre: string | null
-  default: boolean | null
+  is_default: boolean | null
 }
 
 export type RolCountAggregateOutputType = {
   id: number
   nombre: number
   permisos: number
-  default: number
+  is_default: number
   _all: number
 }
 
@@ -48,20 +48,20 @@ export type RolCountAggregateOutputType = {
 export type RolMinAggregateInputType = {
   id?: true
   nombre?: true
-  default?: true
+  is_default?: true
 }
 
 export type RolMaxAggregateInputType = {
   id?: true
   nombre?: true
-  default?: true
+  is_default?: true
 }
 
 export type RolCountAggregateInputType = {
   id?: true
   nombre?: true
   permisos?: true
-  default?: true
+  is_default?: true
   _all?: true
 }
 
@@ -141,7 +141,7 @@ export type RolGroupByOutputType = {
   id: string
   nombre: string
   permisos: string[]
-  default: boolean
+  is_default: boolean
   _count: RolCountAggregateOutputType | null
   _min: RolMinAggregateOutputType | null
   _max: RolMaxAggregateOutputType | null
@@ -169,7 +169,7 @@ export type RolWhereInput = {
   id?: Prisma.StringFilter<"Rol"> | string
   nombre?: Prisma.StringFilter<"Rol"> | string
   permisos?: Prisma.StringNullableListFilter<"Rol">
-  default?: Prisma.BoolFilter<"Rol"> | boolean
+  is_default?: Prisma.BoolFilter<"Rol"> | boolean
   users?: Prisma.UserListRelationFilter
 }
 
@@ -177,7 +177,7 @@ export type RolOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   permisos?: Prisma.SortOrder
-  default?: Prisma.SortOrder
+  is_default?: Prisma.SortOrder
   users?: Prisma.UserOrderByRelationAggregateInput
 }
 
@@ -188,7 +188,7 @@ export type RolWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.RolWhereInput | Prisma.RolWhereInput[]
   nombre?: Prisma.StringFilter<"Rol"> | string
   permisos?: Prisma.StringNullableListFilter<"Rol">
-  default?: Prisma.BoolFilter<"Rol"> | boolean
+  is_default?: Prisma.BoolFilter<"Rol"> | boolean
   users?: Prisma.UserListRelationFilter
 }, "id">
 
@@ -196,7 +196,7 @@ export type RolOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   permisos?: Prisma.SortOrder
-  default?: Prisma.SortOrder
+  is_default?: Prisma.SortOrder
   _count?: Prisma.RolCountOrderByAggregateInput
   _max?: Prisma.RolMaxOrderByAggregateInput
   _min?: Prisma.RolMinOrderByAggregateInput
@@ -209,14 +209,14 @@ export type RolScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Rol"> | string
   nombre?: Prisma.StringWithAggregatesFilter<"Rol"> | string
   permisos?: Prisma.StringNullableListFilter<"Rol">
-  default?: Prisma.BoolWithAggregatesFilter<"Rol"> | boolean
+  is_default?: Prisma.BoolWithAggregatesFilter<"Rol"> | boolean
 }
 
 export type RolCreateInput = {
   id?: string
   nombre: string
   permisos?: Prisma.RolCreatepermisosInput | string[]
-  default?: boolean
+  is_default?: boolean
   users?: Prisma.UserCreateNestedManyWithoutRolesInput
 }
 
@@ -224,7 +224,7 @@ export type RolUncheckedCreateInput = {
   id?: string
   nombre: string
   permisos?: Prisma.RolCreatepermisosInput | string[]
-  default?: boolean
+  is_default?: boolean
   users?: Prisma.UserUncheckedCreateNestedManyWithoutRolesInput
 }
 
@@ -232,7 +232,7 @@ export type RolUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   permisos?: Prisma.RolUpdatepermisosInput | string[]
-  default?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default?: Prisma.BoolFieldUpdateOperationsInput | boolean
   users?: Prisma.UserUpdateManyWithoutRolesNestedInput
 }
 
@@ -240,7 +240,7 @@ export type RolUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   permisos?: Prisma.RolUpdatepermisosInput | string[]
-  default?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default?: Prisma.BoolFieldUpdateOperationsInput | boolean
   users?: Prisma.UserUncheckedUpdateManyWithoutRolesNestedInput
 }
 
@@ -248,21 +248,21 @@ export type RolCreateManyInput = {
   id?: string
   nombre: string
   permisos?: Prisma.RolCreatepermisosInput | string[]
-  default?: boolean
+  is_default?: boolean
 }
 
 export type RolUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   permisos?: Prisma.RolUpdatepermisosInput | string[]
-  default?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type RolUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   permisos?: Prisma.RolUpdatepermisosInput | string[]
-  default?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type RolListRelationFilter = {
@@ -279,19 +279,19 @@ export type RolCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   permisos?: Prisma.SortOrder
-  default?: Prisma.SortOrder
+  is_default?: Prisma.SortOrder
 }
 
 export type RolMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
-  default?: Prisma.SortOrder
+  is_default?: Prisma.SortOrder
 }
 
 export type RolMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
-  default?: Prisma.SortOrder
+  is_default?: Prisma.SortOrder
 }
 
 export type RolCreateNestedManyWithoutUsersInput = {
@@ -345,14 +345,14 @@ export type RolCreateWithoutUsersInput = {
   id?: string
   nombre: string
   permisos?: Prisma.RolCreatepermisosInput | string[]
-  default?: boolean
+  is_default?: boolean
 }
 
 export type RolUncheckedCreateWithoutUsersInput = {
   id?: string
   nombre: string
   permisos?: Prisma.RolCreatepermisosInput | string[]
-  default?: boolean
+  is_default?: boolean
 }
 
 export type RolCreateOrConnectWithoutUsersInput = {
@@ -383,28 +383,28 @@ export type RolScalarWhereInput = {
   id?: Prisma.StringFilter<"Rol"> | string
   nombre?: Prisma.StringFilter<"Rol"> | string
   permisos?: Prisma.StringNullableListFilter<"Rol">
-  default?: Prisma.BoolFilter<"Rol"> | boolean
+  is_default?: Prisma.BoolFilter<"Rol"> | boolean
 }
 
 export type RolUpdateWithoutUsersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   permisos?: Prisma.RolUpdatepermisosInput | string[]
-  default?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type RolUncheckedUpdateWithoutUsersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   permisos?: Prisma.RolUpdatepermisosInput | string[]
-  default?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type RolUncheckedUpdateManyWithoutUsersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   permisos?: Prisma.RolUpdatepermisosInput | string[]
-  default?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -442,7 +442,7 @@ export type RolSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   id?: boolean
   nombre?: boolean
   permisos?: boolean
-  default?: boolean
+  is_default?: boolean
   users?: boolean | Prisma.Rol$usersArgs<ExtArgs>
   _count?: boolean | Prisma.RolCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["rol"]>
@@ -451,24 +451,24 @@ export type RolSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   id?: boolean
   nombre?: boolean
   permisos?: boolean
-  default?: boolean
+  is_default?: boolean
 }, ExtArgs["result"]["rol"]>
 
 export type RolSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   nombre?: boolean
   permisos?: boolean
-  default?: boolean
+  is_default?: boolean
 }, ExtArgs["result"]["rol"]>
 
 export type RolSelectScalar = {
   id?: boolean
   nombre?: boolean
   permisos?: boolean
-  default?: boolean
+  is_default?: boolean
 }
 
-export type RolOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "permisos" | "default", ExtArgs["result"]["rol"]>
+export type RolOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "permisos" | "is_default", ExtArgs["result"]["rol"]>
 export type RolInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   users?: boolean | Prisma.Rol$usersArgs<ExtArgs>
   _count?: boolean | Prisma.RolCountOutputTypeDefaultArgs<ExtArgs>
@@ -485,7 +485,7 @@ export type $RolPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     id: string
     nombre: string
     permisos: string[]
-    default: boolean
+    is_default: boolean
   }, ExtArgs["result"]["rol"]>
   composites: {}
 }
@@ -913,7 +913,7 @@ export interface RolFieldRefs {
   readonly id: Prisma.FieldRef<"Rol", 'String'>
   readonly nombre: Prisma.FieldRef<"Rol", 'String'>
   readonly permisos: Prisma.FieldRef<"Rol", 'String[]'>
-  readonly default: Prisma.FieldRef<"Rol", 'Boolean'>
+  readonly is_default: Prisma.FieldRef<"Rol", 'Boolean'>
 }
     
 

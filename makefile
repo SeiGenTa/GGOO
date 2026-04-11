@@ -3,6 +3,7 @@
 help:
 	@echo "Comandos disponibles:"
 	@echo "  make dev              - Levanta el servicio app en modo desarrollo"
+	@echo "  make prod             - Levanta el servicio app en modo producción"
 	@echo "  make bash             - Abre una shell dentro del contenedor app"
 	@echo "  make logs             - Muestra logs en tiempo real del servicio app"
 	@echo "  make migrate          - Ejecuta npx prisma migrate dev dentro de app"
@@ -12,6 +13,9 @@ help:
 
 dev:
 	docker compose up --build app
+
+prod:
+	docker compose up --build app-production
 
 bash:
 	docker compose exec app /bin/bash
