@@ -1,9 +1,9 @@
 import { prisma } from "$utils/prisma";
-import { fail } from "@sveltejs/kit";
+import { fail, redirect } from "@sveltejs/kit";
 import { publishPichangaUpdate } from "$lib/server/pichanga-stream";
 import type { PageServerLoad } from "./$types";
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, locals }) => {
     const { id_pichanga } = params;
 
     const pichanga_data = await prisma.pichanga.findUnique({
@@ -41,6 +41,11 @@ export const load: PageServerLoad = async ({ params }) => {
 
     if (!pichanga_data) {
         throw new Error("Pichanga no encontrada");
+    }
+
+    const es_admin = locals.user?.es_admin ?? false;
+    if (!es_admin && new Date() < new Date(pichanga_data.fechaInicioIncripcion)) {
+        redirect(302, "/app/pichangas?page=1");
     }
 
     return {

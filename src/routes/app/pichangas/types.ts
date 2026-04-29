@@ -5,4 +5,5 @@ interface Pichanga_struct {
     date: string;
     limit_members: number;
     members: { id: string; name: string }[];
+    fechaInicioIncripcion: string;
 }

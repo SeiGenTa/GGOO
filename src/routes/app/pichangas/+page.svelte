@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { invalidateAll } from "$app/navigation";
     import Button from "$lib/components/ui/button/button.svelte";
     import * as Item from "$lib/components/ui/item";
     import * as Accordion from "$lib/components/ui/accordion";
@@ -10,6 +11,15 @@
     import { Permissions } from "$lib/permissions";
 
     let { data }: PageProps = $props();
+
+    $effect(() => {
+        const next = data.nextInscripcionDate;
+        if (!next) return;
+        const delay = new Date(next).getTime() - Date.now();
+        if (delay <= 0) return;
+        const t = setTimeout(() => invalidateAll(), delay);
+        return () => clearTimeout(t);
+    });
 
     const getFillPercentage = (members: number, limit: number) => {
         if (limit === 0) return 0;

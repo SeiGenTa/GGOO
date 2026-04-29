@@ -15,19 +15,34 @@ export const load: PageServerLoad = async ({ url, depends, locals }) => {
         redirect(302, `/app/pichangas?page=1`);
     }
 
+    const es_admin = locals.user?.es_admin ?? false;
+
+    let nextInscripcionDate: string | null = null;
+    if (!es_admin) {
+        const next = await prisma.pichanga.findFirst({
+            where: {
+                fecha: { gt: new Date() },
+                fechaInicioIncripcion: { gt: new Date() },
+            },
+            orderBy: { fechaInicioIncripcion: "asc" },
+            select: { fechaInicioIncripcion: true },
+        });
+        nextInscripcionDate = next?.fechaInicioIncripcion.toISOString() ?? null;
+    }
+
     //? Si se quiere hacer async la carga, se debe sacar el await
     return {
         name_page: "Pichangas",
-        pichangas: await load_pichangas_promise(page),
+        pichangas: await load_pichangas_promise(page, es_admin),
+        nextInscripcionDate,
     }
 }
 
-const load_pichangas_promise = async (page: string) => {
+const load_pichangas_promise = async (page: string, es_admin: boolean) => {
     const data_pichangas = await prisma.pichanga.findMany({
         where: {
-            fecha: {
-                gt: new Date()
-            }
+            fecha: { gt: new Date() },
+            ...(!es_admin && { fechaInicioIncripcion: { lte: new Date() } }),
         },
         include: {
             admins: true,
@@ -59,7 +74,8 @@ const load_pichangas_promise = async (page: string) => {
             members: pichanga.inscripciones.map(inscripcion => ({
                 id: inscripcion.user.id,
                 name: inscripcion.user.nombre
-            }))
+            })),
+            fechaInicioIncripcion: pichanga.fechaInicioIncripcion.toISOString()
         }))
     ]
     return pichangas;
