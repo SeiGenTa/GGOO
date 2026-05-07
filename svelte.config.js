@@ -19,6 +19,7 @@ const config = {
       $lib: "./src/lib",
       $generated: "./generated",
       $utils: "./src/utils",
+      $src: "./src",
     },
   },
 };

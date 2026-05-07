@@ -2,6 +2,7 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import { ModeWatcher } from "mode-watcher";
 	import { Toaster } from "$lib/components/ui/sonner";
+	import logo from '$src/public/logo.jpg'
 
 	import "../app.css";
 	import "./theme.css"
@@ -26,7 +27,7 @@
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
+	<link rel="icon" href={logo} />
 </svelte:head>
 
 <Toaster />
