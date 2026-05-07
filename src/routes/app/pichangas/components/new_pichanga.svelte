@@ -77,7 +77,7 @@
 
             <InputApp id="location" name="location" label="Ubicación de la pichanga (Opcional)" placeholder="Cancha central del parque" />
 
-            <InputApp id="max_players" name="max_players" label="Número máximo de jugadores (Opcional)" type="number" placeholder="18" value="18" />
+            <InputApp id="max_players" name="max_players" label="Número máximo de jugadores (Opcional)" type="number" placeholder="19" value="19" />
 
             <InputApp
                 id="date-init_register"
