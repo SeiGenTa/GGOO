@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { invalidateAll } from "$app/navigation";
+    import { invalidateAll, goto } from "$app/navigation";
     import { enhance } from "$app/forms";
     import InputApp from "$lib/components/app/input.svelte";
     import SelectApp from "$lib/components/app/select.svelte";
@@ -13,6 +13,7 @@
     import Switch from "$lib/components/ui/switch/switch.svelte";
     import { onMount } from "svelte";
     import { toast } from "svelte-sonner";
+    import { Trigger } from "$lib/components/ui/accordion";
 
     let { data } = $props();
     const pichanga = $derived(data.pichanga);
@@ -43,7 +44,15 @@
     onMount(() => {
         const eventSource = new EventSource(`/api/stream?id_pichanga=${encodeURIComponent(pichanga.id)}`);
 
-        const handlePichangaUpdate = async () => {
+        const handlePichangaUpdate = async (event) => {
+            const eventData = JSON.parse(event.data);
+            console.log("Pichanga update received", eventData);
+            const type = eventData.type;
+            console.log("Event type:", type);
+            if (type === "deleted") {
+                await goto("/app/pichangas?error=La pichanga fue eliminada&page=1");
+                return;
+            }
             if (refreshing) return;
             refreshing = true;
 
@@ -103,10 +112,30 @@
 
                 <Card.Action class="flex w-full flex-wrap gap-2">
                     {#if data.user?.es_admin}
+                        <Dialog.Root>
+                            <Dialog.Trigger>
+                                {#snippet child({ props })}
+                                    <Button {...props} class="cursor-pointer" variant="destructive" size="sm">Eliminar</Button>
+                                {/snippet}
+                            </Dialog.Trigger>
+                            <Dialog.Content>
+                                <Dialog.Header>
+                                    <Dialog.Title>¿Eliminar esta pichanga?</Dialog.Title>
+                                    <Dialog.Description>Esta acción no se puede deshacer.</Dialog.Description>
+                                </Dialog.Header>
+                                <Dialog.Footer class="space-x-2">
+                                    <Dialog.Close variant="outline">Cancelar</Dialog.Close>
+                                    <form method="POST" action="?/eliminar" use:enhance>
+                                        <input type="hidden" name="id-pichanga" value={pichanga.id} />
+                                        <Button type="submit" variant="destructive">Eliminar</Button>
+                                    </form>
+                                </Dialog.Footer>
+                            </Dialog.Content>
+                        </Dialog.Root>
                         <Dialog.Root bind:open={open_edit}>
                             <Dialog.Trigger>
                                 {#snippet child({ props })}
-                                    <Button {...props} variant="outline" size="sm">Editar</Button>
+                                    <Button {...props} class="cursor-pointer" variant="outline" size="sm">Editar</Button>
                                 {/snippet}
                             </Dialog.Trigger>
                             <Dialog.DialogContent>

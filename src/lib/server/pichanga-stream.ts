@@ -1,4 +1,4 @@
-export type PichangaStreamEventType = "edited" | "joined" | "left";
+export type PichangaStreamEventType = "edited" | "joined" | "left" | "deleted";
 
 export type PichangaStreamEvent = {
     pichangaId: string;
