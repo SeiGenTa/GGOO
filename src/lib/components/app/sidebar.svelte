@@ -3,9 +3,8 @@
     import Button from "../ui/button/button.svelte";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
     import * as Dialog from "$lib/components/ui/dialog";
-    import { User, Key, Users, Volleyball, BadgeAlertIcon, BadgeCheckIcon, ChevronRightIcon } from "@lucide/svelte/icons";
+    import { User, Key, Users, Volleyball, BadgeAlertIcon } from "@lucide/svelte/icons";
     import { toggleMode } from "mode-watcher";
-    import { House } from "@lucide/svelte/icons";
     import { page } from "$app/state";
     import * as Item from "$lib/components/ui/item";
 

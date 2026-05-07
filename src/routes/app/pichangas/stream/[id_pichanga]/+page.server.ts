@@ -1,7 +1,7 @@
 import { prisma } from "$utils/prisma";
 import { fail, redirect } from "@sveltejs/kit";
 import { publishPichangaUpdate } from "$lib/server/pichanga-stream";
-import type { PageServerLoad } from "./$types";
+import type { Actions, PageServerLoad } from "./$types";
 import { Permissions } from "$lib/permissions";
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -80,6 +80,9 @@ export const actions = {
         error:
           "Todos los campos son requeridos, incluyendo al menos un admin y la fecha de inicio de registro",
       });
+    }
+    if (!locals.user) {
+      return fail(401, { error: "Usuario no autenticado" });
     }
 
     if (!locals.user.permisos.includes(Permissions.EditarPartidos)) {
@@ -165,6 +168,10 @@ export const actions = {
     if (!user) {
       return fail(401, { error: "Usuario no autenticado" });
     }
+    if (!locals.user) {
+      return fail(401, { error: "Usuario no autenticado" });
+    }
+
     if (!locals.user.permisos.includes(Permissions.EditarPartidos)) {
       redirect(
         302,
@@ -199,4 +206,4 @@ export const actions = {
 
     redirect(302, "/app?success=Pichanga eliminada correctamente.");
   },
-};
+} satisfies Actions;

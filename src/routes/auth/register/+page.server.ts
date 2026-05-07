@@ -69,7 +69,6 @@ export const actions = {
     }
 } satisfies Actions;
 
-import { createCipheriv, createHash } from "node:crypto";
 import { sendEmail } from "$lib/email/resend";
 import { encript_string } from "$utils/encript";
 

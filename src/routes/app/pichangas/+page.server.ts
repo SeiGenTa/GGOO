@@ -1,9 +1,8 @@
-import { fail, redirect } from "@sveltejs/kit";
+import { fail, redirect, type Actions } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { prisma } from "$utils/prisma.js";
 import type { Pichanga } from "$generated/prisma/client.js";
 import { Permissions } from "$lib/permissions.js";
-import { toast } from "svelte-sonner";
 
 export const load: PageServerLoad = async ({ url, depends, locals }) => {
     depends("pichangas:load");
@@ -135,4 +134,4 @@ export const actions = {
         }
 
     }
-}
+} satisfies Actions;

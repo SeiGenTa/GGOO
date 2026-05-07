@@ -10,5 +10,5 @@ export enum Permissions {
     EditarRoles = 'editar_roles',
     EliminarRoles = 'eliminar_roles',
     VerRolesUsuarios = 'ver_roles_usuarios',
-    AsigarRoles = 'asignar_roles',
+    AsignarRoles = 'asignar_roles',
 }

@@ -1,9 +1,10 @@
 import { Permissions } from "$lib/permissions.js";
 import { prisma } from "$utils/prisma.js";
+import type { RequestHandler } from "./$types";
 
 const avalible_options_selects = ["id", "nombre", "email", "apodo"];
 
-export const GET = async ({ url, locals }) => {
+export const GET: RequestHandler = async ({ url, locals }) => {
     if (!locals.user) {
         return new Response(JSON.stringify({ error: "Unauthorized" }), {
             status: 401,

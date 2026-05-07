@@ -1,8 +1,9 @@
 import { decrypt_string } from "$utils/encript";
 import { prisma } from "$utils/prisma";
 import { createDecipheriv, createHash } from "node:crypto";
+import type { PageServerLoad } from "./$types";
 
-export const load = async ({ url }) => {
+export const load: PageServerLoad = async ({ url }) => {
     const code = url.searchParams.get("code");
     if (!code) {
         return {

@@ -1,7 +1,8 @@
 import { subscribePichangaStream } from "$lib/server/pichanga-stream";
 import { produce } from "sveltekit-sse";
+import type { RequestHandler } from "./$types";
 
-export function GET({ url }: { url: URL }) {
+export const GET: RequestHandler = ({ url }) => {
     const pichangaId = url.searchParams.get("id_pichanga");
 
     return produce(({ emit }) => {

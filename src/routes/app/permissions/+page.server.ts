@@ -273,4 +273,4 @@ export const actions: Actions = {
             message: "Rol predeterminado actualizado correctamente.",
         };
     }
-};
+} satisfies Actions;
