@@ -34,3 +34,6 @@ generate-prisma:
 
 createsuperuser:
 	docker compose exec app sh -lc "cd src && npx ts-node manage.ts createsuperuser"
+
+prisma-studio:
+	docker compose exec app sh -lc "npx prisma studio"

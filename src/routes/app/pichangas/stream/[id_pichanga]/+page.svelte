@@ -13,7 +13,7 @@
     import Switch from "$lib/components/ui/switch/switch.svelte";
     import { onMount } from "svelte";
     import { toast } from "svelte-sonner";
-    import { Trigger } from "$lib/components/ui/accordion";
+
 
     let { data } = $props();
     const pichanga = $derived(data.pichanga);
@@ -44,7 +44,7 @@
     onMount(() => {
         const eventSource = new EventSource(`/api/stream?id_pichanga=${encodeURIComponent(pichanga.id)}`);
 
-        const handlePichangaUpdate = async (event) => {
+        const handlePichangaUpdate = async (event:any) => {
             const eventData = JSON.parse(event.data);
             console.log("Pichanga update received", eventData);
             const type = eventData.type;
@@ -124,7 +124,7 @@
                                     <Dialog.Description>Esta acción no se puede deshacer.</Dialog.Description>
                                 </Dialog.Header>
                                 <Dialog.Footer class="space-x-2">
-                                    <Dialog.Close variant="outline">Cancelar</Dialog.Close>
+                                    <Dialog.Close>Cancelar</Dialog.Close>
                                     <form method="POST" action="?/eliminar" use:enhance>
                                         <input type="hidden" name="id-pichanga" value={pichanga.id} />
                                         <Button type="submit" variant="destructive">Eliminar</Button>
@@ -315,16 +315,19 @@
             <Card.Content class="space-y-5">
                 <section>
                     <div class="mb-2 flex items-center justify-between">
-                        <h2 class="text-base font-semibold">Titulares</h2>
+                        <h2 class="text-base font-semibold">Lista</h2>
                         <Badge variant="secondary">{inscritos.length}</Badge>
                     </div>
 
                     {#if inscritos.length > 0}
                         <ul class="grid grid-cols-1 gap-2 sm:grid-cols-2">
                             {#each inscritos as inscripcion, index}
-                                <li class="rounded-lg border bg-background/80 px-3 py-2 text-sm font-medium">
+                                <li class="rounded-lg border bg-background/80 px-3 py-2 text-sm space-x-1 font-medium">
                                     <span class="text-muted-foreground">{index + 1}.</span>
-                                    {inscripcion.user.nombre}
+                                    {inscripcion.user.apodo ?? inscripcion.user.nombre}
+                                    {#if inscripcion.user.apodo}
+                                        <Badge variant="secondary">{inscripcion.user.nombre}</Badge>
+                                    {/if}
                                 </li>
                             {/each}
                         </ul>
@@ -346,7 +349,7 @@
                                     class="rounded-lg border border-amber-200 px-3 py-2 text-sm font-medium dark:border-amber-900/50 dark:bg-amber-950/20"
                                 >
                                     <span class="text-muted-foreground">{index + pichanga.maxJugadores + 1}.</span>
-                                    {inscripcion.user.nombre}
+                                    {inscripcion.user.apodo ?? inscripcion.user.nombre}
                                 </li>
                             {/each}
                         </ul>
