@@ -9,7 +9,7 @@
 </script>
 
 <SidebarProvider>
-    <SideBarApp user={data.user} />
+    <SideBarApp user={data.user} app_name={data.app_name} />
 
     <SidebarInset>
         <header class="p-4 border-b flex">

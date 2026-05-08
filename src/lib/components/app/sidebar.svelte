@@ -58,7 +58,7 @@
         es_admin: boolean;
     }
 
-    const { user }: { user: userInfo | undefined } = $props();
+    const { user, app_name }: { user: userInfo | undefined, app_name: string } = $props();
 
     let showCloseSessionDialog = $state(false);
 
@@ -80,9 +80,9 @@
                 <Sidebar.MenuButton class="h-12" isActive={isRouteActive("/app")}>
                     {#snippet child({ props })}
                         <a href="/app" {...props}>
-                            <img src={logo} alt="GGOO Logo" class="w-8 h-8 mr-2 border rounded-lg object-cover" />
+                            <img src={logo} alt="Volley Beauchef Logo" class="w-8 h-8 mr-2 border rounded-lg object-cover" />
                             <div>
-                                <h2 class="text-xl">GGOO</h2>
+                                <h2 class="text-xl">{app_name}</h2>
                                 <h3>Gestión de pichangas</h3>
                             </div>
                         </a>

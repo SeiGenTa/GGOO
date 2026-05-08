@@ -23,5 +23,6 @@ export const load: LayoutServerLoad = async ({ cookies, url, locals, depends }) 
     return {
         user: locals.user,
         toast: toasts,
+        app_name: process.env.APP_NAME || "GGOO",
     }
 }
