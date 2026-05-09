@@ -10,6 +10,7 @@ help:
 	@echo "  make apply-migrate    - Ejecuta npx prisma migrate deploy dentro de app"
 	@echo "  make generate-prisma  - Ejecuta npx prisma generate dentro de app"
 	@echo "  make createsuperuser  - Crea un superusuario con src/manage.ts"
+	@echo "  make prisma-studio    - Abre Prisma Studio para gestionar la base de datos"
 
 dev:
 	docker compose up --build app
@@ -36,4 +37,4 @@ createsuperuser:
 	docker compose exec app sh -lc "cd src && npx ts-node manage.ts createsuperuser"
 
 prisma-studio:
-	docker compose exec app sh -lc "npx prisma studio"
+	docker compose exec app sh -lc "BROWSER=false npx prisma studio"

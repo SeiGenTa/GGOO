@@ -30,6 +30,7 @@ services:
       - .env
     ports:
       - "${PORT_APP:-5173}:5173"
+      - "${PORT_PRISMA:-51212}:51212"
     volumes:
       - .:/app
       - /app/node_modules
