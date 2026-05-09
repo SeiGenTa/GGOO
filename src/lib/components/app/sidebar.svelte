@@ -70,10 +70,17 @@
         return page.url.pathname === href || page.url.pathname.startsWith(`${href}/`);
     };
 
+    
+
+    import { useSidebar } from "$lib/components/ui/sidebar/index.js";
+    const sidebar = useSidebar();
+
+    let isSidebarOpen = $state(sidebar.open);
+
     import logo from "/src/public/logo.jpg";
 </script>
 
-<Sidebar.Root variant="floating" collapsible="icon">
+<Sidebar.Root variant="floating" collapsible="icon" class="h-screen">
     <Sidebar.Header>
         <Sidebar.Menu>
             <Sidebar.MenuItem>
@@ -120,14 +127,16 @@
         <DropdownMenu.Root>
             <DropdownMenu.Trigger>
                 {#snippet child({ props })}
-                    <Item.Root variant="outline" size="default" {...props} class="w-full flex">
+                    <Item.Root variant="outline" size="sm"  class="w-full flex" {...props}>
                         <Item.Media>
                             <User class="size-5" />
                         </Item.Media>
-                        <Item.Content>
-                            <Item.Title>{user?.nombre}</Item.Title>
-                            <Item.Description>{user?.apodo}</Item.Description>
-                        </Item.Content>
+                        {#if sidebar.open}
+                            <Item.Content class="">
+                                <Item.Title>{user?.nombre}</Item.Title>
+                                <Item.Description>{user?.apodo} {user?.es_admin ? "(Admin)" : ""}</Item.Description>
+                            </Item.Content>
+                        {/if}
                     </Item.Root>
                 {/snippet}
             </DropdownMenu.Trigger>
