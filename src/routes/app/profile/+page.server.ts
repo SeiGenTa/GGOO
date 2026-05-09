@@ -5,7 +5,6 @@ import UserUtils from "$utils/user";
 import { sendEmail } from "$lib/email/resend";
 import { encript_string } from "$utils/encript";
 import { Permissions } from "$lib/permissions";
-import { APP_NAME } from "$env/static/private";
 
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) {
@@ -322,10 +321,10 @@ const sendEmailValidator = async (to: string) => {
 const sendEmailNotification = async (newEmail: string, oldEmail: string) => {
   const subject = "Tu correo en GGOO ha sido actualizado";
   const html = `<p>Hola,</p>
-  <p>Te notificamos que el correo asociado a tu cuenta en ${APP_NAME ?? "GGOO"} ha sido actualizado.</p>
+  <p>Te notificamos que el correo asociado a tu cuenta en ${process.env.APP_NAME ?? "GGOO"} ha sido actualizado.</p>
   <p><strong>Correo anterior:</strong> ${oldEmail}</p>
   <p><strong>Correo nuevo:</strong> ${newEmail}</p>
   <p>Si no realizaste este cambio, por favor contacta al equipo de soporte inmediatamente.</p>
-  <p>Saludos,<br/>El equipo de ${APP_NAME ?? "GGOO"}</p>`;
+  <p>Saludos,<br/>El equipo de ${process.env.APP_NAME ?? "GGOO"}</p>`;
   await sendEmail(newEmail, subject, html);
 };
