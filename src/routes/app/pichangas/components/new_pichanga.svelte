@@ -12,19 +12,11 @@
     let open = $state(false);
     let loading = $state(false);
 
-    let options_admins: { value: string; label: string }[] = $state([]);
-    let switch_init_now = $state(false);
+    const { gestores } = $props();
 
-    onMount(async () => {
-        const data: {
-            user: { id: string; nombre: string }[];
-        } = await fetch("/api/user?select=id&select=nombre", {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        }).then((res) => res.json());
-        options_admins = data.user.map((u) => ({ value: u.id, label: u.nombre }));
-    });
+    let options_admins: { value: string; label: string }[] = $derived(gestores);
+    let switch_init_now = $state(false);
+    
 </script>
 
 <Dialog.Root bind:open>
@@ -73,7 +65,7 @@
 
             <InputApp id="date" name="date-pichanga" label="Fecha y hora de la pichanga" type="datetime-local" required />
 
-            <SelectApp name="admins" label="Admins" type="multiple" options={options_admins} placeholder="Selecciona el tipo de pichanga" />
+            <SelectApp name="admins" label="Admins" type="multiple" options={options_admins} placeholder="Selecciona los admins" />
 
             <InputApp id="location" name="location" label="Ubicación de la pichanga (Opcional)" placeholder="Cancha central del parque" />
 

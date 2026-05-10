@@ -6,10 +6,9 @@
     import Badge from "$lib/components/ui/badge/badge.svelte";
     import { ChevronDown } from "@lucide/svelte";
     import ModalAddPichanga from "./components/new_pichanga.svelte";
-    import type { PageProps } from "./$types";
     import { Permissions } from "$lib/permissions";
 
-    let { data }: PageProps = $props();
+    let { data } = $props();
 
     const getFillPercentage = (members: number, limit: number) => {
         if (limit === 0) return 0;
@@ -28,7 +27,7 @@
 
 <section class="pichangas-view">
     {#if data.user!.permisos.includes(Permissions.CrearPartidos)}
-        <ModalAddPichanga />
+        <ModalAddPichanga gestores={data.gestores}/>
     {/if}
     
     {#await data.pichangas}
