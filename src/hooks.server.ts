@@ -3,24 +3,26 @@ import type { Handle } from '@sveltejs/kit'
 
 export const handle: Handle = async ({ event, resolve }) => {
     const cookies = event.cookies
-    const token = cookies.get('token')
-    const refresToken = cookies.get('refreshToken')
+    let token = cookies.get('token')
+    let refreshToken = cookies.get('refreshToken')
 
     //? Logica para refrescar el token si es necesario
-    if (refresToken && !token) {
+    if (refreshToken && !token) {
         console.log('Refrescando token...')
-        const user = await UserUtils.verifyToken(refresToken)
+        const user = await UserUtils.verifyToken(refreshToken)
         if (user) {
-            const [token, refresh_token] = UserUtils.generateTokens(user)
-            if (token && refresh_token) {
-                cookies.set('token', token, {
+            const [token_generated, refresh_token_generated] = UserUtils.generateTokens(user)
+            token = token_generated
+            refreshToken = refresh_token_generated
+            if (token_generated && refresh_token_generated) {
+                cookies.set('token', token_generated, {
                     httpOnly: true,
                     secure: true,
                     sameSite: 'strict',
                     maxAge: 60 * 60 * 24,
                     path: '/',
                 })
-                cookies.set('refreshToken', refresh_token, {
+                cookies.set('refreshToken', refresh_token_generated, {
                     httpOnly: true,
                     secure: true,
                     sameSite: 'strict',
