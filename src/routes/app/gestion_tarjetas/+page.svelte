@@ -11,14 +11,54 @@
     import SelectApp from "$lib/components/app/select.svelte";
     import type { PageProps } from "./$types";
 
-    let { data }: PageProps = $props();
+    type ComplaintRow = {
+        id: string;
+        razon: string;
+        fechaReclamo: string | Date;
+        atendido: boolean;
+        respuesta: string | null;
+        administradorAtendio: {
+            id: string;
+            nombre: string;
+            apodo: string | null;
+        } | null;
+    } | null;
+
+    type TarjetaRow = {
+        id: string;
+        userId: string;
+        quienAsignoId: string | null;
+        persona: string;
+        personaEmail: string | null;
+        asignadoPor: string;
+        asignadoPorEmail: string | null;
+        tipo: string;
+        razon: string;
+        fechaCreacion: string | Date;
+        venceEn: string | Date;
+        usado: boolean;
+        vencida: boolean;
+        complaint: ComplaintRow;
+    };
+
+    type PageData = PageProps["data"] & {
+        tarjetas: TarjetaRow[];
+        canResolveComplaints: boolean;
+    };
+
+    let { data }: { data: PageData } = $props();
 
     let isCreateDialogOpen = $state(false);
+    let helpDialogOpen = $state(false);
+    let complaintReviewDialogOpen = $state(false);
     let personaSearch = $state("");
     let asignadoPorSearch = $state("");
     let createPersonaSearch = $state("");
     let selectedUserIds = $state<string[]>([]);
     let selectedAssignedByIds = $state<string[]>([]);
+    let selectedComplaint = $state<ComplaintRow>(null);
+    let complaintDecision = $state<"reject" | "use">("reject");
+    let complaintResponse = $state("");
 
     $effect(() => {
         selectedUserIds = [...(data.filters?.userIds ?? [])];
@@ -133,6 +173,29 @@
         };
     };
 
+    const openComplaintReviewDialog = (complaint: ComplaintRow) => {
+        selectedComplaint = complaint;
+        complaintDecision = "reject";
+        complaintResponse = complaint?.respuesta ?? "";
+        complaintReviewDialogOpen = true;
+    };
+
+    const complaintStatusLabel = (card: TarjetaRow) => {
+        if (card.complaint) {
+            return card.complaint.atendido ? "Reclamo resuelto" : "Reclamo pendiente";
+        }
+
+        return "Sin reclamo";
+    };
+
+    const getCardTypeBadgeClass = (tipo: string) => {
+        if (tipo === "amarilla") {
+            return "border-yellow-300 bg-yellow-300 text-yellow-950 hover:bg-yellow-300/90";
+        }
+
+        return "";
+    };
+
     const toDateTimeLocalInput = (value: string | Date) => {
         const date = new Date(value);
         const y = date.getFullYear();
@@ -234,15 +297,20 @@
     };
 </script>
 
-<div class="container mx-auto max-w-7xl space-y-6 p-4">
-    <section class="rounded-2xl border bg-linear-to-r from-amber-500/10 via-orange-500/10 to-red-500/10 p-6 shadow-sm">
-        <p class="text-sm font-medium text-muted-foreground">Panel administrativo</p>
-        <h1 class="mt-2 text-3xl font-bold tracking-tight">Gestión de tarjetas</h1>
-        <p class="mt-3 max-w-3xl text-muted-foreground">
-            Este módulo permitirá aplicar sanciones y advertencias de manera ordenada, para mantener
-            pichangas más justas, seguras y bien organizadas para toda la comunidad.
-        </p>
-    </section>
+<div class="container mx-auto space-y-6 p-4">
+    <Card.Root class="shadow-sm">
+        <Card.Header>
+            <div class="flex items-start justify-between gap-3">
+                <div>
+                    <p class="text-sm font-medium text-muted-foreground">Panel administrativo</p>
+                    <Card.Title class="mt-1 text-3xl">Gestión de tarjetas</Card.Title>
+                </div>
+                <Button type="button" variant="outline" size="icon" class="shrink-0 rounded-full" onclick={() => (helpDialogOpen = true)}>
+                    ?
+                </Button>
+            </div>
+        </Card.Header>
+    </Card.Root>
 
     <Card.Root>
         <Card.Header>
@@ -385,7 +453,108 @@
             </Card.Description>
         </Card.Header>
         <Card.Content class="p-0">
-            <div class="overflow-x-auto">
+            <div class="grid gap-3 p-4 lg:hidden">
+                {#if data.tarjetas.length === 0}
+                    <div class="rounded-lg border p-6 text-center text-sm text-muted-foreground">
+                        No se encontraron tarjetas con los filtros actuales.
+                    </div>
+                {:else}
+                    {#each data.tarjetas as tarjeta}
+                        <div class="rounded-xl border bg-card p-4 shadow-sm">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="min-w-0">
+                                    <p class="truncate text-xs text-muted-foreground">{tarjeta.id}</p>
+                                    <p class="truncate font-semibold">{tarjeta.persona}</p>
+                                    <p class="truncate text-xs text-muted-foreground">Asignada por {tarjeta.asignadoPor}</p>
+                                </div>
+                                <Badge variant={tarjeta.tipo === "roja" ? "destructive" : "outline"} class={getCardTypeBadgeClass(tarjeta.tipo)}>{tarjeta.tipo}</Badge>
+                            </div>
+
+                            <div class="mt-4 space-y-3">
+                                <div>
+                                    <p class="text-xs font-medium uppercase tracking-wide text-muted-foreground">Razón</p>
+                                    <p class="text-sm leading-relaxed">{tarjeta.razon}</p>
+                                </div>
+
+                                <div class="grid gap-2 text-xs text-muted-foreground sm:grid-cols-2">
+                                    <p><span class="font-medium">Creada:</span> {formatDate(tarjeta.fechaCreacion)}</p>
+                                    <p><span class="font-medium">Vence:</span> {formatDate(tarjeta.venceEn)}</p>
+                                </div>
+
+                                <div class="flex flex-wrap gap-2">
+                                    {#if tarjeta.usado}
+                                        <Badge variant="secondary">Usada/Cancelada</Badge>
+                                    {:else if tarjeta.vencida}
+                                        <Badge variant="destructive">Vencida</Badge>
+                                    {:else}
+                                        <Badge>Vigente</Badge>
+                                    {/if}
+
+                                    {#if tarjeta.complaint}
+                                        <Badge variant={tarjeta.complaint.atendido ? "secondary" : "default"}>
+                                            {tarjeta.complaint.atendido ? "Reclamo resuelto" : "Reclamo pendiente"}
+                                        </Badge>
+                                    {:else}
+                                        <Badge variant="outline">Sin reclamo</Badge>
+                                    {/if}
+                                </div>
+
+                                {#if tarjeta.complaint}
+                                    <div class="rounded-lg border bg-muted/30 p-3 text-sm space-y-2">
+                                        <div>
+                                            <p class="text-xs font-medium uppercase tracking-wide text-muted-foreground">Reclamo</p>
+                                            <p>{tarjeta.complaint.razon}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs font-medium uppercase tracking-wide text-muted-foreground">Respuesta</p>
+                                            <p>{tarjeta.complaint.atendido ? tarjeta.complaint.respuesta ?? "Sin respuesta." : "Pendiente de revisión."}</p>
+                                        </div>
+                                    </div>
+                                {/if}
+
+                                <div class="flex flex-col gap-2 pt-1">
+                                    {#if data.canResolveComplaints && tarjeta.complaint && !tarjeta.complaint.atendido}
+                                        <Button size="sm" variant="secondary" onclick={() => openComplaintReviewDialog(tarjeta.complaint)}>
+                                            Revisar reclamo
+                                        </Button>
+                                    {/if}
+
+                                    {#if data.canEdit}
+                                        <form method="POST" action="?/update" class="grid gap-2" use:enhance={withUTCDateFields(["venceEn"], "Tarjeta actualizada")}>
+                                            <input type="hidden" name="id_tarjeta" value={tarjeta.id} />
+                                            <div class="grid grid-cols-2 gap-2">
+                                                <select name="tipo" class="h-10 rounded-md border bg-background px-2 text-xs">
+                                                    {#each data.cardTypes as tipo}
+                                                        <option value={tipo} selected={tarjeta.tipo === tipo}>{tipo}</option>
+                                                    {/each}
+                                                </select>
+
+                                                <select name="usado" class="h-10 rounded-md border bg-background px-2 text-xs">
+                                                    <option value="false" selected={!tarjeta.usado}>vigente</option>
+                                                    <option value="true" selected={tarjeta.usado}>usada</option>
+                                                </select>
+                                            </div>
+
+                                            <Input name="venceEn" type="datetime-local" value={toDateTimeLocalInput(tarjeta.venceEn)} class="h-10" />
+
+                                            <Button type="submit" size="sm" variant="outline">Guardar</Button>
+                                        </form>
+                                    {/if}
+
+                                    {#if data.canDelete}
+                                        <form method="POST" action="?/delete" use:enhance={withFeedback("Tarjeta eliminada")}> 
+                                            <input type="hidden" name="id_tarjeta" value={tarjeta.id} />
+                                            <Button type="submit" size="sm" variant="destructive" class="w-full">Eliminar</Button>
+                                        </form>
+                                    {/if}
+                                </div>
+                            </div>
+                        </div>
+                    {/each}
+                {/if}
+            </div>
+
+            <div class="hidden overflow-x-auto lg:block">
                 <table class="w-full min-w-240 text-sm">
                     <thead>
                         <tr class="border-b bg-muted/30 text-left">
@@ -397,13 +566,14 @@
                             <th class="px-4 py-3 font-semibold">Fecha</th>
                             <th class="px-4 py-3 font-semibold">Vence en</th>
                             <th class="px-4 py-3 font-semibold">Estado</th>
+                            <th class="px-4 py-3 font-semibold">Reclamo</th>
                             <th class="px-4 py-3 font-semibold">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {#if data.tarjetas.length === 0}
                             <tr>
-                                <td colspan="9" class="px-4 py-10 text-center text-muted-foreground">
+                                <td colspan="10" class="px-4 py-10 text-center text-muted-foreground">
                                     No se encontraron tarjetas con los filtros actuales.
                                 </td>
                             </tr>
@@ -424,7 +594,7 @@
                                         {/if}
                                     </td>
                                     <td class="px-4 py-3">
-                                        <Badge variant={tarjeta.tipo === "roja" ? "destructive" : "outline"}>
+                                        <Badge variant={tarjeta.tipo === "roja" ? "destructive" : "outline"} class={getCardTypeBadgeClass(tarjeta.tipo)}>
                                             {tarjeta.tipo}
                                         </Badge>
                                     </td>
@@ -441,7 +611,28 @@
                                         {/if}
                                     </td>
                                     <td class="px-4 py-3">
+                                        {#if tarjeta.complaint}
+                                            <div class="space-y-1">
+                                                <Badge variant={tarjeta.complaint.atendido ? "secondary" : "default"}>
+                                                    {tarjeta.complaint.atendido ? "Resuelto" : "Pendiente"}
+                                                </Badge>
+                                                <p class="max-w-56 text-xs text-muted-foreground">{tarjeta.complaint.razon}</p>
+                                                {#if tarjeta.complaint.atendido}
+                                                    <p class="text-xs text-muted-foreground">{tarjeta.complaint.respuesta ?? "Sin respuesta."}</p>
+                                                {/if}
+                                            </div>
+                                        {:else}
+                                            <span class="text-xs text-muted-foreground">Sin reclamo</span>
+                                        {/if}
+                                    </td>
+                                    <td class="px-4 py-3">
                                         <div class="flex flex-col gap-2">
+                                            {#if data.canResolveComplaints && tarjeta.complaint && !tarjeta.complaint.atendido}
+                                                <Button size="sm" variant="secondary" onclick={() => openComplaintReviewDialog(tarjeta.complaint)}>
+                                                    Revisar reclamo
+                                                </Button>
+                                            {/if}
+
                                             {#if data.canEdit}
                                                 <form method="POST" action="?/update" class="flex flex-wrap items-center gap-2" use:enhance={withUTCDateFields(["venceEn"], "Tarjeta actualizada")}> 
                                                     <input type="hidden" name="id_tarjeta" value={tarjeta.id} />
@@ -572,6 +763,90 @@
                 <Button variant="outline">Cancelar</Button>
             </Dialog.Close>
             <Button type="submit" form="create-card-form">Crear tarjeta</Button>
+        </Dialog.Footer>
+    </Dialog.Content>
+</Dialog.Root>
+
+<Dialog.Root bind:open={complaintReviewDialogOpen}>
+    <Dialog.Content>
+        <Dialog.Header>
+            <Dialog.Title>Revisar reclamo</Dialog.Title>
+            <Dialog.Description>
+                {#if selectedComplaint}
+                    Responde al reclamo y decide si se rechaza o si se cancela la tarjeta.
+                {:else}
+                    Selecciona un reclamo para continuar.
+                {/if}
+            </Dialog.Description>
+        </Dialog.Header>
+
+        {#if selectedComplaint}
+            <form method="POST" action="?/resolve_complaint" id="resolve-complaint-form" class="space-y-4" use:enhance={withFeedback("Reclamo actualizado")}> 
+                <input type="hidden" name="complaintId" value={selectedComplaint.id} />
+
+                <div class="rounded-lg border bg-muted/30 p-3 text-sm space-y-2">
+                    <div>
+                        <p class="text-xs font-medium uppercase tracking-wide text-muted-foreground">Reclamo original</p>
+                        <p>{selectedComplaint.razon}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium uppercase tracking-wide text-muted-foreground">Estado actual</p>
+                        <p>{selectedComplaint.atendido ? "Resuelto" : "Pendiente"}</p>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="block text-sm font-medium" for="complaint-response">Respuesta del administrador</label>
+                    <textarea
+                        id="complaint-response"
+                        name="respuesta"
+                        bind:value={complaintResponse}
+                        class="min-h-28 w-full rounded-md border bg-background px-3 py-2 text-sm"
+                        placeholder="Escribe la respuesta del reclamo"
+                    ></textarea>
+                </div>
+
+                <div class="grid gap-2 sm:grid-cols-2">
+                    <label class="flex items-center gap-2 rounded-md border p-3 text-sm">
+                        <input type="radio" name="decision" value="reject" bind:group={complaintDecision} />
+                        <span>Rechazar reclamo</span>
+                    </label>
+                    <label class="flex items-center gap-2 rounded-md border p-3 text-sm">
+                        <input type="radio" name="decision" value="use" bind:group={complaintDecision} />
+                        <span>Cancelar tarjeta</span>
+                    </label>
+                </div>
+            </form>
+        {/if}
+
+        <Dialog.Footer>
+            <Dialog.Close>
+                <Button variant="outline">Cerrar</Button>
+            </Dialog.Close>
+            <Button type="submit" form="resolve-complaint-form" disabled={!selectedComplaint}>
+                Guardar respuesta
+            </Button>
+        </Dialog.Footer>
+    </Dialog.Content>
+</Dialog.Root>
+
+<Dialog.Root bind:open={helpDialogOpen}>
+    <Dialog.Content>
+        <Dialog.Header>
+            <Dialog.Title>Qué puedes hacer aquí</Dialog.Title>
+            <Dialog.Description>Resumen rápido de la gestión administrativa de tarjetas.</Dialog.Description>
+        </Dialog.Header>
+
+        <div class="space-y-3 text-sm text-muted-foreground">
+            <p>Desde esta vista puedes crear, editar y eliminar tarjetas, además de revisar los reclamos de los usuarios.</p>
+            <p>Cuando una tarjeta tenga un reclamo pendiente, podrás leerlo, responderlo y decidir si se rechaza o si la tarjeta se cancela como usada.</p>
+            <p>También puedes revisar si una tarjeta ya fue usada o venció, para mantener el control disciplinario.</p>
+        </div>
+
+        <Dialog.Footer>
+            <Dialog.Close>
+                <Button variant="outline">Cerrar</Button>
+            </Dialog.Close>
         </Dialog.Footer>
     </Dialog.Content>
 </Dialog.Root>

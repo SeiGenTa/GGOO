@@ -64,6 +64,14 @@ const parseRequiredText = (value: FormDataEntryValue | null): string => {
     return typeof value === "string" ? value.trim() : "";
 };
 
+const parseComplaintDecision = (value: string | null): "reject" | "use" | null => {
+    if (value === "reject" || value === "use") {
+        return value;
+    }
+
+    return null;
+};
+
 const parseUTCDate = (value: string | null): Date | null => {
     if (!value) {
         return null;
@@ -172,6 +180,20 @@ export const load: PageServerLoad = async ({ locals, depends, url }) => {
                         email: true,
                     },
                 },
+                reclamosCartas: {
+                    orderBy: {
+                        fechaReclamo: "desc",
+                    },
+                    include: {
+                        administradorAtendio: {
+                            select: {
+                                id: true,
+                                nombre: true,
+                                apodo: true,
+                            },
+                        },
+                    },
+                },
             },
             orderBy: {
                 [orderBy]: orderDir,
@@ -209,8 +231,25 @@ export const load: PageServerLoad = async ({ locals, depends, url }) => {
             venceEn: tarjeta.venceEn,
             usado: tarjeta.usado,
             vencida: !tarjeta.usado && tarjeta.venceEn.getTime() < Date.now(),
+            complaint: tarjeta.reclamosCartas[0]
+                ? {
+                      id: tarjeta.reclamosCartas[0].id,
+                      razon: tarjeta.reclamosCartas[0].razon,
+                      fechaReclamo: tarjeta.reclamosCartas[0].fechaReclamo,
+                      atendido: tarjeta.reclamosCartas[0].atendido,
+                      respuesta: tarjeta.reclamosCartas[0].respuesta,
+                      administradorAtendio: tarjeta.reclamosCartas[0].administradorAtendio
+                          ? {
+                                id: tarjeta.reclamosCartas[0].administradorAtendio.id,
+                                nombre: tarjeta.reclamosCartas[0].administradorAtendio.nombre,
+                                apodo: tarjeta.reclamosCartas[0].administradorAtendio.apodo,
+                            }
+                          : null,
+                  }
+                : null,
         })),
         userOptions: users,
+        canResolveComplaints: locals.user.permisos.includes(Permissions.EditarTarjetas),
         canCreate: locals.user.permisos.includes(Permissions.CrearTarjetas),
         canEdit: locals.user.permisos.includes(Permissions.EditarTarjetas),
         canDelete: locals.user.permisos.includes(Permissions.EliminarTarjetas),
@@ -394,6 +433,79 @@ export const actions = {
         return {
             success: true,
             message: "Tarjeta actualizada correctamente.",
+        };
+    },
+
+    resolve_complaint: async ({ request, locals }) => {
+        if (!locals.user) {
+            return fail(401, { message: "No autorizado." });
+        }
+
+        if (!locals.user.permisos.includes(Permissions.EditarTarjetas)) {
+            return fail(403, { message: "No tienes permisos para gestionar reclamos." });
+        }
+
+        const form = await request.formData();
+        const complaintId = parseRequiredText(form.get("complaintId"));
+        const decision = parseComplaintDecision(parseRequiredText(form.get("decision")));
+        const respuesta = parseRequiredText(form.get("respuesta"));
+
+        if (!complaintId) {
+            return fail(400, { message: "Debes indicar el reclamo a resolver." });
+        }
+
+        if (!decision) {
+            return fail(400, { message: "Debes indicar una decisión válida." });
+        }
+
+        const complaint = await prisma.reclamosCarta.findUnique({
+            where: { id: complaintId },
+            select: {
+                id: true,
+                atendido: true,
+                tarjetaId: true,
+            },
+        });
+
+        if (!complaint) {
+            return fail(404, { message: "El reclamo no existe." });
+        }
+
+        if (complaint.atendido) {
+            return fail(409, { message: "Este reclamo ya fue resuelto." });
+        }
+
+        const decisionResponse = respuesta.length > 0
+            ? respuesta
+            : decision === "use"
+                ? "Se canceló la tarjeta desde administración."
+                : "El reclamo fue rechazado por administración.";
+
+        await prisma.$transaction(async (tx) => {
+            await tx.reclamosCarta.update({
+                where: { id: complaintId },
+                data: {
+                    atendido: true,
+                    respuesta: decisionResponse,
+                    administradorAtendioId: locals.user!.id,
+                },
+            });
+
+            if (decision === "use") {
+                await tx.tarjetas.update({
+                    where: { id: complaint.tarjetaId },
+                    data: {
+                        usado: true,
+                    },
+                });
+            }
+        });
+
+        return {
+            success: true,
+            message: decision === "use"
+                ? "Reclamo resuelto y tarjeta marcada como usada/cancelada."
+                : "Reclamo rechazado correctamente.",
         };
     },
 } satisfies Actions;

@@ -20,6 +20,7 @@ type UserSummary = {
   nombre: string;
   email: string;
   apodo: string | null;
+  es_admin: boolean;
   roles: Array<{
     id: string;
     nombre: string;
@@ -127,6 +128,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
       nombre: true,
       email: true,
       apodo: true,
+      es_admin: true,
       roles: {
         select: {
           id: true,
@@ -177,6 +179,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
       hasNext: page < totalPages,
     },
     blocked: false,
+    currentUserIsAdmin: locals.user!.es_admin ?? false,
   };
 };
 
@@ -246,6 +249,55 @@ export const actions: Actions = {
     return {
       success: true,
       message: "Roles actualizados correctamente.",
+    };
+  },
+
+  set_super_user: async ({ request, locals }) => {
+    if (!locals.user!.es_admin) {
+      return fail(403, { message: "Solo un administrador puede cambiar el estado de super usuario." });
+    }
+
+    const form = await request.formData();
+    const userId = (form.get("userId") as string | null)?.trim();
+    const isAdmin = form.get("es_admin") === "true";
+
+    if (!userId) {
+      return fail(400, { message: "Usuario inválido." });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, es_admin: true },
+    });
+
+    if (!user) {
+      return fail(404, { message: "El usuario no existe." });
+    }
+
+    // If we're removing admin from this user, ensure at least one other admin remains.
+    if (!isAdmin && user.es_admin) {
+      const adminCount = await prisma.user.count({ where: { es_admin: true } });
+      if (adminCount <= 1) {
+        return fail(400, {
+          message: "No puedes quitar el último super usuario. Asigna otro antes.",
+        });
+      }
+    }
+
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        es_admin: isAdmin,
+      },
+    });
+
+    return {
+      success: true,
+      message: isAdmin
+        ? "El usuario ahora es super usuario."
+        : "El usuario ya no es super usuario.",
     };
   },
 } satisfies Actions;
