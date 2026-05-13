@@ -23,8 +23,8 @@ model User {
     inscripciones       Inscripcion[]
     permisos            String[]
     roles               Rol[]           @relation("UserRoles")
-    cards               Carta[]         @relation("CardsUser")
-    cartasAsignadas     Carta[]         @relation("CardsAsignadas")
+    tarjetas            Tarjetas[]      @relation("CardsUser")
+    tarjetasAsignadas   Tarjetas[]      @relation("CardsAsignadas")
     castigos            Castigo[]       @relation("CastigosUser")
     castigosCancelados  Castigo[]       @relation("CastigosCancelados")
     reclamosCartas      ReclamosCarta[] @relation("ReclamosAtendidos")
@@ -61,7 +61,7 @@ model Inscripcion {
     updatedAt  DateTime @updatedAt
 }
 
-model Carta {
+model Tarjetas {
     id             String          @id @default(uuid())
     user           User            @relation("CardsUser", fields: [userId], references: [id], onDelete: Cascade)
     userId         String
@@ -71,12 +71,15 @@ model Carta {
     quienAsigno    User?           @relation("CardsAsignadas", fields: [quienAsignoId], references: [id], onDelete: SetNull)
     quienAsignoId  String?
     reclamosCartas ReclamosCarta[]
+    createdAt      DateTime        @default(now())
+    updatedAt      DateTime        @updatedAt
+    venceEn        DateTime        @default(dbgenerated("CURRENT_TIMESTAMP + INTERVAL '1 month'"))
 }
 
 model ReclamosCarta {
     id                     String   @id @default(uuid())
-    carta                  Carta    @relation(fields: [cartaId], references: [id], onDelete: Cascade)
-    cartaId                String
+    tarjeta                Tarjetas @relation(fields: [tarjetaId], references: [id], onDelete: Cascade)
+    tarjetaId              String
     razon                  String
     fechaReclamo           DateTime
     atendido               Boolean  @default(false)

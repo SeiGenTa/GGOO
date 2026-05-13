@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.6.0
- * Query Engine version: 75cbdc1eb7150937890ad5465d861175c6624711
+ * Prisma Client JS version: 7.8.0
+ * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.6.0",
-  engine: "75cbdc1eb7150937890ad5465d861175c6624711"
+  client: "7.8.0",
+  engine: "3c6e192761c0362d496ed980de936e2f3cebcd3a"
 }
 
 /**
@@ -387,7 +387,10 @@ export const ModelName = {
   User: 'User',
   Rol: 'Rol',
   Pichanga: 'Pichanga',
-  Inscripcion: 'Inscripcion'
+  Inscripcion: 'Inscripcion',
+  Tarjetas: 'Tarjetas',
+  ReclamosCarta: 'ReclamosCarta',
+  Castigo: 'Castigo'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -403,7 +406,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "rol" | "pichanga" | "inscripcion"
+    modelProps: "user" | "rol" | "pichanga" | "inscripcion" | "tarjetas" | "reclamosCarta" | "castigo"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -703,6 +706,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Tarjetas: {
+      payload: Prisma.$TarjetasPayload<ExtArgs>
+      fields: Prisma.TarjetasFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TarjetasFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TarjetasPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TarjetasFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TarjetasPayload>
+        }
+        findFirst: {
+          args: Prisma.TarjetasFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TarjetasPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TarjetasFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TarjetasPayload>
+        }
+        findMany: {
+          args: Prisma.TarjetasFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TarjetasPayload>[]
+        }
+        create: {
+          args: Prisma.TarjetasCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TarjetasPayload>
+        }
+        createMany: {
+          args: Prisma.TarjetasCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TarjetasCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TarjetasPayload>[]
+        }
+        delete: {
+          args: Prisma.TarjetasDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TarjetasPayload>
+        }
+        update: {
+          args: Prisma.TarjetasUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TarjetasPayload>
+        }
+        deleteMany: {
+          args: Prisma.TarjetasDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TarjetasUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TarjetasUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TarjetasPayload>[]
+        }
+        upsert: {
+          args: Prisma.TarjetasUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TarjetasPayload>
+        }
+        aggregate: {
+          args: Prisma.TarjetasAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTarjetas>
+        }
+        groupBy: {
+          args: Prisma.TarjetasGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TarjetasGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TarjetasCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TarjetasCountAggregateOutputType> | number
+        }
+      }
+    }
+    ReclamosCarta: {
+      payload: Prisma.$ReclamosCartaPayload<ExtArgs>
+      fields: Prisma.ReclamosCartaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ReclamosCartaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReclamosCartaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ReclamosCartaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReclamosCartaPayload>
+        }
+        findFirst: {
+          args: Prisma.ReclamosCartaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReclamosCartaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ReclamosCartaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReclamosCartaPayload>
+        }
+        findMany: {
+          args: Prisma.ReclamosCartaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReclamosCartaPayload>[]
+        }
+        create: {
+          args: Prisma.ReclamosCartaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReclamosCartaPayload>
+        }
+        createMany: {
+          args: Prisma.ReclamosCartaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ReclamosCartaCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReclamosCartaPayload>[]
+        }
+        delete: {
+          args: Prisma.ReclamosCartaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReclamosCartaPayload>
+        }
+        update: {
+          args: Prisma.ReclamosCartaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReclamosCartaPayload>
+        }
+        deleteMany: {
+          args: Prisma.ReclamosCartaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ReclamosCartaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ReclamosCartaUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReclamosCartaPayload>[]
+        }
+        upsert: {
+          args: Prisma.ReclamosCartaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReclamosCartaPayload>
+        }
+        aggregate: {
+          args: Prisma.ReclamosCartaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateReclamosCarta>
+        }
+        groupBy: {
+          args: Prisma.ReclamosCartaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReclamosCartaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ReclamosCartaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReclamosCartaCountAggregateOutputType> | number
+        }
+      }
+    }
+    Castigo: {
+      payload: Prisma.$CastigoPayload<ExtArgs>
+      fields: Prisma.CastigoFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CastigoFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CastigoPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CastigoFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CastigoPayload>
+        }
+        findFirst: {
+          args: Prisma.CastigoFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CastigoPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CastigoFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CastigoPayload>
+        }
+        findMany: {
+          args: Prisma.CastigoFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CastigoPayload>[]
+        }
+        create: {
+          args: Prisma.CastigoCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CastigoPayload>
+        }
+        createMany: {
+          args: Prisma.CastigoCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CastigoCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CastigoPayload>[]
+        }
+        delete: {
+          args: Prisma.CastigoDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CastigoPayload>
+        }
+        update: {
+          args: Prisma.CastigoUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CastigoPayload>
+        }
+        deleteMany: {
+          args: Prisma.CastigoDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CastigoUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CastigoUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CastigoPayload>[]
+        }
+        upsert: {
+          args: Prisma.CastigoUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CastigoPayload>
+        }
+        aggregate: {
+          args: Prisma.CastigoAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCastigo>
+        }
+        groupBy: {
+          args: Prisma.CastigoGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CastigoGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CastigoCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CastigoCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -793,6 +1018,49 @@ export const InscripcionScalarFieldEnum = {
 } as const
 
 export type InscripcionScalarFieldEnum = (typeof InscripcionScalarFieldEnum)[keyof typeof InscripcionScalarFieldEnum]
+
+
+export const TarjetasScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  tipoCarta: 'tipoCarta',
+  razon: 'razon',
+  usado: 'usado',
+  quienAsignoId: 'quienAsignoId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  venceEn: 'venceEn'
+} as const
+
+export type TarjetasScalarFieldEnum = (typeof TarjetasScalarFieldEnum)[keyof typeof TarjetasScalarFieldEnum]
+
+
+export const ReclamosCartaScalarFieldEnum = {
+  id: 'id',
+  tarjetaId: 'tarjetaId',
+  razon: 'razon',
+  fechaReclamo: 'fechaReclamo',
+  atendido: 'atendido',
+  respuesta: 'respuesta',
+  administradorAtendioId: 'administradorAtendioId'
+} as const
+
+export type ReclamosCartaScalarFieldEnum = (typeof ReclamosCartaScalarFieldEnum)[keyof typeof ReclamosCartaScalarFieldEnum]
+
+
+export const CastigoScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  tipoCastigo: 'tipoCastigo',
+  razon: 'razon',
+  fechaInicio: 'fechaInicio',
+  fechaFin: 'fechaFin',
+  fueCancelada: 'fueCancelada',
+  quienCanceloId: 'quienCanceloId',
+  razonCancelacion: 'razonCancelacion'
+} as const
+
+export type CastigoScalarFieldEnum = (typeof CastigoScalarFieldEnum)[keyof typeof CastigoScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -980,12 +1248,30 @@ export type PrismaClientOptions = ({
    * ```
    */
   comments?: runtime.SqlCommenterPlugin[]
+  /**
+   * Optional maximum size for the query plan cache. If not provided, a default size will be used.
+   * A value of `0` can be used to disable the cache entirely. A higher cache size can improve
+   * performance for applications that execute a large number of unique queries, while a smaller
+   * cache size can reduce memory usage.
+   * 
+   * @example
+   * ```
+   * const prisma = new PrismaClient({
+   *   adapter,
+   *   queryPlanCacheMaxSize: 100,
+   * })
+   * ```
+   */
+  queryPlanCacheMaxSize?: number
 }
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   rol?: Prisma.RolOmit
   pichanga?: Prisma.PichangaOmit
   inscripcion?: Prisma.InscripcionOmit
+  tarjetas?: Prisma.TarjetasOmit
+  reclamosCarta?: Prisma.ReclamosCartaOmit
+  castigo?: Prisma.CastigoOmit
 }
 
 /* Types for Logging */

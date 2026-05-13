@@ -11,4 +11,10 @@ export enum Permissions {
     EliminarRoles = 'eliminar_roles',
     VerRolesUsuarios = 'ver_roles_usuarios',
     AsignarRoles = 'asignar_roles',
+
+    // Permisos relacionados con tarjetas
+    VerTarjetas = 'ver_tarjetas',
+    CrearTarjetas = 'crear_tarjetas',
+    EditarTarjetas = 'editar_tarjetas',
+    EliminarTarjetas = 'eliminar_tarjetas',
 }
