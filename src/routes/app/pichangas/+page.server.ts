@@ -3,6 +3,7 @@ import type { PageServerLoad } from './$types'
 import { prisma } from '$utils/prisma.js'
 import type { Pichanga } from '$generated/prisma/client.js'
 import { Permissions } from '$lib/permissions.js'
+import logger from '$lib/logger'
 
 export const load: PageServerLoad = async ({ url, depends, locals }) => {
     depends('pichangas:load')
@@ -63,6 +64,9 @@ const load_pichangas_promise = async (page: string) => {
         include: {
             admins: true,
             inscripciones: {
+                where: {
+                    tiempoSalidaLista: null,
+                },
                 include: {
                     user: {
                         select: {
@@ -70,6 +74,9 @@ const load_pichangas_promise = async (page: string) => {
                             nombre: true,
                         },
                     },
+                },
+                orderBy: {
+                    createdAt: 'asc',
                 },
             },
         },
@@ -170,9 +177,11 @@ export const actions = {
                 },
             })
         } catch (error) {
-            console.error(error)
+            logger.error('Error al crear la pichanga')
             return fail(500, { error: 'Error al crear la pichanga' })
         }
+
+        logger.info(`Pichanga ${pichanga.id} creada por el usuario ${locals.user!.id}`)
 
         return {
             success: true,

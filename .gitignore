@@ -24,4 +24,5 @@ vite.config.ts.timestamp-*
 
 /prisma/src/generated/prisma
 
-./app.log
+app.logs
+./dev.db

@@ -20,8 +20,18 @@ export type InscripcionModel = runtime.Types.Result.DefaultSelection<Prisma.$Ins
 
 export type AggregateInscripcion = {
   _count: InscripcionCountAggregateOutputType | null
+  _avg: InscripcionAvgAggregateOutputType | null
+  _sum: InscripcionSumAggregateOutputType | null
   _min: InscripcionMinAggregateOutputType | null
   _max: InscripcionMaxAggregateOutputType | null
+}
+
+export type InscripcionAvgAggregateOutputType = {
+  posicionEnLista: number | null
+}
+
+export type InscripcionSumAggregateOutputType = {
+  posicionEnLista: number | null
 }
 
 export type InscripcionMinAggregateOutputType = {
@@ -30,6 +40,8 @@ export type InscripcionMinAggregateOutputType = {
   pichangaId: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  tiempoSalidaLista: Date | null
+  posicionEnLista: number | null
 }
 
 export type InscripcionMaxAggregateOutputType = {
@@ -38,6 +50,8 @@ export type InscripcionMaxAggregateOutputType = {
   pichangaId: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  tiempoSalidaLista: Date | null
+  posicionEnLista: number | null
 }
 
 export type InscripcionCountAggregateOutputType = {
@@ -46,9 +60,19 @@ export type InscripcionCountAggregateOutputType = {
   pichangaId: number
   createdAt: number
   updatedAt: number
+  tiempoSalidaLista: number
+  posicionEnLista: number
   _all: number
 }
 
+
+export type InscripcionAvgAggregateInputType = {
+  posicionEnLista?: true
+}
+
+export type InscripcionSumAggregateInputType = {
+  posicionEnLista?: true
+}
 
 export type InscripcionMinAggregateInputType = {
   id?: true
@@ -56,6 +80,8 @@ export type InscripcionMinAggregateInputType = {
   pichangaId?: true
   createdAt?: true
   updatedAt?: true
+  tiempoSalidaLista?: true
+  posicionEnLista?: true
 }
 
 export type InscripcionMaxAggregateInputType = {
@@ -64,6 +90,8 @@ export type InscripcionMaxAggregateInputType = {
   pichangaId?: true
   createdAt?: true
   updatedAt?: true
+  tiempoSalidaLista?: true
+  posicionEnLista?: true
 }
 
 export type InscripcionCountAggregateInputType = {
@@ -72,6 +100,8 @@ export type InscripcionCountAggregateInputType = {
   pichangaId?: true
   createdAt?: true
   updatedAt?: true
+  tiempoSalidaLista?: true
+  posicionEnLista?: true
   _all?: true
 }
 
@@ -113,6 +143,18 @@ export type InscripcionAggregateArgs<ExtArgs extends runtime.Types.Extensions.In
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: InscripcionAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: InscripcionSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: InscripcionMinAggregateInputType
@@ -143,6 +185,8 @@ export type InscripcionGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   _count?: InscripcionCountAggregateInputType | true
+  _avg?: InscripcionAvgAggregateInputType
+  _sum?: InscripcionSumAggregateInputType
   _min?: InscripcionMinAggregateInputType
   _max?: InscripcionMaxAggregateInputType
 }
@@ -153,7 +197,11 @@ export type InscripcionGroupByOutputType = {
   pichangaId: string
   createdAt: Date
   updatedAt: Date
+  tiempoSalidaLista: Date | null
+  posicionEnLista: number | null
   _count: InscripcionCountAggregateOutputType | null
+  _avg: InscripcionAvgAggregateOutputType | null
+  _sum: InscripcionSumAggregateOutputType | null
   _min: InscripcionMinAggregateOutputType | null
   _max: InscripcionMaxAggregateOutputType | null
 }
@@ -182,6 +230,8 @@ export type InscripcionWhereInput = {
   pichangaId?: Prisma.StringFilter<"Inscripcion"> | string
   createdAt?: Prisma.DateTimeFilter<"Inscripcion"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Inscripcion"> | Date | string
+  tiempoSalidaLista?: Prisma.DateTimeNullableFilter<"Inscripcion"> | Date | string | null
+  posicionEnLista?: Prisma.IntNullableFilter<"Inscripcion"> | number | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   pichanga?: Prisma.XOR<Prisma.PichangaScalarRelationFilter, Prisma.PichangaWhereInput>
 }
@@ -192,6 +242,8 @@ export type InscripcionOrderByWithRelationInput = {
   pichangaId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  tiempoSalidaLista?: Prisma.SortOrderInput | Prisma.SortOrder
+  posicionEnLista?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   pichanga?: Prisma.PichangaOrderByWithRelationInput
 }
@@ -205,6 +257,8 @@ export type InscripcionWhereUniqueInput = Prisma.AtLeast<{
   pichangaId?: Prisma.StringFilter<"Inscripcion"> | string
   createdAt?: Prisma.DateTimeFilter<"Inscripcion"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Inscripcion"> | Date | string
+  tiempoSalidaLista?: Prisma.DateTimeNullableFilter<"Inscripcion"> | Date | string | null
+  posicionEnLista?: Prisma.IntNullableFilter<"Inscripcion"> | number | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   pichanga?: Prisma.XOR<Prisma.PichangaScalarRelationFilter, Prisma.PichangaWhereInput>
 }, "id">
@@ -215,9 +269,13 @@ export type InscripcionOrderByWithAggregationInput = {
   pichangaId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  tiempoSalidaLista?: Prisma.SortOrderInput | Prisma.SortOrder
+  posicionEnLista?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.InscripcionCountOrderByAggregateInput
+  _avg?: Prisma.InscripcionAvgOrderByAggregateInput
   _max?: Prisma.InscripcionMaxOrderByAggregateInput
   _min?: Prisma.InscripcionMinOrderByAggregateInput
+  _sum?: Prisma.InscripcionSumOrderByAggregateInput
 }
 
 export type InscripcionScalarWhereWithAggregatesInput = {
@@ -229,12 +287,16 @@ export type InscripcionScalarWhereWithAggregatesInput = {
   pichangaId?: Prisma.StringWithAggregatesFilter<"Inscripcion"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Inscripcion"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Inscripcion"> | Date | string
+  tiempoSalidaLista?: Prisma.DateTimeNullableWithAggregatesFilter<"Inscripcion"> | Date | string | null
+  posicionEnLista?: Prisma.IntNullableWithAggregatesFilter<"Inscripcion"> | number | null
 }
 
 export type InscripcionCreateInput = {
   id?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  tiempoSalidaLista?: Date | string | null
+  posicionEnLista?: number | null
   user: Prisma.UserCreateNestedOneWithoutInscripcionesInput
   pichanga: Prisma.PichangaCreateNestedOneWithoutInscripcionesInput
 }
@@ -245,12 +307,16 @@ export type InscripcionUncheckedCreateInput = {
   pichangaId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  tiempoSalidaLista?: Date | string | null
+  posicionEnLista?: number | null
 }
 
 export type InscripcionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tiempoSalidaLista?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  posicionEnLista?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   user?: Prisma.UserUpdateOneRequiredWithoutInscripcionesNestedInput
   pichanga?: Prisma.PichangaUpdateOneRequiredWithoutInscripcionesNestedInput
 }
@@ -261,6 +327,8 @@ export type InscripcionUncheckedUpdateInput = {
   pichangaId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tiempoSalidaLista?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  posicionEnLista?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type InscripcionCreateManyInput = {
@@ -269,12 +337,16 @@ export type InscripcionCreateManyInput = {
   pichangaId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  tiempoSalidaLista?: Date | string | null
+  posicionEnLista?: number | null
 }
 
 export type InscripcionUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tiempoSalidaLista?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  posicionEnLista?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type InscripcionUncheckedUpdateManyInput = {
@@ -283,6 +355,8 @@ export type InscripcionUncheckedUpdateManyInput = {
   pichangaId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tiempoSalidaLista?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  posicionEnLista?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type InscripcionListRelationFilter = {
@@ -301,6 +375,12 @@ export type InscripcionCountOrderByAggregateInput = {
   pichangaId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  tiempoSalidaLista?: Prisma.SortOrder
+  posicionEnLista?: Prisma.SortOrder
+}
+
+export type InscripcionAvgOrderByAggregateInput = {
+  posicionEnLista?: Prisma.SortOrder
 }
 
 export type InscripcionMaxOrderByAggregateInput = {
@@ -309,6 +389,8 @@ export type InscripcionMaxOrderByAggregateInput = {
   pichangaId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  tiempoSalidaLista?: Prisma.SortOrder
+  posicionEnLista?: Prisma.SortOrder
 }
 
 export type InscripcionMinOrderByAggregateInput = {
@@ -317,6 +399,12 @@ export type InscripcionMinOrderByAggregateInput = {
   pichangaId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  tiempoSalidaLista?: Prisma.SortOrder
+  posicionEnLista?: Prisma.SortOrder
+}
+
+export type InscripcionSumOrderByAggregateInput = {
+  posicionEnLista?: Prisma.SortOrder
 }
 
 export type InscripcionCreateNestedManyWithoutUserInput = {
@@ -403,10 +491,24 @@ export type InscripcionUncheckedUpdateManyWithoutPichangaNestedInput = {
   deleteMany?: Prisma.InscripcionScalarWhereInput | Prisma.InscripcionScalarWhereInput[]
 }
 
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type InscripcionCreateWithoutUserInput = {
   id?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  tiempoSalidaLista?: Date | string | null
+  posicionEnLista?: number | null
   pichanga: Prisma.PichangaCreateNestedOneWithoutInscripcionesInput
 }
 
@@ -415,6 +517,8 @@ export type InscripcionUncheckedCreateWithoutUserInput = {
   pichangaId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  tiempoSalidaLista?: Date | string | null
+  posicionEnLista?: number | null
 }
 
 export type InscripcionCreateOrConnectWithoutUserInput = {
@@ -452,12 +556,16 @@ export type InscripcionScalarWhereInput = {
   pichangaId?: Prisma.StringFilter<"Inscripcion"> | string
   createdAt?: Prisma.DateTimeFilter<"Inscripcion"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Inscripcion"> | Date | string
+  tiempoSalidaLista?: Prisma.DateTimeNullableFilter<"Inscripcion"> | Date | string | null
+  posicionEnLista?: Prisma.IntNullableFilter<"Inscripcion"> | number | null
 }
 
 export type InscripcionCreateWithoutPichangaInput = {
   id?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  tiempoSalidaLista?: Date | string | null
+  posicionEnLista?: number | null
   user: Prisma.UserCreateNestedOneWithoutInscripcionesInput
 }
 
@@ -466,6 +574,8 @@ export type InscripcionUncheckedCreateWithoutPichangaInput = {
   userId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  tiempoSalidaLista?: Date | string | null
+  posicionEnLista?: number | null
 }
 
 export type InscripcionCreateOrConnectWithoutPichangaInput = {
@@ -499,12 +609,16 @@ export type InscripcionCreateManyUserInput = {
   pichangaId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  tiempoSalidaLista?: Date | string | null
+  posicionEnLista?: number | null
 }
 
 export type InscripcionUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tiempoSalidaLista?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  posicionEnLista?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   pichanga?: Prisma.PichangaUpdateOneRequiredWithoutInscripcionesNestedInput
 }
 
@@ -513,6 +627,8 @@ export type InscripcionUncheckedUpdateWithoutUserInput = {
   pichangaId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tiempoSalidaLista?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  posicionEnLista?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type InscripcionUncheckedUpdateManyWithoutUserInput = {
@@ -520,6 +636,8 @@ export type InscripcionUncheckedUpdateManyWithoutUserInput = {
   pichangaId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tiempoSalidaLista?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  posicionEnLista?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type InscripcionCreateManyPichangaInput = {
@@ -527,12 +645,16 @@ export type InscripcionCreateManyPichangaInput = {
   userId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  tiempoSalidaLista?: Date | string | null
+  posicionEnLista?: number | null
 }
 
 export type InscripcionUpdateWithoutPichangaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tiempoSalidaLista?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  posicionEnLista?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   user?: Prisma.UserUpdateOneRequiredWithoutInscripcionesNestedInput
 }
 
@@ -541,6 +663,8 @@ export type InscripcionUncheckedUpdateWithoutPichangaInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tiempoSalidaLista?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  posicionEnLista?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type InscripcionUncheckedUpdateManyWithoutPichangaInput = {
@@ -548,6 +672,8 @@ export type InscripcionUncheckedUpdateManyWithoutPichangaInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tiempoSalidaLista?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  posicionEnLista?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 
@@ -558,6 +684,8 @@ export type InscripcionSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   pichangaId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  tiempoSalidaLista?: boolean
+  posicionEnLista?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   pichanga?: boolean | Prisma.PichangaDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["inscripcion"]>
@@ -568,6 +696,8 @@ export type InscripcionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   pichangaId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  tiempoSalidaLista?: boolean
+  posicionEnLista?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   pichanga?: boolean | Prisma.PichangaDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["inscripcion"]>
@@ -578,6 +708,8 @@ export type InscripcionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   pichangaId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  tiempoSalidaLista?: boolean
+  posicionEnLista?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   pichanga?: boolean | Prisma.PichangaDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["inscripcion"]>
@@ -588,9 +720,11 @@ export type InscripcionSelectScalar = {
   pichangaId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  tiempoSalidaLista?: boolean
+  posicionEnLista?: boolean
 }
 
-export type InscripcionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "pichangaId" | "createdAt" | "updatedAt", ExtArgs["result"]["inscripcion"]>
+export type InscripcionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "pichangaId" | "createdAt" | "updatedAt" | "tiempoSalidaLista" | "posicionEnLista", ExtArgs["result"]["inscripcion"]>
 export type InscripcionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   pichanga?: boolean | Prisma.PichangaDefaultArgs<ExtArgs>
@@ -616,6 +750,8 @@ export type $InscripcionPayload<ExtArgs extends runtime.Types.Extensions.Interna
     pichangaId: string
     createdAt: Date
     updatedAt: Date
+    tiempoSalidaLista: Date | null
+    posicionEnLista: number | null
   }, ExtArgs["result"]["inscripcion"]>
   composites: {}
 }
@@ -1046,6 +1182,8 @@ export interface InscripcionFieldRefs {
   readonly pichangaId: Prisma.FieldRef<"Inscripcion", 'String'>
   readonly createdAt: Prisma.FieldRef<"Inscripcion", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Inscripcion", 'DateTime'>
+  readonly tiempoSalidaLista: Prisma.FieldRef<"Inscripcion", 'DateTime'>
+  readonly posicionEnLista: Prisma.FieldRef<"Inscripcion", 'Int'>
 }
     
 

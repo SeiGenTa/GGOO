@@ -15,6 +15,10 @@ const transport = pino.transport({
                 mkdir: true,
             },
         },
+        {
+            target: 'pino/file', // o 'pino-pretty' si estás en desarrollo local
+            options: { destination: 1 }, // 1 significa stdout (la consola)
+        },
     ],
 })
 

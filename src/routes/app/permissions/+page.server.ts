@@ -2,6 +2,7 @@ import { fail, redirect } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
 import { prisma } from "$utils/prisma";
 import { Permissions } from "../../../lib/permissions";
+import logger from "$lib/logger";
 
 const ALL_PERMISSIONS = Object.values(Permissions);
 
@@ -91,6 +92,8 @@ export const actions: Actions = {
             },
         });
 
+        logger.info(`Rol ${nombre} creado por el usuario ${locals.user.id}`)
+
         return {
             success: true,
             message: "Rol creado correctamente.",
@@ -159,6 +162,8 @@ export const actions: Actions = {
             },
         });
 
+        logger.info(`Rol ${nombre} actualizado por el usuario ${locals.user.id}`)
+
         return {
             success: true,
             message: "Rol actualizado correctamente.",
@@ -199,6 +204,8 @@ export const actions: Actions = {
                 id: roleId,
             },
         });
+
+        logger.info(`Rol ${roleId} eliminado por el usuario ${locals.user.id}`)
 
         return {
             success: true,
@@ -266,7 +273,7 @@ export const actions: Actions = {
             });
         }
 
-
+        logger.info(`Rol ${roleId} actualizado como predeterminado=${isDefault} por el usuario ${locals.user.id}`)
 
         return {
             success: true,

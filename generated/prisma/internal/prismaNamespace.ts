@@ -1014,7 +1014,9 @@ export const InscripcionScalarFieldEnum = {
   userId: 'userId',
   pichangaId: 'pichangaId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  tiempoSalidaLista: 'tiempoSalidaLista',
+  posicionEnLista: 'posicionEnLista'
 } as const
 
 export type InscripcionScalarFieldEnum = (typeof InscripcionScalarFieldEnum)[keyof typeof InscripcionScalarFieldEnum]
