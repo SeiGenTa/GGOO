@@ -23,7 +23,7 @@ En esta sección se muestran los objetivos actuales del proyecto. Los elementos 
 
 ### Requisitos
 
-- `npm`
+- `pnpm`
 - `docker`
 
 ### Opcionales, pero recomendados
