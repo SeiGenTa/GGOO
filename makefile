@@ -46,3 +46,9 @@ createsuperuser:
 
 prisma-studio:
 	docker compose exec app sh -lc "BROWSER=false pnpm prisma studio"
+
+save-prod:
+	docker save ggoo-app-production -o app-production.tar
+
+load-prod:
+	docker load -i app-production.tar
