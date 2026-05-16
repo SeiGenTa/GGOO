@@ -7,6 +7,7 @@
 	import { Input } from "$lib/components/ui/input";
 	import { Button } from "$lib/components/ui/button";
 	import { Badge } from "$lib/components/ui/badge";
+	import Switch from "$lib/components/ui/switch/switch.svelte";
 	import type { PageProps } from "./$types";
 
 	let { data }: PageProps = $props();
@@ -40,6 +41,13 @@
 	const openAssignDialog = (user: UserRow) => {
 		selectedUser = user;
 		isAssignDialogOpen = true;
+	};
+
+	const toggleSuperUser = (userId: string) => {
+		const form = document.getElementById(`super-user-form-${userId}`) as HTMLFormElement | null;
+		if (form) {
+			form.requestSubmit();
+		}
 	};
 
 	const withFeedback = (successTitle: string): SubmitFunction => {
@@ -151,14 +159,56 @@
 
 		<Card.Root>
 			<Card.Content class="p-0">
-				<div class="overflow-x-auto">
-					<table class="w-full min-w-210 text-sm">
+				<div class="grid gap-3 p-4 lg:hidden">
+					{#if data.users.length === 0}
+						<div class="rounded-lg border p-6 text-center text-sm text-muted-foreground">
+							No se encontraron usuarios con los filtros actuales.
+						</div>
+					{:else}
+						{#each data.users as user}
+							<div class="rounded-xl border bg-card p-4 shadow-sm">
+								<div class="flex items-start justify-between gap-3">
+									<div class="min-w-0">
+										<p class="truncate font-semibold">{user.nombre}</p>
+										<p class="truncate text-xs text-muted-foreground">{user.email}</p>
+										<p class="mt-1 text-xs text-muted-foreground">{user.apodo ?? "Sin apodo"}</p>
+										<div class="mt-2 flex flex-wrap gap-1.5">
+											{#if user.es_admin}
+												<Badge>Super usuario</Badge>
+											{/if}
+										</div>
+									</div>
+									<div class="flex flex-wrap gap-1.5">
+										{#if user.roles.length === 0}
+											<Badge variant="outline">Sin roles</Badge>
+										{:else}
+											{#each user.roles as role}
+												<Badge>{role.nombre}</Badge>
+											{/each}
+										{/if}
+									</div>
+								</div>
+
+								<div class="mt-3 flex items-center justify-between gap-2">
+									<div class="text-xs text-muted-foreground">
+										{user.roles.length} roles asignados
+									</div>
+								<Button onclick={() => openAssignDialog(user)} size="sm">Asignar roles</Button>
+								</div>
+							</div>
+						{/each}
+					{/if}
+				</div>
+
+				<div class="hidden overflow-x-auto lg:block">
+					<table class="w-full min-w-330 text-sm">
 						<thead>
 							<tr class="border-b bg-muted/30 text-left">
 								<th class="px-4 py-3 font-semibold">ID</th>
 								<th class="px-4 py-3 font-semibold">Nombre</th>
 								<th class="px-4 py-3 font-semibold">Email</th>
 								<th class="px-4 py-3 font-semibold">Apodo</th>
+								<th class="px-4 py-3 font-semibold">Estado</th>
 								<th class="px-4 py-3 font-semibold">Roles</th>
 								<th class="px-4 py-3 font-semibold">Acciones</th>
 							</tr>
@@ -166,7 +216,7 @@
 						<tbody>
 							{#if data.users.length === 0}
 								<tr>
-									<td colspan="6" class="px-4 py-10 text-center text-muted-foreground">
+									<td colspan="7" class="px-4 py-10 text-center text-muted-foreground">
 										No se encontraron usuarios con los filtros actuales.
 									</td>
 								</tr>
@@ -177,6 +227,13 @@
 										<td class="px-4 py-3 font-medium">{user.nombre}</td>
 										<td class="px-4 py-3">{user.email}</td>
 										<td class="px-4 py-3">{user.apodo ?? "-"}</td>
+										<td class="px-4 py-3">
+											{#if user.es_admin}
+												<Badge>Super usuario</Badge>
+											{:else}
+												<Badge variant="outline">Normal</Badge>
+											{/if}
+										</td>
 										<td class="px-4 py-3">
 											<div class="flex flex-wrap gap-1.5">
 												{#if user.roles.length === 0}
@@ -189,7 +246,7 @@
 											</div>
 										</td>
 										<td class="px-4 py-3">
-											<Button onclick={() => openAssignDialog(user)} size="sm">Asignar roles</Button>
+										<Button onclick={() => openAssignDialog(user)} size="sm">Asignar roles</Button>
 										</td>
 									</tr>
 								{/each}
@@ -256,6 +313,26 @@
 					{/each}
 				</div>
 			</form>
+
+			{#if data.currentUserIsAdmin}
+				<div class="rounded-md border p-3">
+					<p class="mb-2 text-sm font-medium">Super usuario</p>
+					<form
+						action="?/set_super_user"
+						class="flex items-center justify-between gap-3"
+						id={`super-user-form-${selectedUser.id}`}
+						method="POST"
+						use:enhance={withFeedback(selectedUser.es_admin ? "Super usuario desactivado" : "Super usuario activado")}
+					>
+						<input type="hidden" name="userId" value={selectedUser.id} />
+						<input type="hidden" name="es_admin" value={selectedUser.es_admin ? "false" : "true"} />
+						<p class="text-sm text-muted-foreground">
+							{selectedUser.es_admin ? "El usuario tiene todos los permisos del sistema." : "Activar para otorgar todos los permisos automáticamente."}
+						</p>
+						<Switch checked={selectedUser.es_admin} onCheckedChange={() => toggleSuperUser(selectedUser!.id)} />
+					</form>
+				</div>
+			{/if}
 		{/if}
 
 		<Dialog.Footer>

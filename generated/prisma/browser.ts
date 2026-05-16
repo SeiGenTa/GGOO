@@ -37,3 +37,18 @@ export type Pichanga = Prisma.PichangaModel
  * 
  */
 export type Inscripcion = Prisma.InscripcionModel
+/**
+ * Model Tarjetas
+ * 
+ */
+export type Tarjetas = Prisma.TarjetasModel
+/**
+ * Model ReclamosCarta
+ * 
+ */
+export type ReclamosCarta = Prisma.ReclamosCartaModel
+/**
+ * Model Castigo
+ * 
+ */
+export type Castigo = Prisma.CastigoModel

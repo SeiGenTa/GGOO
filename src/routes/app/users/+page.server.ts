@@ -286,7 +286,7 @@ const sendEmailNameRechazed = async (
 		max_age: 60 * 60 * 1000 *24 * 7, // 7 días para cambiar el nombre
     }
     const dataChangeNameEncripted = encript_json(dataChangeName)
-    const urlRedirect = `${process.env.URI_DIRECTORY ?? 'http://localhost:5173/'}auth/change_name?data=${encodeURIComponent(dataChangeNameEncripted)}`
+    const urlRedirect = `${process.env.ORIGIN ?? 'http://localhost:5173/'}auth/change_name?data=${encodeURIComponent(dataChangeNameEncripted)}`
 
     const html = `
     <p>Hola,</p>

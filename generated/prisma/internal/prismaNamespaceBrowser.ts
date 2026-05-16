@@ -54,7 +54,10 @@ export const ModelName = {
   User: 'User',
   Rol: 'Rol',
   Pichanga: 'Pichanga',
-  Inscripcion: 'Inscripcion'
+  Inscripcion: 'Inscripcion',
+  Tarjetas: 'Tarjetas',
+  ReclamosCarta: 'ReclamosCarta',
+  Castigo: 'Castigo'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -124,6 +127,49 @@ export const InscripcionScalarFieldEnum = {
 } as const
 
 export type InscripcionScalarFieldEnum = (typeof InscripcionScalarFieldEnum)[keyof typeof InscripcionScalarFieldEnum]
+
+
+export const TarjetasScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  tipoCarta: 'tipoCarta',
+  razon: 'razon',
+  usado: 'usado',
+  quienAsignoId: 'quienAsignoId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  venceEn: 'venceEn'
+} as const
+
+export type TarjetasScalarFieldEnum = (typeof TarjetasScalarFieldEnum)[keyof typeof TarjetasScalarFieldEnum]
+
+
+export const ReclamosCartaScalarFieldEnum = {
+  id: 'id',
+  tarjetaId: 'tarjetaId',
+  razon: 'razon',
+  fechaReclamo: 'fechaReclamo',
+  atendido: 'atendido',
+  respuesta: 'respuesta',
+  administradorAtendioId: 'administradorAtendioId'
+} as const
+
+export type ReclamosCartaScalarFieldEnum = (typeof ReclamosCartaScalarFieldEnum)[keyof typeof ReclamosCartaScalarFieldEnum]
+
+
+export const CastigoScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  tipoCastigo: 'tipoCastigo',
+  razon: 'razon',
+  fechaInicio: 'fechaInicio',
+  fechaFin: 'fechaFin',
+  fueCancelada: 'fueCancelada',
+  quienCanceloId: 'quienCanceloId',
+  razonCancelacion: 'razonCancelacion'
+} as const
+
+export type CastigoScalarFieldEnum = (typeof CastigoScalarFieldEnum)[keyof typeof CastigoScalarFieldEnum]
 
 
 export const SortOrder = {

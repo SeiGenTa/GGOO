@@ -23,7 +23,7 @@ En esta sección se muestran los objetivos actuales del proyecto. Los elementos 
 
 ### Requisitos
 
-- `npm`
+- `pnpm`
 - `docker`
 
 ### Opcionales, pero recomendados
@@ -94,19 +94,19 @@ Muestra los logs del servicio `app` en tiempo real.
 make migrate
 ```
 
-Ejecuta `npx prisma migrate dev` dentro del contenedor.
+Ejecuta `pnpm prisma migrate dev` dentro del contenedor.
 
 ```bash
 make apply-migrate
 ```
 
-Ejecuta `npx prisma migrate deploy` dentro del contenedor.
+Ejecuta `pnpm prisma migrate deploy` dentro del contenedor.
 
 ```bash
 make generate-prisma
 ```
 
-Ejecuta `npx prisma generate` dentro del contenedor.
+Ejecuta `pnpm prisma generate` dentro del contenedor.
 
 ```bash
 make createsuperuser
@@ -116,7 +116,7 @@ Ejecuta el comando de creación de superusuario:
 
 ```bash
 cd src
-npx ts-node manage.ts createsuperuser
+pnpm ts-node manage.ts createsuperuser
 ```
 
 ## Flujo sugerido para inicializar el proyecto

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Tarjetas" ADD COLUMN     "venceEn" DATE NOT NULL DEFAULT CURRENT_DATE + INTERVAL '1 months';

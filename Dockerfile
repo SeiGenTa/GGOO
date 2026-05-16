@@ -1,9 +1,14 @@
-FROM node:24-bookworm as base
+FROM node:20-alpine as base
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+RUN npm install -g pnpm
+
+COPY package.json pnpm-lock.yaml ./
+
+COPY prisma ./prisma/
+
+RUN pnpm install --frozen-lockfile
 
 COPY . .
 
@@ -11,15 +16,15 @@ FROM base as development
 
 EXPOSE 5173
 
-CMD ["sh", "-c", "npx prisma migrate deploy && npm run dev -- --host 0.0.0.0 --port 5173"]
+CMD ["sh", "-c", "pnpm prisma migrate deploy && pnpm dev --host 0.0.0.0 --port 5173"]
 
 FROM base as builder
 
-RUN npm run build
+RUN pnpm build
 
-CMD ["sh", "-c", "npx prisma migrate deploy && npm run build"]
+CMD ["sh", "-c", "pnpm prisma migrate deploy && pnpm build"]
 
-FROM node:24-bookworm as production
+FROM node:20-alpine as production
 WORKDIR /app
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/node_modules ./node_modules

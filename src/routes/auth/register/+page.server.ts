@@ -75,7 +75,7 @@ import { encript_string } from "$utils/encript";
 const sendEmailValidator = async (to: string) => {
     const validationKey = encript_string(to);
 
-    const uriDirectory = process.env.URI_DIRECTORY || "http://localhost:3000/";
+    const uriDirectory = process.env.ORIGIN || "http://localhost:5173/";
 
     const subject = "Bienvenido a GGOO";
     const html = `<p>Hola ${to},</p>

@@ -25,7 +25,7 @@
 <div {...props} class="space-y-2">
     <Label>{label}</Label>
     <Select.Root type={type} bind:value={value as any} {name}>
-        <Select.Trigger class="w-full">
+        <Select.Trigger class="w-full overflow-x-auto">
             {#if value == "" || (Array.isArray(value) && value.length === 0)}
                 <span>{placeholder ?? "Selecciona una opción"}</span>
             {:else}

@@ -237,6 +237,11 @@ export type UserWhereInput = {
   pichangas?: Prisma.PichangaListRelationFilter
   inscripciones?: Prisma.InscripcionListRelationFilter
   roles?: Prisma.RolListRelationFilter
+  tarjetas?: Prisma.TarjetasListRelationFilter
+  tarjetasAsignadas?: Prisma.TarjetasListRelationFilter
+  castigos?: Prisma.CastigoListRelationFilter
+  castigosCancelados?: Prisma.CastigoListRelationFilter
+  reclamosCartas?: Prisma.ReclamosCartaListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -255,6 +260,11 @@ export type UserOrderByWithRelationInput = {
   pichangas?: Prisma.PichangaOrderByRelationAggregateInput
   inscripciones?: Prisma.InscripcionOrderByRelationAggregateInput
   roles?: Prisma.RolOrderByRelationAggregateInput
+  tarjetas?: Prisma.TarjetasOrderByRelationAggregateInput
+  tarjetasAsignadas?: Prisma.TarjetasOrderByRelationAggregateInput
+  castigos?: Prisma.CastigoOrderByRelationAggregateInput
+  castigosCancelados?: Prisma.CastigoOrderByRelationAggregateInput
+  reclamosCartas?: Prisma.ReclamosCartaOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -276,6 +286,11 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   pichangas?: Prisma.PichangaListRelationFilter
   inscripciones?: Prisma.InscripcionListRelationFilter
   roles?: Prisma.RolListRelationFilter
+  tarjetas?: Prisma.TarjetasListRelationFilter
+  tarjetasAsignadas?: Prisma.TarjetasListRelationFilter
+  castigos?: Prisma.CastigoListRelationFilter
+  castigosCancelados?: Prisma.CastigoListRelationFilter
+  reclamosCartas?: Prisma.ReclamosCartaListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -330,6 +345,11 @@ export type UserCreateInput = {
   pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
   roles?: Prisma.RolCreateNestedManyWithoutUsersInput
+  tarjetas?: Prisma.TarjetasCreateNestedManyWithoutUserInput
+  tarjetasAsignadas?: Prisma.TarjetasCreateNestedManyWithoutQuienAsignoInput
+  castigos?: Prisma.CastigoCreateNestedManyWithoutUserInput
+  castigosCancelados?: Prisma.CastigoCreateNestedManyWithoutQuienCanceloInput
+  reclamosCartas?: Prisma.ReclamosCartaCreateNestedManyWithoutAdministradorAtendioInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -348,6 +368,11 @@ export type UserUncheckedCreateInput = {
   pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
   roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
+  tarjetas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutUserInput
+  tarjetasAsignadas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutQuienAsignoInput
+  castigos?: Prisma.CastigoUncheckedCreateNestedManyWithoutUserInput
+  castigosCancelados?: Prisma.CastigoUncheckedCreateNestedManyWithoutQuienCanceloInput
+  reclamosCartas?: Prisma.ReclamosCartaUncheckedCreateNestedManyWithoutAdministradorAtendioInput
 }
 
 export type UserUpdateInput = {
@@ -366,6 +391,11 @@ export type UserUpdateInput = {
   pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
+  tarjetas?: Prisma.TarjetasUpdateManyWithoutUserNestedInput
+  tarjetasAsignadas?: Prisma.TarjetasUpdateManyWithoutQuienAsignoNestedInput
+  castigos?: Prisma.CastigoUpdateManyWithoutUserNestedInput
+  castigosCancelados?: Prisma.CastigoUpdateManyWithoutQuienCanceloNestedInput
+  reclamosCartas?: Prisma.ReclamosCartaUpdateManyWithoutAdministradorAtendioNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -384,6 +414,11 @@ export type UserUncheckedUpdateInput = {
   pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
+  tarjetas?: Prisma.TarjetasUncheckedUpdateManyWithoutUserNestedInput
+  tarjetasAsignadas?: Prisma.TarjetasUncheckedUpdateManyWithoutQuienAsignoNestedInput
+  castigos?: Prisma.CastigoUncheckedUpdateManyWithoutUserNestedInput
+  castigosCancelados?: Prisma.CastigoUncheckedUpdateManyWithoutQuienCanceloNestedInput
+  reclamosCartas?: Prisma.ReclamosCartaUncheckedUpdateManyWithoutAdministradorAtendioNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -495,6 +530,11 @@ export type UserOrderByRelationAggregateInput = {
 export type UserScalarRelationFilter = {
   is?: Prisma.UserWhereInput
   isNot?: Prisma.UserWhereInput
+}
+
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
 }
 
 export type UserCreatepermisosInput = {
@@ -612,6 +652,82 @@ export type UserUpdateOneRequiredWithoutInscripcionesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutInscripcionesInput, Prisma.UserUpdateWithoutInscripcionesInput>, Prisma.UserUncheckedUpdateWithoutInscripcionesInput>
 }
 
+export type UserCreateNestedOneWithoutTarjetasInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTarjetasInput, Prisma.UserUncheckedCreateWithoutTarjetasInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTarjetasInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutTarjetasAsignadasInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTarjetasAsignadasInput, Prisma.UserUncheckedCreateWithoutTarjetasAsignadasInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTarjetasAsignadasInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutTarjetasNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTarjetasInput, Prisma.UserUncheckedCreateWithoutTarjetasInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTarjetasInput
+  upsert?: Prisma.UserUpsertWithoutTarjetasInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTarjetasInput, Prisma.UserUpdateWithoutTarjetasInput>, Prisma.UserUncheckedUpdateWithoutTarjetasInput>
+}
+
+export type UserUpdateOneWithoutTarjetasAsignadasNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTarjetasAsignadasInput, Prisma.UserUncheckedCreateWithoutTarjetasAsignadasInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTarjetasAsignadasInput
+  upsert?: Prisma.UserUpsertWithoutTarjetasAsignadasInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTarjetasAsignadasInput, Prisma.UserUpdateWithoutTarjetasAsignadasInput>, Prisma.UserUncheckedUpdateWithoutTarjetasAsignadasInput>
+}
+
+export type UserCreateNestedOneWithoutReclamosCartasInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReclamosCartasInput, Prisma.UserUncheckedCreateWithoutReclamosCartasInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReclamosCartasInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutReclamosCartasNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReclamosCartasInput, Prisma.UserUncheckedCreateWithoutReclamosCartasInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReclamosCartasInput
+  upsert?: Prisma.UserUpsertWithoutReclamosCartasInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReclamosCartasInput, Prisma.UserUpdateWithoutReclamosCartasInput>, Prisma.UserUncheckedUpdateWithoutReclamosCartasInput>
+}
+
+export type UserCreateNestedOneWithoutCastigosInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCastigosInput, Prisma.UserUncheckedCreateWithoutCastigosInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCastigosInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutCastigosCanceladosInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCastigosCanceladosInput, Prisma.UserUncheckedCreateWithoutCastigosCanceladosInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCastigosCanceladosInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCastigosNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCastigosInput, Prisma.UserUncheckedCreateWithoutCastigosInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCastigosInput
+  upsert?: Prisma.UserUpsertWithoutCastigosInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCastigosInput, Prisma.UserUpdateWithoutCastigosInput>, Prisma.UserUncheckedUpdateWithoutCastigosInput>
+}
+
+export type UserUpdateOneWithoutCastigosCanceladosNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCastigosCanceladosInput, Prisma.UserUncheckedCreateWithoutCastigosCanceladosInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCastigosCanceladosInput
+  upsert?: Prisma.UserUpsertWithoutCastigosCanceladosInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCastigosCanceladosInput, Prisma.UserUpdateWithoutCastigosCanceladosInput>, Prisma.UserUncheckedUpdateWithoutCastigosCanceladosInput>
+}
+
 export type UserCreateWithoutRolesInput = {
   id?: string
   nombre: string
@@ -627,6 +743,11 @@ export type UserCreateWithoutRolesInput = {
   permisos?: Prisma.UserCreatepermisosInput | string[]
   pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
+  tarjetas?: Prisma.TarjetasCreateNestedManyWithoutUserInput
+  tarjetasAsignadas?: Prisma.TarjetasCreateNestedManyWithoutQuienAsignoInput
+  castigos?: Prisma.CastigoCreateNestedManyWithoutUserInput
+  castigosCancelados?: Prisma.CastigoCreateNestedManyWithoutQuienCanceloInput
+  reclamosCartas?: Prisma.ReclamosCartaCreateNestedManyWithoutAdministradorAtendioInput
 }
 
 export type UserUncheckedCreateWithoutRolesInput = {
@@ -644,6 +765,11 @@ export type UserUncheckedCreateWithoutRolesInput = {
   permisos?: Prisma.UserCreatepermisosInput | string[]
   pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
+  tarjetas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutUserInput
+  tarjetasAsignadas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutQuienAsignoInput
+  castigos?: Prisma.CastigoUncheckedCreateNestedManyWithoutUserInput
+  castigosCancelados?: Prisma.CastigoUncheckedCreateNestedManyWithoutQuienCanceloInput
+  reclamosCartas?: Prisma.ReclamosCartaUncheckedCreateNestedManyWithoutAdministradorAtendioInput
 }
 
 export type UserCreateOrConnectWithoutRolesInput = {
@@ -700,6 +826,11 @@ export type UserCreateWithoutPichangasInput = {
   permisos?: Prisma.UserCreatepermisosInput | string[]
   inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
   roles?: Prisma.RolCreateNestedManyWithoutUsersInput
+  tarjetas?: Prisma.TarjetasCreateNestedManyWithoutUserInput
+  tarjetasAsignadas?: Prisma.TarjetasCreateNestedManyWithoutQuienAsignoInput
+  castigos?: Prisma.CastigoCreateNestedManyWithoutUserInput
+  castigosCancelados?: Prisma.CastigoCreateNestedManyWithoutQuienCanceloInput
+  reclamosCartas?: Prisma.ReclamosCartaCreateNestedManyWithoutAdministradorAtendioInput
 }
 
 export type UserUncheckedCreateWithoutPichangasInput = {
@@ -717,6 +848,11 @@ export type UserUncheckedCreateWithoutPichangasInput = {
   permisos?: Prisma.UserCreatepermisosInput | string[]
   inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
   roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
+  tarjetas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutUserInput
+  tarjetasAsignadas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutQuienAsignoInput
+  castigos?: Prisma.CastigoUncheckedCreateNestedManyWithoutUserInput
+  castigosCancelados?: Prisma.CastigoUncheckedCreateNestedManyWithoutQuienCanceloInput
+  reclamosCartas?: Prisma.ReclamosCartaUncheckedCreateNestedManyWithoutAdministradorAtendioInput
 }
 
 export type UserCreateOrConnectWithoutPichangasInput = {
@@ -755,6 +891,11 @@ export type UserCreateWithoutInscripcionesInput = {
   permisos?: Prisma.UserCreatepermisosInput | string[]
   pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
   roles?: Prisma.RolCreateNestedManyWithoutUsersInput
+  tarjetas?: Prisma.TarjetasCreateNestedManyWithoutUserInput
+  tarjetasAsignadas?: Prisma.TarjetasCreateNestedManyWithoutQuienAsignoInput
+  castigos?: Prisma.CastigoCreateNestedManyWithoutUserInput
+  castigosCancelados?: Prisma.CastigoCreateNestedManyWithoutQuienCanceloInput
+  reclamosCartas?: Prisma.ReclamosCartaCreateNestedManyWithoutAdministradorAtendioInput
 }
 
 export type UserUncheckedCreateWithoutInscripcionesInput = {
@@ -772,6 +913,11 @@ export type UserUncheckedCreateWithoutInscripcionesInput = {
   permisos?: Prisma.UserCreatepermisosInput | string[]
   pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
   roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
+  tarjetas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutUserInput
+  tarjetasAsignadas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutQuienAsignoInput
+  castigos?: Prisma.CastigoUncheckedCreateNestedManyWithoutUserInput
+  castigosCancelados?: Prisma.CastigoUncheckedCreateNestedManyWithoutQuienCanceloInput
+  reclamosCartas?: Prisma.ReclamosCartaUncheckedCreateNestedManyWithoutAdministradorAtendioInput
 }
 
 export type UserCreateOrConnectWithoutInscripcionesInput = {
@@ -805,6 +951,11 @@ export type UserUpdateWithoutInscripcionesInput = {
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
   roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
+  tarjetas?: Prisma.TarjetasUpdateManyWithoutUserNestedInput
+  tarjetasAsignadas?: Prisma.TarjetasUpdateManyWithoutQuienAsignoNestedInput
+  castigos?: Prisma.CastigoUpdateManyWithoutUserNestedInput
+  castigosCancelados?: Prisma.CastigoUpdateManyWithoutQuienCanceloNestedInput
+  reclamosCartas?: Prisma.ReclamosCartaUpdateManyWithoutAdministradorAtendioNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInscripcionesInput = {
@@ -822,6 +973,531 @@ export type UserUncheckedUpdateWithoutInscripcionesInput = {
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
   roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
+  tarjetas?: Prisma.TarjetasUncheckedUpdateManyWithoutUserNestedInput
+  tarjetasAsignadas?: Prisma.TarjetasUncheckedUpdateManyWithoutQuienAsignoNestedInput
+  castigos?: Prisma.CastigoUncheckedUpdateManyWithoutUserNestedInput
+  castigosCancelados?: Prisma.CastigoUncheckedUpdateManyWithoutQuienCanceloNestedInput
+  reclamosCartas?: Prisma.ReclamosCartaUncheckedUpdateManyWithoutAdministradorAtendioNestedInput
+}
+
+export type UserCreateWithoutTarjetasInput = {
+  id?: string
+  nombre: string
+  email: string
+  apodo?: string | null
+  password: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  es_admin?: boolean
+  es_valido?: boolean
+  aprobado_por_admin?: boolean
+  rechazado_por_admin?: boolean
+  permisos?: Prisma.UserCreatepermisosInput | string[]
+  pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
+  inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
+  roles?: Prisma.RolCreateNestedManyWithoutUsersInput
+  tarjetasAsignadas?: Prisma.TarjetasCreateNestedManyWithoutQuienAsignoInput
+  castigos?: Prisma.CastigoCreateNestedManyWithoutUserInput
+  castigosCancelados?: Prisma.CastigoCreateNestedManyWithoutQuienCanceloInput
+  reclamosCartas?: Prisma.ReclamosCartaCreateNestedManyWithoutAdministradorAtendioInput
+}
+
+export type UserUncheckedCreateWithoutTarjetasInput = {
+  id?: string
+  nombre: string
+  email: string
+  apodo?: string | null
+  password: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  es_admin?: boolean
+  es_valido?: boolean
+  aprobado_por_admin?: boolean
+  rechazado_por_admin?: boolean
+  permisos?: Prisma.UserCreatepermisosInput | string[]
+  pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
+  inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
+  roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
+  tarjetasAsignadas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutQuienAsignoInput
+  castigos?: Prisma.CastigoUncheckedCreateNestedManyWithoutUserInput
+  castigosCancelados?: Prisma.CastigoUncheckedCreateNestedManyWithoutQuienCanceloInput
+  reclamosCartas?: Prisma.ReclamosCartaUncheckedCreateNestedManyWithoutAdministradorAtendioInput
+}
+
+export type UserCreateOrConnectWithoutTarjetasInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutTarjetasInput, Prisma.UserUncheckedCreateWithoutTarjetasInput>
+}
+
+export type UserCreateWithoutTarjetasAsignadasInput = {
+  id?: string
+  nombre: string
+  email: string
+  apodo?: string | null
+  password: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  es_admin?: boolean
+  es_valido?: boolean
+  aprobado_por_admin?: boolean
+  rechazado_por_admin?: boolean
+  permisos?: Prisma.UserCreatepermisosInput | string[]
+  pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
+  inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
+  roles?: Prisma.RolCreateNestedManyWithoutUsersInput
+  tarjetas?: Prisma.TarjetasCreateNestedManyWithoutUserInput
+  castigos?: Prisma.CastigoCreateNestedManyWithoutUserInput
+  castigosCancelados?: Prisma.CastigoCreateNestedManyWithoutQuienCanceloInput
+  reclamosCartas?: Prisma.ReclamosCartaCreateNestedManyWithoutAdministradorAtendioInput
+}
+
+export type UserUncheckedCreateWithoutTarjetasAsignadasInput = {
+  id?: string
+  nombre: string
+  email: string
+  apodo?: string | null
+  password: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  es_admin?: boolean
+  es_valido?: boolean
+  aprobado_por_admin?: boolean
+  rechazado_por_admin?: boolean
+  permisos?: Prisma.UserCreatepermisosInput | string[]
+  pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
+  inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
+  roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
+  tarjetas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutUserInput
+  castigos?: Prisma.CastigoUncheckedCreateNestedManyWithoutUserInput
+  castigosCancelados?: Prisma.CastigoUncheckedCreateNestedManyWithoutQuienCanceloInput
+  reclamosCartas?: Prisma.ReclamosCartaUncheckedCreateNestedManyWithoutAdministradorAtendioInput
+}
+
+export type UserCreateOrConnectWithoutTarjetasAsignadasInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutTarjetasAsignadasInput, Prisma.UserUncheckedCreateWithoutTarjetasAsignadasInput>
+}
+
+export type UserUpsertWithoutTarjetasInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutTarjetasInput, Prisma.UserUncheckedUpdateWithoutTarjetasInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTarjetasInput, Prisma.UserUncheckedCreateWithoutTarjetasInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutTarjetasInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTarjetasInput, Prisma.UserUncheckedUpdateWithoutTarjetasInput>
+}
+
+export type UserUpdateWithoutTarjetasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  apodo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  es_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  es_valido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  permisos?: Prisma.UserUpdatepermisosInput | string[]
+  pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
+  inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
+  roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
+  tarjetasAsignadas?: Prisma.TarjetasUpdateManyWithoutQuienAsignoNestedInput
+  castigos?: Prisma.CastigoUpdateManyWithoutUserNestedInput
+  castigosCancelados?: Prisma.CastigoUpdateManyWithoutQuienCanceloNestedInput
+  reclamosCartas?: Prisma.ReclamosCartaUpdateManyWithoutAdministradorAtendioNestedInput
+}
+
+export type UserUncheckedUpdateWithoutTarjetasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  apodo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  es_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  es_valido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  permisos?: Prisma.UserUpdatepermisosInput | string[]
+  pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
+  inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
+  roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
+  tarjetasAsignadas?: Prisma.TarjetasUncheckedUpdateManyWithoutQuienAsignoNestedInput
+  castigos?: Prisma.CastigoUncheckedUpdateManyWithoutUserNestedInput
+  castigosCancelados?: Prisma.CastigoUncheckedUpdateManyWithoutQuienCanceloNestedInput
+  reclamosCartas?: Prisma.ReclamosCartaUncheckedUpdateManyWithoutAdministradorAtendioNestedInput
+}
+
+export type UserUpsertWithoutTarjetasAsignadasInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutTarjetasAsignadasInput, Prisma.UserUncheckedUpdateWithoutTarjetasAsignadasInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTarjetasAsignadasInput, Prisma.UserUncheckedCreateWithoutTarjetasAsignadasInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutTarjetasAsignadasInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTarjetasAsignadasInput, Prisma.UserUncheckedUpdateWithoutTarjetasAsignadasInput>
+}
+
+export type UserUpdateWithoutTarjetasAsignadasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  apodo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  es_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  es_valido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  permisos?: Prisma.UserUpdatepermisosInput | string[]
+  pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
+  inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
+  roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
+  tarjetas?: Prisma.TarjetasUpdateManyWithoutUserNestedInput
+  castigos?: Prisma.CastigoUpdateManyWithoutUserNestedInput
+  castigosCancelados?: Prisma.CastigoUpdateManyWithoutQuienCanceloNestedInput
+  reclamosCartas?: Prisma.ReclamosCartaUpdateManyWithoutAdministradorAtendioNestedInput
+}
+
+export type UserUncheckedUpdateWithoutTarjetasAsignadasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  apodo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  es_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  es_valido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  permisos?: Prisma.UserUpdatepermisosInput | string[]
+  pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
+  inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
+  roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
+  tarjetas?: Prisma.TarjetasUncheckedUpdateManyWithoutUserNestedInput
+  castigos?: Prisma.CastigoUncheckedUpdateManyWithoutUserNestedInput
+  castigosCancelados?: Prisma.CastigoUncheckedUpdateManyWithoutQuienCanceloNestedInput
+  reclamosCartas?: Prisma.ReclamosCartaUncheckedUpdateManyWithoutAdministradorAtendioNestedInput
+}
+
+export type UserCreateWithoutReclamosCartasInput = {
+  id?: string
+  nombre: string
+  email: string
+  apodo?: string | null
+  password: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  es_admin?: boolean
+  es_valido?: boolean
+  aprobado_por_admin?: boolean
+  rechazado_por_admin?: boolean
+  permisos?: Prisma.UserCreatepermisosInput | string[]
+  pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
+  inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
+  roles?: Prisma.RolCreateNestedManyWithoutUsersInput
+  tarjetas?: Prisma.TarjetasCreateNestedManyWithoutUserInput
+  tarjetasAsignadas?: Prisma.TarjetasCreateNestedManyWithoutQuienAsignoInput
+  castigos?: Prisma.CastigoCreateNestedManyWithoutUserInput
+  castigosCancelados?: Prisma.CastigoCreateNestedManyWithoutQuienCanceloInput
+}
+
+export type UserUncheckedCreateWithoutReclamosCartasInput = {
+  id?: string
+  nombre: string
+  email: string
+  apodo?: string | null
+  password: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  es_admin?: boolean
+  es_valido?: boolean
+  aprobado_por_admin?: boolean
+  rechazado_por_admin?: boolean
+  permisos?: Prisma.UserCreatepermisosInput | string[]
+  pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
+  inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
+  roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
+  tarjetas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutUserInput
+  tarjetasAsignadas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutQuienAsignoInput
+  castigos?: Prisma.CastigoUncheckedCreateNestedManyWithoutUserInput
+  castigosCancelados?: Prisma.CastigoUncheckedCreateNestedManyWithoutQuienCanceloInput
+}
+
+export type UserCreateOrConnectWithoutReclamosCartasInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReclamosCartasInput, Prisma.UserUncheckedCreateWithoutReclamosCartasInput>
+}
+
+export type UserUpsertWithoutReclamosCartasInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReclamosCartasInput, Prisma.UserUncheckedUpdateWithoutReclamosCartasInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReclamosCartasInput, Prisma.UserUncheckedCreateWithoutReclamosCartasInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReclamosCartasInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReclamosCartasInput, Prisma.UserUncheckedUpdateWithoutReclamosCartasInput>
+}
+
+export type UserUpdateWithoutReclamosCartasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  apodo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  es_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  es_valido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  permisos?: Prisma.UserUpdatepermisosInput | string[]
+  pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
+  inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
+  roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
+  tarjetas?: Prisma.TarjetasUpdateManyWithoutUserNestedInput
+  tarjetasAsignadas?: Prisma.TarjetasUpdateManyWithoutQuienAsignoNestedInput
+  castigos?: Prisma.CastigoUpdateManyWithoutUserNestedInput
+  castigosCancelados?: Prisma.CastigoUpdateManyWithoutQuienCanceloNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReclamosCartasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  apodo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  es_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  es_valido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  permisos?: Prisma.UserUpdatepermisosInput | string[]
+  pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
+  inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
+  roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
+  tarjetas?: Prisma.TarjetasUncheckedUpdateManyWithoutUserNestedInput
+  tarjetasAsignadas?: Prisma.TarjetasUncheckedUpdateManyWithoutQuienAsignoNestedInput
+  castigos?: Prisma.CastigoUncheckedUpdateManyWithoutUserNestedInput
+  castigosCancelados?: Prisma.CastigoUncheckedUpdateManyWithoutQuienCanceloNestedInput
+}
+
+export type UserCreateWithoutCastigosInput = {
+  id?: string
+  nombre: string
+  email: string
+  apodo?: string | null
+  password: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  es_admin?: boolean
+  es_valido?: boolean
+  aprobado_por_admin?: boolean
+  rechazado_por_admin?: boolean
+  permisos?: Prisma.UserCreatepermisosInput | string[]
+  pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
+  inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
+  roles?: Prisma.RolCreateNestedManyWithoutUsersInput
+  tarjetas?: Prisma.TarjetasCreateNestedManyWithoutUserInput
+  tarjetasAsignadas?: Prisma.TarjetasCreateNestedManyWithoutQuienAsignoInput
+  castigosCancelados?: Prisma.CastigoCreateNestedManyWithoutQuienCanceloInput
+  reclamosCartas?: Prisma.ReclamosCartaCreateNestedManyWithoutAdministradorAtendioInput
+}
+
+export type UserUncheckedCreateWithoutCastigosInput = {
+  id?: string
+  nombre: string
+  email: string
+  apodo?: string | null
+  password: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  es_admin?: boolean
+  es_valido?: boolean
+  aprobado_por_admin?: boolean
+  rechazado_por_admin?: boolean
+  permisos?: Prisma.UserCreatepermisosInput | string[]
+  pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
+  inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
+  roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
+  tarjetas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutUserInput
+  tarjetasAsignadas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutQuienAsignoInput
+  castigosCancelados?: Prisma.CastigoUncheckedCreateNestedManyWithoutQuienCanceloInput
+  reclamosCartas?: Prisma.ReclamosCartaUncheckedCreateNestedManyWithoutAdministradorAtendioInput
+}
+
+export type UserCreateOrConnectWithoutCastigosInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCastigosInput, Prisma.UserUncheckedCreateWithoutCastigosInput>
+}
+
+export type UserCreateWithoutCastigosCanceladosInput = {
+  id?: string
+  nombre: string
+  email: string
+  apodo?: string | null
+  password: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  es_admin?: boolean
+  es_valido?: boolean
+  aprobado_por_admin?: boolean
+  rechazado_por_admin?: boolean
+  permisos?: Prisma.UserCreatepermisosInput | string[]
+  pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
+  inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
+  roles?: Prisma.RolCreateNestedManyWithoutUsersInput
+  tarjetas?: Prisma.TarjetasCreateNestedManyWithoutUserInput
+  tarjetasAsignadas?: Prisma.TarjetasCreateNestedManyWithoutQuienAsignoInput
+  castigos?: Prisma.CastigoCreateNestedManyWithoutUserInput
+  reclamosCartas?: Prisma.ReclamosCartaCreateNestedManyWithoutAdministradorAtendioInput
+}
+
+export type UserUncheckedCreateWithoutCastigosCanceladosInput = {
+  id?: string
+  nombre: string
+  email: string
+  apodo?: string | null
+  password: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  es_admin?: boolean
+  es_valido?: boolean
+  aprobado_por_admin?: boolean
+  rechazado_por_admin?: boolean
+  permisos?: Prisma.UserCreatepermisosInput | string[]
+  pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
+  inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
+  roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
+  tarjetas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutUserInput
+  tarjetasAsignadas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutQuienAsignoInput
+  castigos?: Prisma.CastigoUncheckedCreateNestedManyWithoutUserInput
+  reclamosCartas?: Prisma.ReclamosCartaUncheckedCreateNestedManyWithoutAdministradorAtendioInput
+}
+
+export type UserCreateOrConnectWithoutCastigosCanceladosInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCastigosCanceladosInput, Prisma.UserUncheckedCreateWithoutCastigosCanceladosInput>
+}
+
+export type UserUpsertWithoutCastigosInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCastigosInput, Prisma.UserUncheckedUpdateWithoutCastigosInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCastigosInput, Prisma.UserUncheckedCreateWithoutCastigosInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCastigosInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCastigosInput, Prisma.UserUncheckedUpdateWithoutCastigosInput>
+}
+
+export type UserUpdateWithoutCastigosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  apodo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  es_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  es_valido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  permisos?: Prisma.UserUpdatepermisosInput | string[]
+  pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
+  inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
+  roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
+  tarjetas?: Prisma.TarjetasUpdateManyWithoutUserNestedInput
+  tarjetasAsignadas?: Prisma.TarjetasUpdateManyWithoutQuienAsignoNestedInput
+  castigosCancelados?: Prisma.CastigoUpdateManyWithoutQuienCanceloNestedInput
+  reclamosCartas?: Prisma.ReclamosCartaUpdateManyWithoutAdministradorAtendioNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCastigosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  apodo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  es_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  es_valido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  permisos?: Prisma.UserUpdatepermisosInput | string[]
+  pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
+  inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
+  roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
+  tarjetas?: Prisma.TarjetasUncheckedUpdateManyWithoutUserNestedInput
+  tarjetasAsignadas?: Prisma.TarjetasUncheckedUpdateManyWithoutQuienAsignoNestedInput
+  castigosCancelados?: Prisma.CastigoUncheckedUpdateManyWithoutQuienCanceloNestedInput
+  reclamosCartas?: Prisma.ReclamosCartaUncheckedUpdateManyWithoutAdministradorAtendioNestedInput
+}
+
+export type UserUpsertWithoutCastigosCanceladosInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCastigosCanceladosInput, Prisma.UserUncheckedUpdateWithoutCastigosCanceladosInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCastigosCanceladosInput, Prisma.UserUncheckedCreateWithoutCastigosCanceladosInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCastigosCanceladosInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCastigosCanceladosInput, Prisma.UserUncheckedUpdateWithoutCastigosCanceladosInput>
+}
+
+export type UserUpdateWithoutCastigosCanceladosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  apodo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  es_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  es_valido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  permisos?: Prisma.UserUpdatepermisosInput | string[]
+  pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
+  inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
+  roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
+  tarjetas?: Prisma.TarjetasUpdateManyWithoutUserNestedInput
+  tarjetasAsignadas?: Prisma.TarjetasUpdateManyWithoutQuienAsignoNestedInput
+  castigos?: Prisma.CastigoUpdateManyWithoutUserNestedInput
+  reclamosCartas?: Prisma.ReclamosCartaUpdateManyWithoutAdministradorAtendioNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCastigosCanceladosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  apodo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  es_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  es_valido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  permisos?: Prisma.UserUpdatepermisosInput | string[]
+  pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
+  inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
+  roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
+  tarjetas?: Prisma.TarjetasUncheckedUpdateManyWithoutUserNestedInput
+  tarjetasAsignadas?: Prisma.TarjetasUncheckedUpdateManyWithoutQuienAsignoNestedInput
+  castigos?: Prisma.CastigoUncheckedUpdateManyWithoutUserNestedInput
+  reclamosCartas?: Prisma.ReclamosCartaUncheckedUpdateManyWithoutAdministradorAtendioNestedInput
 }
 
 export type UserUpdateWithoutRolesInput = {
@@ -839,6 +1515,11 @@ export type UserUpdateWithoutRolesInput = {
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
+  tarjetas?: Prisma.TarjetasUpdateManyWithoutUserNestedInput
+  tarjetasAsignadas?: Prisma.TarjetasUpdateManyWithoutQuienAsignoNestedInput
+  castigos?: Prisma.CastigoUpdateManyWithoutUserNestedInput
+  castigosCancelados?: Prisma.CastigoUpdateManyWithoutQuienCanceloNestedInput
+  reclamosCartas?: Prisma.ReclamosCartaUpdateManyWithoutAdministradorAtendioNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRolesInput = {
@@ -856,6 +1537,11 @@ export type UserUncheckedUpdateWithoutRolesInput = {
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
+  tarjetas?: Prisma.TarjetasUncheckedUpdateManyWithoutUserNestedInput
+  tarjetasAsignadas?: Prisma.TarjetasUncheckedUpdateManyWithoutQuienAsignoNestedInput
+  castigos?: Prisma.CastigoUncheckedUpdateManyWithoutUserNestedInput
+  castigosCancelados?: Prisma.CastigoUncheckedUpdateManyWithoutQuienCanceloNestedInput
+  reclamosCartas?: Prisma.ReclamosCartaUncheckedUpdateManyWithoutAdministradorAtendioNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutRolesInput = {
@@ -888,6 +1574,11 @@ export type UserUpdateWithoutPichangasInput = {
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
+  tarjetas?: Prisma.TarjetasUpdateManyWithoutUserNestedInput
+  tarjetasAsignadas?: Prisma.TarjetasUpdateManyWithoutQuienAsignoNestedInput
+  castigos?: Prisma.CastigoUpdateManyWithoutUserNestedInput
+  castigosCancelados?: Prisma.CastigoUpdateManyWithoutQuienCanceloNestedInput
+  reclamosCartas?: Prisma.ReclamosCartaUpdateManyWithoutAdministradorAtendioNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPichangasInput = {
@@ -905,6 +1596,11 @@ export type UserUncheckedUpdateWithoutPichangasInput = {
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
+  tarjetas?: Prisma.TarjetasUncheckedUpdateManyWithoutUserNestedInput
+  tarjetasAsignadas?: Prisma.TarjetasUncheckedUpdateManyWithoutQuienAsignoNestedInput
+  castigos?: Prisma.CastigoUncheckedUpdateManyWithoutUserNestedInput
+  castigosCancelados?: Prisma.CastigoUncheckedUpdateManyWithoutQuienCanceloNestedInput
+  reclamosCartas?: Prisma.ReclamosCartaUncheckedUpdateManyWithoutAdministradorAtendioNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutPichangasInput = {
@@ -931,12 +1627,22 @@ export type UserCountOutputType = {
   pichangas: number
   inscripciones: number
   roles: number
+  tarjetas: number
+  tarjetasAsignadas: number
+  castigos: number
+  castigosCancelados: number
+  reclamosCartas: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   pichangas?: boolean | UserCountOutputTypeCountPichangasArgs
   inscripciones?: boolean | UserCountOutputTypeCountInscripcionesArgs
   roles?: boolean | UserCountOutputTypeCountRolesArgs
+  tarjetas?: boolean | UserCountOutputTypeCountTarjetasArgs
+  tarjetasAsignadas?: boolean | UserCountOutputTypeCountTarjetasAsignadasArgs
+  castigos?: boolean | UserCountOutputTypeCountCastigosArgs
+  castigosCancelados?: boolean | UserCountOutputTypeCountCastigosCanceladosArgs
+  reclamosCartas?: boolean | UserCountOutputTypeCountReclamosCartasArgs
 }
 
 /**
@@ -970,6 +1676,41 @@ export type UserCountOutputTypeCountRolesArgs<ExtArgs extends runtime.Types.Exte
   where?: Prisma.RolWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountTarjetasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TarjetasWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountTarjetasAsignadasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TarjetasWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCastigosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CastigoWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCastigosCanceladosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CastigoWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReclamosCartasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReclamosCartaWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -987,6 +1728,11 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   pichangas?: boolean | Prisma.User$pichangasArgs<ExtArgs>
   inscripciones?: boolean | Prisma.User$inscripcionesArgs<ExtArgs>
   roles?: boolean | Prisma.User$rolesArgs<ExtArgs>
+  tarjetas?: boolean | Prisma.User$tarjetasArgs<ExtArgs>
+  tarjetasAsignadas?: boolean | Prisma.User$tarjetasAsignadasArgs<ExtArgs>
+  castigos?: boolean | Prisma.User$castigosArgs<ExtArgs>
+  castigosCancelados?: boolean | Prisma.User$castigosCanceladosArgs<ExtArgs>
+  reclamosCartas?: boolean | Prisma.User$reclamosCartasArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1040,6 +1786,11 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   pichangas?: boolean | Prisma.User$pichangasArgs<ExtArgs>
   inscripciones?: boolean | Prisma.User$inscripcionesArgs<ExtArgs>
   roles?: boolean | Prisma.User$rolesArgs<ExtArgs>
+  tarjetas?: boolean | Prisma.User$tarjetasArgs<ExtArgs>
+  tarjetasAsignadas?: boolean | Prisma.User$tarjetasAsignadasArgs<ExtArgs>
+  castigos?: boolean | Prisma.User$castigosArgs<ExtArgs>
+  castigosCancelados?: boolean | Prisma.User$castigosCanceladosArgs<ExtArgs>
+  reclamosCartas?: boolean | Prisma.User$reclamosCartasArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1051,6 +1802,11 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     pichangas: Prisma.$PichangaPayload<ExtArgs>[]
     inscripciones: Prisma.$InscripcionPayload<ExtArgs>[]
     roles: Prisma.$RolPayload<ExtArgs>[]
+    tarjetas: Prisma.$TarjetasPayload<ExtArgs>[]
+    tarjetasAsignadas: Prisma.$TarjetasPayload<ExtArgs>[]
+    castigos: Prisma.$CastigoPayload<ExtArgs>[]
+    castigosCancelados: Prisma.$CastigoPayload<ExtArgs>[]
+    reclamosCartas: Prisma.$ReclamosCartaPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1462,6 +2218,11 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   pichangas<T extends Prisma.User$pichangasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$pichangasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PichangaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   inscripciones<T extends Prisma.User$inscripcionesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$inscripcionesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InscripcionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   roles<T extends Prisma.User$rolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RolPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  tarjetas<T extends Prisma.User$tarjetasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tarjetasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TarjetasPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  tarjetasAsignadas<T extends Prisma.User$tarjetasAsignadasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tarjetasAsignadasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TarjetasPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  castigos<T extends Prisma.User$castigosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$castigosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CastigoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  castigosCancelados<T extends Prisma.User$castigosCanceladosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$castigosCanceladosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CastigoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reclamosCartas<T extends Prisma.User$reclamosCartasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reclamosCartasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReclamosCartaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1965,6 +2726,126 @@ export type User$rolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
   take?: number
   skip?: number
   distinct?: Prisma.RolScalarFieldEnum | Prisma.RolScalarFieldEnum[]
+}
+
+/**
+ * User.tarjetas
+ */
+export type User$tarjetasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Tarjetas
+   */
+  select?: Prisma.TarjetasSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Tarjetas
+   */
+  omit?: Prisma.TarjetasOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TarjetasInclude<ExtArgs> | null
+  where?: Prisma.TarjetasWhereInput
+  orderBy?: Prisma.TarjetasOrderByWithRelationInput | Prisma.TarjetasOrderByWithRelationInput[]
+  cursor?: Prisma.TarjetasWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TarjetasScalarFieldEnum | Prisma.TarjetasScalarFieldEnum[]
+}
+
+/**
+ * User.tarjetasAsignadas
+ */
+export type User$tarjetasAsignadasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Tarjetas
+   */
+  select?: Prisma.TarjetasSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Tarjetas
+   */
+  omit?: Prisma.TarjetasOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TarjetasInclude<ExtArgs> | null
+  where?: Prisma.TarjetasWhereInput
+  orderBy?: Prisma.TarjetasOrderByWithRelationInput | Prisma.TarjetasOrderByWithRelationInput[]
+  cursor?: Prisma.TarjetasWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TarjetasScalarFieldEnum | Prisma.TarjetasScalarFieldEnum[]
+}
+
+/**
+ * User.castigos
+ */
+export type User$castigosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Castigo
+   */
+  select?: Prisma.CastigoSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Castigo
+   */
+  omit?: Prisma.CastigoOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CastigoInclude<ExtArgs> | null
+  where?: Prisma.CastigoWhereInput
+  orderBy?: Prisma.CastigoOrderByWithRelationInput | Prisma.CastigoOrderByWithRelationInput[]
+  cursor?: Prisma.CastigoWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CastigoScalarFieldEnum | Prisma.CastigoScalarFieldEnum[]
+}
+
+/**
+ * User.castigosCancelados
+ */
+export type User$castigosCanceladosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Castigo
+   */
+  select?: Prisma.CastigoSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Castigo
+   */
+  omit?: Prisma.CastigoOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CastigoInclude<ExtArgs> | null
+  where?: Prisma.CastigoWhereInput
+  orderBy?: Prisma.CastigoOrderByWithRelationInput | Prisma.CastigoOrderByWithRelationInput[]
+  cursor?: Prisma.CastigoWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CastigoScalarFieldEnum | Prisma.CastigoScalarFieldEnum[]
+}
+
+/**
+ * User.reclamosCartas
+ */
+export type User$reclamosCartasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReclamosCarta
+   */
+  select?: Prisma.ReclamosCartaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReclamosCarta
+   */
+  omit?: Prisma.ReclamosCartaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReclamosCartaInclude<ExtArgs> | null
+  where?: Prisma.ReclamosCartaWhereInput
+  orderBy?: Prisma.ReclamosCartaOrderByWithRelationInput | Prisma.ReclamosCartaOrderByWithRelationInput[]
+  cursor?: Prisma.ReclamosCartaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReclamosCartaScalarFieldEnum | Prisma.ReclamosCartaScalarFieldEnum[]
 }
 
 /**

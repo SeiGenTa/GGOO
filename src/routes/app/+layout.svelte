@@ -18,7 +18,7 @@
                 <h1 class="text-2xl font-bold">{page.data.name_page}</h1>
             {/if}
         </header>
-        <main class="p-4 h-full">
+        <main class="p-4 h-full w-full">
             {@render children()}
         </main>
         <footer class="p-4 border-t text-center text-sm">
