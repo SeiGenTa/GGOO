@@ -39,7 +39,10 @@
     );
     const inscrito = $derived(user_id ? inscripciones_activas.some((i) => i.user.id === user_id) : false);
     const admin_partido = $derived(user_id ? pichanga.admins.some((a) => a.id === user_id) : false);
-    const inscripciones_abierta = $derived(new Date() >= new Date(pichanga.fechaInicioIncripcion));
+    const inscripciones_abierta = $derived(
+        new Date() >= new Date(pichanga.fechaInicioIncripcion) && new Date() < new Date(pichanga.fecha),
+    );
+    const evento_finalizado = $derived(new Date() >= new Date(pichanga.fecha));
 
     const inscritos = $derived(inscripciones_activas.slice(0, pichanga.maxJugadores));
     const lista_espera = $derived(inscripciones_activas.slice(pichanga.maxJugadores));
@@ -260,13 +263,21 @@
 
                     {#if !admin_partido && data.user}
                         {#if inscrito}
-                            <form method="POST" action="?/salir" use:enhance>
-                                <Button type="submit" variant="outline" size="sm">Salir</Button>
-                            </form>
+                            {#if inscripciones_abierta}
+                                <form method="POST" action="?/salir" use:enhance>
+                                    <Button type="submit" variant="outline" size="sm">Salir</Button>
+                                </form>
+                            {:else}
+                                <Badge variant="secondary">Solo lectura</Badge>
+                            {/if}
                         {:else}
-                            <form method="POST" action="?/inscribirse" use:enhance>
-                                <Button type="submit" variant="default" size="sm" disabled={!inscripciones_abierta}>Unirse</Button>
-                            </form>
+                            {#if inscripciones_abierta}
+                                <form method="POST" action="?/inscribirse" use:enhance>
+                                    <Button type="submit" variant="default" size="sm">Unirse</Button>
+                                </form>
+                            {:else}
+                                <Badge variant="secondary">{evento_finalizado ? "Evento finalizado" : "Inscripciones cerradas"}</Badge>
+                            {/if}
                         {/if}
                     {/if}
                 </Card.Action>

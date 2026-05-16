@@ -5,6 +5,23 @@ import type { Actions, PageServerLoad } from "./$types";
 import { Permissions } from "$lib/permissions";
 import logger from "$lib/logger";
 
+const getPichangaWindow = async (id_pichanga: string) => {
+  return prisma.pichanga.findUnique({
+    where: {
+      id: id_pichanga,
+    },
+    select: {
+      fecha: true,
+      fechaInicioIncripcion: true,
+      admins: {
+        select: {
+          id: true,
+        },
+      },
+    },
+  });
+};
+
 export const load: PageServerLoad = async ({ params }) => {
   const { id_pichanga } = params;
 
@@ -140,25 +157,19 @@ export const actions = {
       return fail(401, { error: "Usuario no autenticado" });
     }
 
-    const pichanga = await prisma.pichanga.findUnique({
-      where: {
-        id: id_pichanga,
-      },
-      select: {
-        fechaInicioIncripcion: true,
-      },
-    });
+    const pichanga = await getPichangaWindow(id_pichanga);
 
     if (!pichanga) {
       return fail(404, { error: "Pichanga no encontrada" });
     }
 
+    if (pichanga.admins.some((admin) => admin.id === user.id)) {
+      return fail(403, { error: "Los administradores no pueden inscribirse en esta pichanga" });
+    }
+
     const now = new Date();
-    if (
-      pichanga.fechaInicioIncripcion &&
-      now < pichanga.fechaInicioIncripcion
-    ) {
-      return fail(400, { error: "La inscripción aún no está habilitada" });
+    if (!pichanga.fechaInicioIncripcion || now < pichanga.fechaInicioIncripcion || now >= pichanga.fecha) {
+      return fail(400, { error: "Las acciones solo están habilitadas entre el inicio de inscripción y el inicio del evento" });
     }
 
     const existingInscription = await prisma.inscripcion.findFirst({
@@ -198,6 +209,21 @@ export const actions = {
 
     if (!user) {
       return fail(401, { error: "Usuario no autenticado" });
+    }
+
+    const pichanga = await getPichangaWindow(id_pichanga);
+
+    if (!pichanga) {
+      return fail(404, { error: "Pichanga no encontrada" });
+    }
+
+    if (pichanga.admins.some((admin) => admin.id === user.id)) {
+      return fail(403, { error: "Los administradores no pueden salir de esta pichanga" });
+    }
+
+    const now = new Date();
+    if (!pichanga.fechaInicioIncripcion || now < pichanga.fechaInicioIncripcion || now >= pichanga.fecha) {
+      return fail(400, { error: "Las acciones solo están habilitadas entre el inicio de inscripción y el inicio del evento" });
     }
 
     const activeInscription = await prisma.inscripcion.findFirst({

@@ -3,6 +3,7 @@ interface Pichanga_struct {
     name: string|null;
     admins_name: string[];
     date: string;
+    fechaInicioIncripcion: string;
     limit_members: number;
     members: { id: string; name: string }[];
 }

@@ -56,11 +56,6 @@ export const load: PageServerLoad = async ({ url, depends, locals }) => {
 
 const load_pichangas_promise = async (page: string) => {
     const data_pichangas = await prisma.pichanga.findMany({
-        where: {
-            fecha: {
-                gt: new Date(),
-            },
-        },
         include: {
             admins: true,
             inscripciones: {
@@ -93,6 +88,9 @@ const load_pichangas_promise = async (page: string) => {
             name: pichanga.nombre?.toString() || null,
             admins_name: pichanga.admins.map((admin) => admin.nombre),
             date: pichanga.fecha.toISOString(),
+            fechaInicioIncripcion:
+                pichanga.fechaInicioIncripcion?.toISOString() ??
+                new Date(0).toISOString(),
             limit_members: pichanga.maxJugadores,
             members: pichanga.inscripciones.map((inscripcion) => ({
                 id: inscripcion.user.id,
@@ -181,7 +179,9 @@ export const actions = {
             return fail(500, { error: 'Error al crear la pichanga' })
         }
 
-        logger.info(`Pichanga ${pichanga.id} creada por el usuario ${locals.user!.id}`)
+        logger.info(
+            `Pichanga ${pichanga.id} creada por el usuario ${locals.user!.id}`
+        )
 
         return {
             success: true,
