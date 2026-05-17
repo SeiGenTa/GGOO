@@ -26,3 +26,5 @@ vite.config.ts.timestamp-*
 
 app.logs
 ./dev.db
+
+constributions.json

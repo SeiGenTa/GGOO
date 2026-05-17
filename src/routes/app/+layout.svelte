@@ -9,7 +9,7 @@
 </script>
 
 <SidebarProvider>
-    <SideBarApp user={data.user} app_name={data.app_name} />
+    <SideBarApp user={data.user!} app_name={data.app_name} />
 
     <SidebarInset>
         <header class="p-4 border-b flex">
@@ -25,6 +25,7 @@
             &copy; {new Date().getFullYear()} GGOO. Todos los derechos reservados.
             <a href="/app/extras/contributors" class="text-blue-500 hover:underline ml-2">Contribuidores</a>
             <a href="/app/extras/contributions_money" class="text-blue-500 hover:underline ml-2">Contribuciones monetarias</a>
+            <a href="https://github.com/SeiGenTa/GGOO" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline ml-2">GitHub</a>
         </footer>
     </SidebarInset>
 </SidebarProvider>
