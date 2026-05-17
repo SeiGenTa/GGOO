@@ -1,3 +1,4 @@
+import logger from '$lib/logger'
 import UserUtils from '$utils/user'
 import type { Handle } from '@sveltejs/kit'
 
@@ -32,6 +33,11 @@ export const handle: Handle = async ({ event, resolve }) => {
             permisos: user.permisos,
         }
     }
-
-    return resolve(event)
+    try{
+        return resolve(event)
+    }
+    catch(err){
+        logger.info(`Error en handle: ${err instanceof Error ? err.message : String(err)}`)
+        throw err
+    }
 }

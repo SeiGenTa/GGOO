@@ -7,6 +7,7 @@ import { sendEmail } from '$lib/email/resend'
 import { encript_json } from '$utils/encript'
 import type DataEncripted from '$src/routes/auth/change_name/type'
 import { ActionsDataEncripted } from '$src/routes/auth/change_name/type'
+import logger from '$lib/logger'
 
 const ALL_PERMISSIONS = Object.values(Permissions)
 const PAGE_SIZE = 10
@@ -136,10 +137,12 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 export const actions: Actions = {
     accept_member: async ({ request, locals }) => {
         if (!locals.user) {
+            logger.info({ action: 'action_accept_member_unauthorized' }, 'Intento de aprobar miembro sin autenticación')
             return fail(401, { message: 'No autorizado.' })
         }
 
         if (!locals.user.permisos.includes(Permissions.AceptarMiembros)) {
+            logger.info({ action: 'action_accept_member_forbidden', userId: locals.user.id }, 'Intento de aprobar miembro sin permisos')
             return fail(403, {
                 message: 'No tienes permisos para aceptar miembros.',
             })
@@ -219,10 +222,12 @@ export const actions: Actions = {
 
     reject_member: async ({ request, locals }) => {
         if (!locals.user) {
+            logger.info({ action: 'action_reject_member_unauthorized' }, 'Intento de rechazar miembro sin autenticación')
             return fail(401, { message: 'No autorizado.' })
         }
 
         if (!locals.user.permisos.includes(Permissions.AceptarMiembros)) {
+            logger.info({ action: 'action_reject_member_forbidden', userId: locals.user.id }, 'Intento de rechazar miembro sin permisos')
             return fail(403, {
                 message: 'No tienes permisos para rechazar miembros.',
             })

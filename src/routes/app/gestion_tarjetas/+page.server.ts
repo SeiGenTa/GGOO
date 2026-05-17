@@ -3,6 +3,7 @@ import type { PageServerLoad } from "./$types";
 import { Permissions } from "../../../lib/permissions";
 import { prisma } from "$utils/prisma";
 import type { Prisma } from "$generated/prisma/client";
+import logger from "$lib/logger";
 
 const PAGE_SIZE = 10;
 const CARD_TYPES = ["roja", "amarilla"] as const;
@@ -278,10 +279,12 @@ export const load: PageServerLoad = async ({ locals, depends, url }) => {
 export const actions = {
     create: async ({ request, locals }) => {
         if (!locals.user) {
+            logger.info("Intento de crear tarjeta sin autenticación");
             return fail(401, { message: "No autorizado." });
         }
 
         if (!locals.user.permisos.includes(Permissions.CrearTarjetas)) {
+            logger.info({ action: "action_create_tarjeta_forbidden", userId: locals.user.id }, "Intento de crear tarjeta sin permisos");
             return fail(403, { message: "No tienes permisos para crear tarjetas." });
         }
 
@@ -339,10 +342,12 @@ export const actions = {
 
     delete: async ({ request, locals }) => {
         if (!locals.user) {
+            logger.info("Intento de eliminar tarjeta sin autenticación");
             return fail(401, { message: "No autorizado." });
         }
 
         if (!locals.user.permisos.includes(Permissions.EliminarTarjetas)) {
+            logger.info({ action: "action_delete_tarjeta_forbidden", userId: locals.user.id }, "Intento de eliminar tarjeta sin permisos");
             return fail(403, { message: "No tienes permisos para eliminar tarjetas." });
         }
 
@@ -350,6 +355,7 @@ export const actions = {
         const id_tarjeta = parseRequiredText(form.get("id_tarjeta"));
 
         if (!id_tarjeta) {
+            logger.info({ action: "action_delete_tarjeta_missing_id", userId: locals.user.id }, "Debes indicar la tarjeta a eliminar");
             return fail(400, { message: "Debes indicar la tarjeta a eliminar." });
         }
 
@@ -359,6 +365,7 @@ export const actions = {
         });
 
         if (!exists) {
+            logger.info({ action: "action_delete_tarjeta_not_found", userId: locals.user.id, tarjetaId: id_tarjeta }, "La tarjeta no existe");
             return fail(404, { message: "La tarjeta no existe." });
         }
 
@@ -366,6 +373,8 @@ export const actions = {
             prisma.reclamosCarta.deleteMany({ where: { tarjetaId: id_tarjeta } }),
             prisma.tarjetas.delete({ where: { id: id_tarjeta } }),
         ]);
+
+        logger.info({ action: "action_delete_tarjeta_success", userId: locals.user.id, tarjetaId: id_tarjeta }, "Tarjeta eliminada correctamente");
 
         return {
             success: true,
@@ -375,10 +384,12 @@ export const actions = {
 
     update: async ({ request, locals }) => {
         if (!locals.user) {
+            logger.info("Intento de editar tarjeta sin autenticación");
             return fail(401, { message: "No autorizado." });
         }
 
         if (!locals.user.permisos.includes(Permissions.EditarTarjetas)) {
+            logger.info({ action: "action_update_tarjeta_forbidden", userId: locals.user.id }, "Intento de editar tarjeta sin permisos");
             return fail(403, { message: "No tienes permisos para editar tarjetas." });
         }
 
@@ -427,6 +438,7 @@ export const actions = {
                 data,
             });
         } catch {
+            logger.info({ action: "action_update_tarjeta_not_found", userId: locals.user.id, tarjetaId: id_tarjeta }, "La tarjeta no existe o no pudo actualizarse");
             return fail(404, { message: "La tarjeta no existe o no pudo actualizarse." });
         }
 
@@ -438,10 +450,12 @@ export const actions = {
 
     resolve_complaint: async ({ request, locals }) => {
         if (!locals.user) {
+            logger.info({ action: "action_resolve_complaint_unauthorized" }, "Intento de resolver reclamo sin autenticación");
             return fail(401, { message: "No autorizado." });
         }
 
         if (!locals.user.permisos.includes(Permissions.EditarTarjetas)) {
+            logger.info({ action: "action_resolve_complaint_forbidden", userId: locals.user.id }, "Intento de resolver reclamo sin permisos");
             return fail(403, { message: "No tienes permisos para gestionar reclamos." });
         }
 

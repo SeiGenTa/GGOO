@@ -105,10 +105,12 @@ export const actions = {
       });
     }
     if (!locals.user) {
+      logger.info({ action: "action_edit_pichanga_unauthorized" }, "Intento de editar pichanga sin autenticación");
       return fail(401, { error: "Usuario no autenticado" });
     }
 
     if (!locals.user.permisos.includes(Permissions.EditarPartidos)) {
+      logger.info({ action: "action_edit_pichanga_forbidden", userId: locals.user.id, pichangaId: id_pichanga }, "Intento de editar pichanga sin permisos");
       redirect(302, "/app?error=No tienes permisos para editar esta pichanga.");
     }
 
@@ -296,13 +298,12 @@ export const actions = {
     const { user } = locals;
 
     if (!user) {
-      return fail(401, { error: "Usuario no autenticado" });
-    }
-    if (!locals.user) {
+      logger.info({ action: "action_delete_pichanga_unauthorized" }, "Intento de eliminar pichanga sin autenticación");
       return fail(401, { error: "Usuario no autenticado" });
     }
 
-    if (!locals.user.permisos.includes(Permissions.EditarPartidos)) {
+    if (user.permisos.includes(Permissions.EditarPartidos)) {
+      logger.info({ action: "action_delete_pichanga_forbidden", userId: user.id, pichangaId: id_pichanga }, "Intento de eliminar pichanga sin permisos");
       redirect(
         302,
         "/app?error=No tienes permisos para eliminar esta pichanga.",
