@@ -23,6 +23,7 @@ services:
       dockerfile: Dockerfile
       target: development
     container_name: ggoo-app
+    user: "${UID:-1000}:${GID:-1000}"
     depends_on:
       postgres:
         condition: service_healthy

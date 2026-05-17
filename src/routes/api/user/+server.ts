@@ -1,11 +1,13 @@
 import { Permissions } from "$lib/permissions.js";
 import { prisma } from "$utils/prisma.js";
 import type { RequestHandler } from "./$types";
+import logger from "$lib/logger";
 
 const avalible_options_selects = ["id", "nombre", "email", "apodo"];
 
 export const GET: RequestHandler = async ({ url, locals }) => {
     if (!locals.user) {
+        logger.info({ action: "api_user_get_unauthorized" }, "Intento de listar usuarios sin autenticación");
         return new Response(JSON.stringify({ error: "Unauthorized" }), {
             status: 401,
             headers: {
@@ -14,6 +16,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         });
     }
     if (!locals.user.permisos.includes(Permissions.CrearPartidos)) {
+        logger.info({ action: "api_user_get_forbidden", userId: locals.user.id }, "Intento de listar usuarios sin permisos");
         return new Response(JSON.stringify({ error: "Forbidden" }), {
             status: 403,
             headers: {

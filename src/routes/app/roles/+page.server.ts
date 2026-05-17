@@ -3,6 +3,7 @@ import type { Actions, PageServerLoad } from "./$types";
 import { prisma } from "$utils/prisma";
 import type { Prisma } from "$generated/prisma/client";
 import { Permissions } from "../../../lib/permissions";
+import logger from "$lib/logger";
 
 type SortBy = "nombre" | "id";
 type SortDirection = "asc" | "desc";
@@ -185,7 +186,13 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
 export const actions: Actions = {
   assign_roles: async ({ request, locals }) => {
-    if (!locals.user!.permisos.includes(Permissions.AsignarRoles)) {
+    if (!locals.user) {
+      logger.info({ action: "action_assign_roles_unauthorized" }, "Intento de asignar roles sin autenticación");
+      return fail(401, { message: "No autorizado." });
+    }
+
+    if (!locals.user.permisos.includes(Permissions.AsignarRoles)) {
+      logger.info({ action: "action_assign_roles_forbidden", userId: locals.user.id }, "Intento de asignar roles sin permisos");
       redirect(
         302,
         "/app?error=No tienes permisos para acceder a esta página.",
@@ -253,7 +260,13 @@ export const actions: Actions = {
   },
 
   set_super_user: async ({ request, locals }) => {
-    if (!locals.user!.es_admin) {
+    if (!locals.user) {
+      logger.info({ action: "action_set_super_user_unauthorized" }, "Intento de cambiar super usuario sin autenticación");
+      return fail(401, { message: "No autorizado." });
+    }
+
+    if (!locals.user.es_admin) {
+      logger.info({ action: "action_set_super_user_forbidden", userId: locals.user.id }, "Intento de cambiar super usuario sin permisos de administrador");
       return fail(403, { message: "Solo un administrador puede cambiar el estado de super usuario." });
     }
 

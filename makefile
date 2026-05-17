@@ -33,19 +33,18 @@ logs:
 	docker compose logs -f app
 
 migrate:
-	docker compose exec app sh -lc "pnpm prisma migrate dev"
-
+	docker compose exec app /home/node/.npm-global/bin/pnpm prisma migrate dev
 apply-migrate:
-	docker compose exec app sh -lc "pnpm prisma migrate deploy"
+	docker compose exec app sh -lc "/home/node/.npm-global/bin/pnpm prisma migrate deploy"
 
 generate-prisma:
-	docker compose exec app sh -lc "pnpm prisma generate"
+	docker compose exec app sh -lc "/home/node/.npm-global/bin/pnpm prisma generate"
 
 createsuperuser:
-	docker compose exec app sh -lc "cd src && pnpm ts-node manage.ts createsuperuser"
+	docker compose exec app sh -lc "cd src && /home/node/.npm-global/bin/pnpm ts-node manage.ts createsuperuser"
 
 prisma-studio:
-	docker compose exec app sh -lc "BROWSER=false pnpm prisma studio"
+	docker compose exec app sh -lc "BROWSER=false /home/node/.npm-global/bin/pnpm prisma studio"
 
 save-prod:
 	docker save ggoo-app-production -o app-production.tar

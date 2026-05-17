@@ -3,6 +3,7 @@ import type { PageServerLoad } from './$types'
 import { prisma } from '$utils/prisma.js'
 import type { Pichanga } from '$generated/prisma/client.js'
 import { Permissions } from '$lib/permissions.js'
+import logger from '$lib/logger'
 
 export const load: PageServerLoad = async ({ url, depends, locals }) => {
     depends('pichangas:load')
@@ -55,14 +56,12 @@ export const load: PageServerLoad = async ({ url, depends, locals }) => {
 
 const load_pichangas_promise = async (page: string) => {
     const data_pichangas = await prisma.pichanga.findMany({
-        where: {
-            fecha: {
-                gt: new Date(),
-            },
-        },
         include: {
             admins: true,
             inscripciones: {
+                where: {
+                    tiempoSalidaLista: null,
+                },
                 include: {
                     user: {
                         select: {
@@ -70,6 +69,9 @@ const load_pichangas_promise = async (page: string) => {
                             nombre: true,
                         },
                     },
+                },
+                orderBy: {
+                    createdAt: 'asc',
                 },
             },
         },
@@ -86,6 +88,9 @@ const load_pichangas_promise = async (page: string) => {
             name: pichanga.nombre?.toString() || null,
             admins_name: pichanga.admins.map((admin) => admin.nombre),
             date: pichanga.fecha.toISOString(),
+            fechaInicioIncripcion:
+                pichanga.fechaInicioIncripcion?.toISOString() ??
+                new Date(0).toISOString(),
             limit_members: pichanga.maxJugadores,
             members: pichanga.inscripciones.map((inscripcion) => ({
                 id: inscripcion.user.id,
@@ -98,7 +103,15 @@ const load_pichangas_promise = async (page: string) => {
 
 export const actions = {
     add_pichanga: async ({ request, locals }) => {
+        if (!locals.user) {
+            logger.info({ action: 'action_add_pichanga_unauthorized' }, 'Intento de crear pichanga sin autenticación')
+            return fail(401, {
+                error: 'No autorizado',
+            })
+        }
+
         if (!locals.user!.permisos.includes(Permissions.CrearPartidos)) {
+            logger.info({ action: 'action_add_pichanga_forbidden', userId: locals.user.id }, 'Intento de crear pichanga sin permisos')
             return fail(403, {
                 error: 'No tienes permisos para crear una pichanga',
             })
@@ -170,9 +183,13 @@ export const actions = {
                 },
             })
         } catch (error) {
-            console.error(error)
+            logger.error('Error al crear la pichanga')
             return fail(500, { error: 'Error al crear la pichanga' })
         }
+
+        logger.info(
+            `Pichanga ${pichanga.id} creada por el usuario ${locals.user!.id}`
+        )
 
         return {
             success: true,

@@ -26,12 +26,26 @@
     let refreshing = $state(false);
 
     const user_id = $derived(data.user?.id ?? "");
-    const inscrito = $derived(user_id ? pichanga.inscripciones.some((i) => i.user.id === user_id) : false);
+    const inscripciones_activas = $derived(
+        pichanga.inscripciones.filter((inscripcion) => !inscripcion.tiempoSalidaLista),
+    );
+    const inscripciones_salieron = $derived(
+        [...pichanga.inscripciones]
+            .filter((inscripcion) => inscripcion.tiempoSalidaLista)
+            .sort(
+                (a, b) =>
+                    new Date(b.tiempoSalidaLista ?? 0).getTime() - new Date(a.tiempoSalidaLista ?? 0).getTime(),
+            ),
+    );
+    const inscrito = $derived(user_id ? inscripciones_activas.some((i) => i.user.id === user_id) : false);
     const admin_partido = $derived(user_id ? pichanga.admins.some((a) => a.id === user_id) : false);
-    const inscripciones_abierta = $derived(new Date() >= new Date(pichanga.fechaInicioIncripcion));
+    const inscripciones_abierta = $derived(
+        new Date() >= new Date(pichanga.fechaInicioIncripcion) && new Date() < new Date(pichanga.fecha),
+    );
+    const evento_finalizado = $derived(new Date() >= new Date(pichanga.fecha));
 
-    const inscritos = $derived(pichanga.inscripciones.slice(0, pichanga.maxJugadores));
-    const lista_espera = $derived(pichanga.inscripciones.slice(pichanga.maxJugadores));
+    const inscritos = $derived(inscripciones_activas.slice(0, pichanga.maxJugadores));
+    const lista_espera = $derived(inscripciones_activas.slice(pichanga.maxJugadores));
 
     const toDateTimeLocal = (date: string | Date) => {
         const d = new Date(date);
@@ -249,13 +263,21 @@
 
                     {#if !admin_partido && data.user}
                         {#if inscrito}
-                            <form method="POST" action="?/salir" use:enhance>
-                                <Button type="submit" variant="outline" size="sm">Salir</Button>
-                            </form>
+                            {#if inscripciones_abierta}
+                                <form method="POST" action="?/salir" use:enhance>
+                                    <Button type="submit" variant="outline" size="sm">Salir</Button>
+                                </form>
+                            {:else}
+                                <Badge variant="secondary">Solo lectura</Badge>
+                            {/if}
                         {:else}
-                            <form method="POST" action="?/inscribirse" use:enhance>
-                                <Button type="submit" variant="default" size="sm" disabled={!inscripciones_abierta}>Unirse</Button>
-                            </form>
+                            {#if inscripciones_abierta}
+                                <form method="POST" action="?/inscribirse" use:enhance>
+                                    <Button type="submit" variant="default" size="sm">Unirse</Button>
+                                </form>
+                            {:else}
+                                <Badge variant="secondary">{evento_finalizado ? "Evento finalizado" : "Inscripciones cerradas"}</Badge>
+                            {/if}
                         {/if}
                     {/if}
                 </Card.Action>
@@ -355,6 +377,39 @@
                         </ul>
                     {:else}
                         <p class="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">Sin lista de espera por ahora.</p>
+                    {/if}
+                </section>
+
+                <section>
+                    <div class="mb-2 flex items-center justify-between">
+                        <h2 class="text-base font-semibold">Se salieron</h2>
+                        <Badge variant="outline">{inscripciones_salieron.length}</Badge>
+                    </div>
+
+                    {#if inscripciones_salieron.length > 0}
+                        <ul class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                            {#each inscripciones_salieron as inscripcion}
+                                <li
+                                    class="rounded-lg border border-zinc-300 bg-zinc-50 px-3 py-2 text-sm font-medium dark:border-zinc-800 dark:bg-zinc-900/40"
+                                >
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span>
+                                            {inscripcion.user.apodo ?? inscripcion.user.nombre}
+                                        </span>
+                                        {#if inscripcion.posicionEnLista}
+                                            <Badge variant="secondary">#{inscripcion.posicionEnLista}</Badge>
+                                        {/if}
+                                    </div>
+                                    {#if inscripcion.tiempoSalidaLista}
+                                        <p class="mt-1 text-xs text-muted-foreground">
+                                            Salió: {new Date(inscripcion.tiempoSalidaLista).toLocaleString("es-CL")}
+                                        </p>
+                                    {/if}
+                                </li>
+                            {/each}
+                        </ul>
+                    {:else}
+                        <p class="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">Nadie se ha salido todavía.</p>
                     {/if}
                 </section>
             </Card.Content>

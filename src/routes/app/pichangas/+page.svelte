@@ -18,10 +18,15 @@
     const getStatusLabel = (
         pichanga: Pichanga_struct,
     ): [string, "destructive" | "default" | "link" | "secondary" | "outline" | "ghost" | undefined] => {
-        if (new Date(pichanga.date) < new Date()) return ["Finalizada", "outline"];
+        const ahora = new Date();
+        const inicioInscripcion = new Date(pichanga.fechaInicioIncripcion);
+        const inicioEvento = new Date(pichanga.date);
+
+        if (inicioEvento <= ahora) return ["Finalizada", "outline"];
+        if (ahora < inicioInscripcion) return ["Próxima", "secondary"];
         if (pichanga.members.length >= pichanga.limit_members) return ["Completa", "destructive"];
-        if (pichanga.members.length >= Math.ceil(pichanga.limit_members * 0.7)) return ["Ultimos cupos", "link"];
-        return ["Con espacios", "default"];
+        if (pichanga.members.length >= Math.ceil(pichanga.limit_members * 0.7)) return ["Últimos cupos", "link"];
+        return ["Inscripción abierta", "default"];
     };
 </script>
 
@@ -40,7 +45,8 @@
                 {@const miembros = pichanga.members.filter((_, index) => index < pichanga.limit_members)}
                 {@const espera = pichanga.members.filter((_, index) => index >= pichanga.limit_members)}
                 {@const [statusLabel, variant_badge] = getStatusLabel(pichanga)}
-                {@const finalizado = new Date(pichanga.date) < new Date()}
+                {@const finalizado = new Date(pichanga.date) <= new Date()}
+                {@const inscripcionesAbiertas = new Date() >= new Date(pichanga.fechaInicioIncripcion) && new Date() < new Date(pichanga.date)}
 
                 <Accordion.Item class="event-card group border-0" value={`pichanga-${pichanga.id}`}>
                     <Accordion.Trigger class="event-trigger w-full p-4 sm:p-5">
@@ -55,18 +61,16 @@
                                                 {:else}
                                                     Pichanga sin nombre
                                                 {/if}
-                                                {#if !finalizado}
-                                                    <Button
-                                                        href={`/app/pichangas/stream/${pichanga.id}`}
-                                                        variant="secondary"
-                                                        class="shadow-2xs bg-red-600 hover:bg-red-800 text-white"
-                                                        size="xs">Lista en vivo</Button
-                                                    >
-                                                {/if}</Item.Title
+                                                <Button
+                                                    href={`/app/pichangas/stream/${pichanga.id}`}
+                                                    variant="secondary"
+                                                    class={`shadow-2xs text-white ${finalizado ? "bg-slate-700 hover:bg-slate-800" : "bg-red-600 hover:bg-red-800"}`}
+                                                    size="xs">{finalizado ? "Ver lista" : inscripcionesAbiertas ? "Lista en vivo" : "Ver detalles"}</Button
+                                                ></Item.Title
                                             >
                                             <Item.Description class="mt-1 text-xs sm:text-sm">
                                                 admins:
-                                                {pichanga.admins_name.join(", ")} • {new Date(pichanga.date).toLocaleDateString("es-Cl", {
+                                                {pichanga.admins_name.join(", ")} • {new Date(pichanga.date).toLocaleDateString("es-CL", {
                                                     day: "2-digit",
                                                     month: "short",
                                                     year: "numeric",
@@ -82,20 +86,18 @@
                                         </div>
                                     </div>
 
-                                    {#if !finalizado}
-                                        <div class="mt-3 space-y-2">
-                                            <div class="flex items-center justify-between text-sm">
-                                                <span class="text-muted-foreground">Cupos ocupados</span>
-                                                <span class="font-medium">{inscritos}/{pichanga.limit_members}</span>
-                                            </div>
-                                            <div class="h-2 overflow-hidden rounded-full bg-muted">
-                                                <div
-                                                    class="h-full rounded-full bg-primary transition-all duration-500"
-                                                    style={`width: ${porcentaje}%`}
-                                                ></div>
-                                            </div>
+                                    <div class="mt-3 space-y-2">
+                                        <div class="flex items-center justify-between text-sm">
+                                            <span class="text-muted-foreground">Cupos ocupados</span>
+                                            <span class="font-medium">{inscritos}/{pichanga.limit_members}</span>
                                         </div>
-                                    {/if}
+                                        <div class="h-2 overflow-hidden rounded-full bg-muted">
+                                            <div
+                                                class="h-full rounded-full bg-primary transition-all duration-500"
+                                                style={`width: ${porcentaje}%`}
+                                            ></div>
+                                        </div>
+                                    </div>
                                 </Item.Content>
                                 <Item.Actions>
                                     <Button {...props} size="icon-xs" variant="ghost" class="flex justify-center items-center">
@@ -110,17 +112,8 @@
                             {#if open}
                                 <div {...props} transition:slide class="p-4">
                                     {#if finalizado}
-                                        <div class="mt-3 space-y-2 pt-4 pb-4">
-                                            <div class="flex items-center justify-between text-sm">
-                                                <span class="text-muted-foreground">Cupos ocupados</span>
-                                                <span class="font-medium">{inscritos}/{pichanga.limit_members}</span>
-                                            </div>
-                                            <div class="h-2 overflow-hidden rounded-full bg-muted">
-                                                <div
-                                                    class="h-full rounded-full bg-primary transition-all duration-500"
-                                                    style={`width: ${porcentaje}%`}
-                                                ></div>
-                                            </div>
+                                        <div class="mb-4 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-200">
+                                            Esta pichanga ya fue realizada. Puedes revisar la lista, pero no hay acciones disponibles.
                                         </div>
                                     {/if}
                                     <div class="grid gap-3 sm:grid-cols-2 mb-4">

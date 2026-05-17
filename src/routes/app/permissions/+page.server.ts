@@ -2,6 +2,7 @@ import { fail, redirect } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
 import { prisma } from "$utils/prisma";
 import { Permissions } from "../../../lib/permissions";
+import logger from "$lib/logger";
 
 const ALL_PERMISSIONS = Object.values(Permissions);
 
@@ -53,10 +54,12 @@ export const load: PageServerLoad = async ({ locals, depends }) => {
 export const actions: Actions = {
     create_role: async ({ request, locals }) => {
         if (!locals.user) {
+            logger.info({ action: "action_create_role_unauthorized" }, "Intento de crear rol sin autenticación");
             return fail(401, { message: "No autorizado." });
         }
 
         if (!locals.user.permisos.includes(Permissions.CrearRoles)) {
+            logger.info({ action: "action_create_role_forbidden", userId: locals.user.id }, "Intento de crear rol sin permisos");
             return fail(403, { message: "No tienes permisos para crear roles." });
         }
 
@@ -91,6 +94,8 @@ export const actions: Actions = {
             },
         });
 
+        logger.info(`Rol ${nombre} creado por el usuario ${locals.user.id}`)
+
         return {
             success: true,
             message: "Rol creado correctamente.",
@@ -99,10 +104,12 @@ export const actions: Actions = {
 
     update_role: async ({ request, locals }) => {
         if (!locals.user) {
+            logger.info({ action: "action_update_role_unauthorized" }, "Intento de editar rol sin autenticación");
             return fail(401, { message: "No autorizado." });
         }
 
         if (!locals.user.permisos.includes(Permissions.EditarRoles)) {
+            logger.info({ action: "action_update_role_forbidden", userId: locals.user.id }, "Intento de editar rol sin permisos");
             return fail(403, { message: "No tienes permisos para editar roles." });
         }
 
@@ -159,6 +166,8 @@ export const actions: Actions = {
             },
         });
 
+        logger.info(`Rol ${nombre} actualizado por el usuario ${locals.user.id}`)
+
         return {
             success: true,
             message: "Rol actualizado correctamente.",
@@ -167,10 +176,12 @@ export const actions: Actions = {
 
     delete_role: async ({ request, locals }) => {
         if (!locals.user) {
+            logger.info({ action: "action_delete_role_unauthorized" }, "Intento de eliminar rol sin autenticación");
             return fail(401, { message: "No autorizado." });
         }
 
         if (!locals.user.permisos.includes(Permissions.EliminarRoles)) {
+            logger.info({ action: "action_delete_role_forbidden", userId: locals.user.id }, "Intento de eliminar rol sin permisos");
             return fail(403, { message: "No tienes permisos para eliminar roles." });
         }
 
@@ -200,6 +211,8 @@ export const actions: Actions = {
             },
         });
 
+        logger.info(`Rol ${roleId} eliminado por el usuario ${locals.user.id}`)
+
         return {
             success: true,
             message: "Rol eliminado correctamente.",
@@ -207,10 +220,12 @@ export const actions: Actions = {
     },
     set_predeterminated: async ({ request, locals }) => {
         if (!locals.user) {
+            logger.info({ action: "action_set_default_role_unauthorized" }, "Intento de actualizar rol predeterminado sin autenticación");
             return fail(401, { message: "No autorizado." });
         }
 
         if (!locals.user.permisos.includes(Permissions.EditarRoles)) {
+            logger.info({ action: "action_set_default_role_forbidden", userId: locals.user.id }, "Intento de actualizar rol predeterminado sin permisos");
             return fail(403, { message: "No tienes permisos para editar roles." });
         }
 
@@ -266,7 +281,7 @@ export const actions: Actions = {
             });
         }
 
-
+        logger.info(`Rol ${roleId} actualizado como predeterminado=${isDefault} por el usuario ${locals.user.id}`)
 
         return {
             success: true,

@@ -214,7 +214,7 @@ export const actions = {
       "/auth?error=Correo actualizado. Debes validar nuevamente tu cuenta desde tu nuevo correo.",
     );
   },
-  set_password: async ({ request, locals }) => {
+  set_password: async ({ request, locals, cookies }) => {
     if (!locals.user) {
       return fail(401, { success: false, message: "No autorizado" });
     }
@@ -295,6 +295,9 @@ export const actions = {
         password: hashedPassword,
       },
     });
+
+    cookies.delete("token", { path: "/" });
+    cookies.delete("refreshToken", { path: "/" });
 
     return {
       success: true,
