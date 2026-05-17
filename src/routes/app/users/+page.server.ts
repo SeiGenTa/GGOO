@@ -298,7 +298,7 @@ const sendEmailNameRechazed = async (
 	<p> Su nombre a sido rechazado, este debe tener la siguiente estructura <p>
 	<p> NOMBRE APELLIDO ej: Juan Alberto </p>
 	<p> Para cambiar su nombre debe acceeder al siguiente enlace </p>
-	<a href="${urlRedirect}"> Cambiar Nombre </p>
+	<a href="${urlRedirect}"> Cambiar Nombre </a>
 	<p> Si no puede acceder copie este enlace </p>
 	<p>${urlRedirect}</p>
 
