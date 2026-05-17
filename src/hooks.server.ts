@@ -1,6 +1,5 @@
 import UserUtils from '$utils/user'
 import type { Handle } from '@sveltejs/kit'
-import logger from '$lib/logger'
 
 export const handle: Handle = async ({ event, resolve }) => {
     const cookies = event.cookies
@@ -9,27 +8,16 @@ export const handle: Handle = async ({ event, resolve }) => {
 
     //? Logica para refrescar el token si es necesario
     if (refreshToken && !token) {
-        const user = await UserUtils.verifyToken(refreshToken)
-        if (user) {
-            const [token_generated, refresh_token_generated] = UserUtils.generateTokens(user)
-            token = token_generated
-            refreshToken = refresh_token_generated
-            if (token_generated && refresh_token_generated) {
-                cookies.set('token', token_generated, {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: 'strict',
-                    maxAge: 60 * 60 * 24,
-                    path: '/',
-                })
-                cookies.set('refreshToken', refresh_token_generated, {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: 'strict',
-                    maxAge: 60 * 60 * 24 * 7,
-                    path: '/',
-                })
-            }
+        const newTokens = await UserUtils.generateNewTokensFromRefreshToken(refreshToken);
+        if (newTokens) {
+            token = newTokens.token;
+            refreshToken = newTokens.refreshToken;
+            cookies.set('token', token, { path: '/', httpOnly: true, secure: true, sameSite: 'strict' });
+            cookies.set('refreshToken', refreshToken, { path: '/', httpOnly: true, secure: true, sameSite: 'strict' });
+        }
+        else {
+            cookies.delete('token', { path: '/' });
+            cookies.delete('refreshToken', { path: '/' });
         }
     }
 
@@ -41,7 +29,7 @@ export const handle: Handle = async ({ event, resolve }) => {
             nombre: user.nombre,
             apodo: user.apodo,
             es_admin: user.es_admin,
-            permisos: await UserUtils.get_user_permissions(user),
+            permisos: user.permisos,
         }
     }
 

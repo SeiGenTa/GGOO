@@ -35,7 +35,7 @@
                             return await update();
                         }
                         toast("Bienvenido ", {
-                            description: "No se xd",
+                            description: "Credenciales aceptadas, redirigiendo...",
                         });
                         loading = false;
                         return goto("/");
