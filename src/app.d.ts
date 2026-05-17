@@ -11,7 +11,7 @@ declare global {
 				apodo: string | null;
 				es_admin: boolean;
 				permisos: string[];
-			}
+			} | null;
 		}
 		// interface PageData {}
 		// interface PageState {}
