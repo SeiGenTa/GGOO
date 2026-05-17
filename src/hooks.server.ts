@@ -3,26 +3,35 @@ import UserUtils from '$utils/user'
 import type { Handle } from '@sveltejs/kit'
 
 export const handle: Handle = async ({ event, resolve }) => {
-    const cookies = event.cookies
-    let token = cookies.get('token')
-    let refreshToken = cookies.get('refreshToken')
+    const cookies = event.cookies;
+    let token = cookies.get('token');
+    let refreshToken = cookies.get('refreshToken');
+    let user = null;
 
-    //? Logica para refrescar el token si es necesario
-    if (refreshToken && !token) {
+    if (token) {
+        user = await UserUtils.verifyToken(token);
+    }
+
+    if (!user && refreshToken) {
+        cookies.delete('token', { path: '/' });
+        cookies.delete('refreshToken', { path: '/' });
+
         const newTokens = await UserUtils.generateNewTokensFromRefreshToken(refreshToken);
+        
         if (newTokens) {
             token = newTokens.token;
             refreshToken = newTokens.refreshToken;
+
             cookies.set('token', token, { path: '/', httpOnly: true, secure: true, sameSite: 'strict' });
             cookies.set('refreshToken', refreshToken, { path: '/', httpOnly: true, secure: true, sameSite: 'strict' });
-        }
-        else {
-            cookies.delete('token', { path: '/' });
-            cookies.delete('refreshToken', { path: '/' });
+
+            user = await UserUtils.verifyToken(token);
+        } else {
+            token = undefined;
+            refreshToken = undefined;
         }
     }
 
-    const user = token ? await UserUtils.verifyToken(token) : null
     if (user) {
         event.locals.user = {
             id: user.id,
@@ -31,13 +40,17 @@ export const handle: Handle = async ({ event, resolve }) => {
             apodo: user.apodo,
             es_admin: user.es_admin,
             permisos: user.permisos,
-        }
+        };
+    } else {
+        event.locals.user = null;
     }
-    try{
-        return resolve(event)
+
+    console.log(`Usuario autenticado: ${user ? user.email : 'Ninguno'}`);
+
+    try {
+        return await resolve(event);
+    } catch (err) {
+        logger.info(`Error en handle: ${err instanceof Error ? err.message : String(err)}`);
+        throw err;
     }
-    catch(err){
-        logger.info(`Error en handle: ${err instanceof Error ? err.message : String(err)}`)
-        throw err
-    }
-}
+};
