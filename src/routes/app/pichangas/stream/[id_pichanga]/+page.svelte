@@ -344,7 +344,7 @@
                             {#each inscritos as inscripcion, index}
                                 <li class="rounded-lg border bg-background/80 px-3 py-2 text-sm space-x-1 font-medium">
                                     <span class="text-muted-foreground">{index + 1}.</span>
-                                    {inscripcion.user.apodo ?? inscripcion.user.nombre}
+                                    {inscripcion.user.apodo ? inscripcion.user.apodo : inscripcion.user.nombre}
                                     {#if inscripcion.user.apodo}
                                         <Badge variant="secondary">{inscripcion.user.nombre}</Badge>
                                     {/if}
@@ -369,7 +369,7 @@
                                     class="rounded-lg border border-amber-200 px-3 py-2 text-sm font-medium dark:border-amber-900/50 dark:bg-amber-950/20"
                                 >
                                     <span class="text-muted-foreground">{index + pichanga.maxJugadores + 1}.</span>
-                                    {inscripcion.user.apodo ?? inscripcion.user.nombre}
+                                    {inscripcion.user.apodo ? inscripcion.user.apodo : inscripcion.user.nombre}
                                 </li>
                             {/each}
                         </ul>
@@ -392,7 +392,7 @@
                                 >
                                     <div class="flex items-center justify-between gap-2">
                                         <span>
-                                            {inscripcion.user.apodo ?? inscripcion.user.nombre}
+                                            {inscripcion.user.apodo ? inscripcion.user.apodo : inscripcion.user.nombre}
                                         </span>
                                         {#if inscripcion.posicionEnLista}
                                             <Badge variant="secondary">#{inscripcion.posicionEnLista}</Badge>
