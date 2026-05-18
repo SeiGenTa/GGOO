@@ -45,8 +45,6 @@ export const handle: Handle = async ({ event, resolve }) => {
         event.locals.user = null;
     }
 
-    console.log(`Usuario autenticado: ${user ? user.email : 'Ninguno'}`);
-
     try {
         return await resolve(event);
     } catch (err) {

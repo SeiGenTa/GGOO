@@ -45,8 +45,11 @@ services:
       args:
         - DATABASE_URL=${DATABASE_URL}
     container_name: ggoo-app-production
+    volumes:
+      - ./app.logs:/app/app.logs
+      - ./contributors.json:/app/contributors.json
     env_file:
-      - .env.production
+      - .env
     ports:
       - "${PORT_APP:-5173}:3000"
     restart: unless-stopped

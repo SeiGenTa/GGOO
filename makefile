@@ -13,6 +13,8 @@ help:
 	@echo "  make generate-prisma  - Ejecuta pnpm prisma generate dentro de app"
 	@echo "  make createsuperuser  - Crea un superusuario con src/manage.ts usando pnpm"
 	@echo "  make prisma-studio    - Abre Prisma Studio para gestionar la base de datos"
+	@echo "  make save-prod		   - Guarda la imagen de producción en un archivo tar"
+	@echo "  make load-prod		   - Carga la imagen de producción desde un archivo tar"
 
 dev:
 	docker compose up app

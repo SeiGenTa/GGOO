@@ -4,8 +4,6 @@ import type { Actions, PageServerLoad } from '../$types'
 import type DataEncripted from './type'
 import { ActionsDataEncripted } from './type'
 import { prisma } from '$utils/prisma'
-import { useId } from 'bits-ui'
-
 export const load: PageServerLoad = ({ url }) => {
     const dataChangeNameEncripted = url.searchParams.get('data')
     if (!dataChangeNameEncripted || dataChangeNameEncripted == '') {
@@ -45,8 +43,6 @@ export const load: PageServerLoad = ({ url }) => {
             '/app?error=El%20enlace%20para%20cambiar%20nombre%20ha%20expirado.'
         )
     }
-    console.log(userId)
-
     return {
         userId,
     }

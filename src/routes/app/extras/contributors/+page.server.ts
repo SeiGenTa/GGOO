@@ -6,6 +6,7 @@ type contributiosFormat = {
     name: string;
     image: string;
     description: string;
+    detalle: string;
     link: {
         icon: string;
         url: string;
@@ -18,12 +19,16 @@ type contributiosFormat = {
 }
 
 export const load: PageServerLoad = async () => {
-    const filePath = path.resolve('constributions.json')
-    if (!fs.existsSync(filePath)) {
+    // Forzamos que busque en la raíz real del proyecto ejecutable
+    const filePath = path.join(process.cwd(), 'contributors.json')
+    
+    // Como extra de seguridad, validamos que exista Y que no sea un directorio
+    if (!fs.existsSync(filePath) || fs.lstatSync(filePath).isDirectory()) {
         return {
             contributors: [] as contributiosFormat[],
         }
     }
+
     const fileContent = fs.readFileSync(filePath, 'utf-8').trim()
     const contributors: contributiosFormat[] = fileContent.length > 0
         ? JSON.parse(fileContent)

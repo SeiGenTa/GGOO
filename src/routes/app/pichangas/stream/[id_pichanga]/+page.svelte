@@ -60,9 +60,7 @@
 
         const handlePichangaUpdate = async (event:any) => {
             const eventData = JSON.parse(event.data);
-            console.log("Pichanga update received", eventData);
             const type = eventData.type;
-            console.log("Event type:", type);
             if (type === "deleted") {
                 await goto("/app/pichangas?error=La pichanga fue eliminada&page=1");
                 return;
