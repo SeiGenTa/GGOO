@@ -76,7 +76,7 @@ const load_pichangas_promise = async (page: string) => {
             },
         },
         orderBy: {
-            fecha: 'asc',
+            fecha: 'desc',
         },
         skip: (parseInt(page) - 1) * 10,
         take: 10,
