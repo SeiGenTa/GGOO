@@ -58,6 +58,9 @@
                     <Field>
                         <FieldLabel for="name">Nombre</FieldLabel>
                         <Input id="name" type="text" name="name" placeholder="John Doe" required />
+                        <FieldDescription>
+                            Advertencia: Debes usar el formato "Nombre Apellido" para que tu cuenta sea validada por los administradores.Si no sigues este formato, tu cuenta no será validada y no podrás acceder a la plataforma.
+                        </FieldDescription>
                     </Field>
                     <Field>
                         <FieldLabel>Apodo (opcional)</FieldLabel>

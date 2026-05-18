@@ -52,12 +52,16 @@ export const actions = {
         }
 
         const hashedPassword = UserUtils.hashPassword(password);
+
+        const nombre_cumple = /^[a-zA-Z]+ [a-zA-Z]+$/.test(name);
+
         await prisma.user.create({
             data: {
                 email,
                 password: hashedPassword,
                 nombre: name,
                 apodo: nickname,
+                es_valido: nombre_cumple,
             },
         });
 
