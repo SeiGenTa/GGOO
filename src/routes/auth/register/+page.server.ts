@@ -55,15 +55,31 @@ export const actions = {
 
         const nombre_cumple = /^[a-zA-Z]+ [a-zA-Z]+$/.test(name);
 
+        // Aplicamos el rol por defecto de usuario a los nuevos registros
+        const defaultRole = await prisma.rol.findFirst({
+            where: {
+                is_default: true,
+            },
+        })
+
         await prisma.user.create({
             data: {
                 email,
                 password: hashedPassword,
                 nombre: name,
                 apodo: nickname,
-                es_valido: nombre_cumple,
+                aprobado_por_admin: nombre_cumple,
+                roles: defaultRole
+                    ? {
+                          connect: {
+                              id: defaultRole.id,
+                          },
+                      }
+                    : undefined,
             },
         });
+
+
 
         await sendEmailValidator(email);
 
