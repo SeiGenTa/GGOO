@@ -22,8 +22,7 @@ jobs:
 
       - name: Save Docker Image to Tar file
         run: |
-          REPO_NAME=$(echo "${{ github.repository }}" | tr 'A-Z' 'a-z')
-          docker save -o app-production.tar $REPO_NAME-app-production:latest
+          docker save -o app-production.tar ggoo-app-production:latest
 
       - name: Upload Image Artifact
         uses: actions/upload-artifact@v4

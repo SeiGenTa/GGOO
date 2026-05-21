@@ -38,6 +38,7 @@ services:
     restart: unless-stopped
 
   app-production:
+    image: ggoo-app-production:latest
     build:
       context: .
       dockerfile: Dockerfile
