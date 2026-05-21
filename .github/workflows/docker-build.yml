@@ -1,0 +1,31 @@
+name: Build and Export Docker Image
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create .env file for Build Args
+        run: |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+          echo "PORT_APP=5173" >> .env
+
+      - name: Build Specific Service
+        run: docker compose build app-production
+
+      - name: Save Docker Image to Tar file
+        run: docker save -o app-production.tar ${{ github.repository }}-app-production:latest
+
+      - name: Upload Image Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-production-image
+          path: app-production.tar
+          retention-days: 7

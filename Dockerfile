@@ -35,8 +35,6 @@ FROM base as builder
 
 RUN pnpm build
 
-CMD ["sh", "-c", "pnpm prisma migrate deploy && pnpm build"]
-
 
 FROM node:20-alpine as production
 # En producción también instalamos OpenSSL por si Prisma lo requiere al ejecutar la app
