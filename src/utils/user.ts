@@ -23,10 +23,11 @@ class UserUtils {
             id: user.id,
             email: user.email,
             nombre: user.nombre,
-            permissions: await UserUtils.get_user_permissions(user),
+            permisos: await UserUtils.get_user_permissions(user),
             apodo: user.apodo,
             es_admin: user.es_admin,
             version: VERSION_JWT,
+            posiciones: user.posiciones,
         };
         const payload_refresh = {
             id: user.id,
@@ -136,7 +137,8 @@ class UserUtils {
             nombre: (decoded as JwtPayload).nombre,
             apodo: (decoded as JwtPayload).apodo,
             es_admin: (decoded as JwtPayload).es_admin,
-            permisos: (decoded as JwtPayload).permissions,
+            permisos: (decoded as JwtPayload).permisos,
+            posiciones: (decoded as JwtPayload).posiciones,
         } as {
             id: string;
             email: string;
@@ -144,6 +146,7 @@ class UserUtils {
             apodo: string;
             es_admin: boolean;
             permisos: string[];
+            posiciones: string[];
         };
     }
 }

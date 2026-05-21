@@ -6,6 +6,14 @@ import { sendEmail } from "$lib/email/resend";
 import { encript_string } from "$utils/encript";
 import { Permissions } from "$lib/permissions";
 
+const POSITION_OPTIONS = [
+  "Punta",
+  "Centro",
+  "Armador",
+  "Libero",
+  "Opuesto",
+];
+
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) {
     throw redirect(302, "/auth");
@@ -16,12 +24,13 @@ export const load: PageServerLoad = async ({ locals }) => {
     email: locals.user.email,
     nombre: locals.user.nombre,
     apodo: locals.user.apodo,
+    posiciones: locals.user.posiciones,
   };
   return { user: user_data };
 };
 
 export const actions = {
-  set_user: async ({ request, locals }) => {
+  set_user: async ({ request, locals, cookies }) => {
     if (!locals.user) {
       return fail(401, { success: false, message: "No autorizado" });
     }
@@ -39,9 +48,52 @@ export const actions = {
       },
     });
 
+    cookies.delete("token", { path: "/" });
+
     return {
       success: true,
       message: "Apodo actualizado correctamente",
+    };
+  },
+  set_positions: async ({ request, locals, cookies }) => {
+    if (!locals.user) {
+      return fail(401, { success: false, message: "No autorizado" });
+    }
+
+    const formData = await request.formData();
+    const positions = POSITION_OPTIONS.map((_, index) => {
+      return ((formData.get(`position_${index + 1}`) as string | null) ?? "")
+        .trim();
+    });
+
+    const hasAllPositions = positions.every((position) =>
+      POSITION_OPTIONS.includes(position),
+    );
+    const hasUniquePositions = new Set(positions).size === POSITION_OPTIONS.length;
+
+    if (!hasAllPositions || !hasUniquePositions) {
+      return fail(400, {
+        success: false,
+        message:
+          "Debes seleccionar las 5 posiciones en orden de preferencia y sin repetir ninguna.",
+      });
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: locals.user.id,
+      },
+      data: {
+        posiciones: positions,
+      },
+    });
+
+    cookies.delete("token", { path: "/" });
+
+    return {
+      success: true,
+      message: "Posiciones actualizadas correctamente",
+      positions,
     };
   },
   set_name: async ({ request, locals, cookies }) => {

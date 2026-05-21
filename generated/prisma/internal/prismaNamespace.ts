@@ -979,7 +979,8 @@ export const UserScalarFieldEnum = {
   es_valido: 'es_valido',
   aprobado_por_admin: 'aprobado_por_admin',
   rechazado_por_admin: 'rechazado_por_admin',
-  permisos: 'permisos'
+  permisos: 'permisos',
+  posiciones: 'posiciones'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]

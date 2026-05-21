@@ -65,6 +65,7 @@ export type UserCountAggregateOutputType = {
   aprobado_por_admin: number
   rechazado_por_admin: number
   permisos: number
+  posiciones: number
   _all: number
 }
 
@@ -110,6 +111,7 @@ export type UserCountAggregateInputType = {
   aprobado_por_admin?: true
   rechazado_por_admin?: true
   permisos?: true
+  posiciones?: true
   _all?: true
 }
 
@@ -198,6 +200,7 @@ export type UserGroupByOutputType = {
   aprobado_por_admin: boolean
   rechazado_por_admin: boolean
   permisos: string[]
+  posiciones: string[]
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
@@ -234,6 +237,7 @@ export type UserWhereInput = {
   aprobado_por_admin?: Prisma.BoolFilter<"User"> | boolean
   rechazado_por_admin?: Prisma.BoolFilter<"User"> | boolean
   permisos?: Prisma.StringNullableListFilter<"User">
+  posiciones?: Prisma.StringNullableListFilter<"User">
   pichangas?: Prisma.PichangaListRelationFilter
   inscripciones?: Prisma.InscripcionListRelationFilter
   roles?: Prisma.RolListRelationFilter
@@ -257,6 +261,7 @@ export type UserOrderByWithRelationInput = {
   aprobado_por_admin?: Prisma.SortOrder
   rechazado_por_admin?: Prisma.SortOrder
   permisos?: Prisma.SortOrder
+  posiciones?: Prisma.SortOrder
   pichangas?: Prisma.PichangaOrderByRelationAggregateInput
   inscripciones?: Prisma.InscripcionOrderByRelationAggregateInput
   roles?: Prisma.RolOrderByRelationAggregateInput
@@ -283,6 +288,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   aprobado_por_admin?: Prisma.BoolFilter<"User"> | boolean
   rechazado_por_admin?: Prisma.BoolFilter<"User"> | boolean
   permisos?: Prisma.StringNullableListFilter<"User">
+  posiciones?: Prisma.StringNullableListFilter<"User">
   pichangas?: Prisma.PichangaListRelationFilter
   inscripciones?: Prisma.InscripcionListRelationFilter
   roles?: Prisma.RolListRelationFilter
@@ -306,6 +312,7 @@ export type UserOrderByWithAggregationInput = {
   aprobado_por_admin?: Prisma.SortOrder
   rechazado_por_admin?: Prisma.SortOrder
   permisos?: Prisma.SortOrder
+  posiciones?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
@@ -327,6 +334,7 @@ export type UserScalarWhereWithAggregatesInput = {
   aprobado_por_admin?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   rechazado_por_admin?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   permisos?: Prisma.StringNullableListFilter<"User">
+  posiciones?: Prisma.StringNullableListFilter<"User">
 }
 
 export type UserCreateInput = {
@@ -342,6 +350,7 @@ export type UserCreateInput = {
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
+  posiciones?: Prisma.UserCreateposicionesInput | string[]
   pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
   roles?: Prisma.RolCreateNestedManyWithoutUsersInput
@@ -365,6 +374,7 @@ export type UserUncheckedCreateInput = {
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
+  posiciones?: Prisma.UserCreateposicionesInput | string[]
   pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
   roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
@@ -388,6 +398,7 @@ export type UserUpdateInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
   pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
@@ -411,6 +422,7 @@ export type UserUncheckedUpdateInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
   pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
@@ -434,6 +446,7 @@ export type UserCreateManyInput = {
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
+  posiciones?: Prisma.UserCreateposicionesInput | string[]
 }
 
 export type UserUpdateManyMutationInput = {
@@ -449,6 +462,7 @@ export type UserUpdateManyMutationInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -464,6 +478,7 @@ export type UserUncheckedUpdateManyInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
 }
 
 export type StringNullableListFilter<$PrismaModel = never> = {
@@ -487,6 +502,7 @@ export type UserCountOrderByAggregateInput = {
   aprobado_por_admin?: Prisma.SortOrder
   rechazado_por_admin?: Prisma.SortOrder
   permisos?: Prisma.SortOrder
+  posiciones?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -541,6 +557,10 @@ export type UserCreatepermisosInput = {
   set: string[]
 }
 
+export type UserCreateposicionesInput = {
+  set: string[]
+}
+
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
@@ -558,6 +578,11 @@ export type BoolFieldUpdateOperationsInput = {
 }
 
 export type UserUpdatepermisosInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type UserUpdateposicionesInput = {
   set?: string[]
   push?: string | string[]
 }
@@ -741,6 +766,7 @@ export type UserCreateWithoutRolesInput = {
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
+  posiciones?: Prisma.UserCreateposicionesInput | string[]
   pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
   tarjetas?: Prisma.TarjetasCreateNestedManyWithoutUserInput
@@ -763,6 +789,7 @@ export type UserUncheckedCreateWithoutRolesInput = {
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
+  posiciones?: Prisma.UserCreateposicionesInput | string[]
   pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
   tarjetas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutUserInput
@@ -809,6 +836,7 @@ export type UserScalarWhereInput = {
   aprobado_por_admin?: Prisma.BoolFilter<"User"> | boolean
   rechazado_por_admin?: Prisma.BoolFilter<"User"> | boolean
   permisos?: Prisma.StringNullableListFilter<"User">
+  posiciones?: Prisma.StringNullableListFilter<"User">
 }
 
 export type UserCreateWithoutPichangasInput = {
@@ -824,6 +852,7 @@ export type UserCreateWithoutPichangasInput = {
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
+  posiciones?: Prisma.UserCreateposicionesInput | string[]
   inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
   roles?: Prisma.RolCreateNestedManyWithoutUsersInput
   tarjetas?: Prisma.TarjetasCreateNestedManyWithoutUserInput
@@ -846,6 +875,7 @@ export type UserUncheckedCreateWithoutPichangasInput = {
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
+  posiciones?: Prisma.UserCreateposicionesInput | string[]
   inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
   roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
   tarjetas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutUserInput
@@ -889,6 +919,7 @@ export type UserCreateWithoutInscripcionesInput = {
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
+  posiciones?: Prisma.UserCreateposicionesInput | string[]
   pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
   roles?: Prisma.RolCreateNestedManyWithoutUsersInput
   tarjetas?: Prisma.TarjetasCreateNestedManyWithoutUserInput
@@ -911,6 +942,7 @@ export type UserUncheckedCreateWithoutInscripcionesInput = {
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
+  posiciones?: Prisma.UserCreateposicionesInput | string[]
   pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
   roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
   tarjetas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutUserInput
@@ -949,6 +981,7 @@ export type UserUpdateWithoutInscripcionesInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
   pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
   roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
   tarjetas?: Prisma.TarjetasUpdateManyWithoutUserNestedInput
@@ -971,6 +1004,7 @@ export type UserUncheckedUpdateWithoutInscripcionesInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
   pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
   roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
   tarjetas?: Prisma.TarjetasUncheckedUpdateManyWithoutUserNestedInput
@@ -993,6 +1027,7 @@ export type UserCreateWithoutTarjetasInput = {
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
+  posiciones?: Prisma.UserCreateposicionesInput | string[]
   pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
   roles?: Prisma.RolCreateNestedManyWithoutUsersInput
@@ -1015,6 +1050,7 @@ export type UserUncheckedCreateWithoutTarjetasInput = {
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
+  posiciones?: Prisma.UserCreateposicionesInput | string[]
   pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
   roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
@@ -1042,6 +1078,7 @@ export type UserCreateWithoutTarjetasAsignadasInput = {
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
+  posiciones?: Prisma.UserCreateposicionesInput | string[]
   pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
   roles?: Prisma.RolCreateNestedManyWithoutUsersInput
@@ -1064,6 +1101,7 @@ export type UserUncheckedCreateWithoutTarjetasAsignadasInput = {
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
+  posiciones?: Prisma.UserCreateposicionesInput | string[]
   pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
   roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
@@ -1102,6 +1140,7 @@ export type UserUpdateWithoutTarjetasInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
   pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
@@ -1124,6 +1163,7 @@ export type UserUncheckedUpdateWithoutTarjetasInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
   pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
@@ -1157,6 +1197,7 @@ export type UserUpdateWithoutTarjetasAsignadasInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
   pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
@@ -1179,6 +1220,7 @@ export type UserUncheckedUpdateWithoutTarjetasAsignadasInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
   pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
@@ -1201,6 +1243,7 @@ export type UserCreateWithoutReclamosCartasInput = {
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
+  posiciones?: Prisma.UserCreateposicionesInput | string[]
   pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
   roles?: Prisma.RolCreateNestedManyWithoutUsersInput
@@ -1223,6 +1266,7 @@ export type UserUncheckedCreateWithoutReclamosCartasInput = {
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
+  posiciones?: Prisma.UserCreateposicionesInput | string[]
   pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
   roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
@@ -1261,6 +1305,7 @@ export type UserUpdateWithoutReclamosCartasInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
   pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
@@ -1283,6 +1328,7 @@ export type UserUncheckedUpdateWithoutReclamosCartasInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
   pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
@@ -1305,6 +1351,7 @@ export type UserCreateWithoutCastigosInput = {
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
+  posiciones?: Prisma.UserCreateposicionesInput | string[]
   pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
   roles?: Prisma.RolCreateNestedManyWithoutUsersInput
@@ -1327,6 +1374,7 @@ export type UserUncheckedCreateWithoutCastigosInput = {
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
+  posiciones?: Prisma.UserCreateposicionesInput | string[]
   pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
   roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
@@ -1354,6 +1402,7 @@ export type UserCreateWithoutCastigosCanceladosInput = {
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
+  posiciones?: Prisma.UserCreateposicionesInput | string[]
   pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
   roles?: Prisma.RolCreateNestedManyWithoutUsersInput
@@ -1376,6 +1425,7 @@ export type UserUncheckedCreateWithoutCastigosCanceladosInput = {
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
+  posiciones?: Prisma.UserCreateposicionesInput | string[]
   pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
   roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
@@ -1414,6 +1464,7 @@ export type UserUpdateWithoutCastigosInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
   pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
@@ -1436,6 +1487,7 @@ export type UserUncheckedUpdateWithoutCastigosInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
   pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
@@ -1469,6 +1521,7 @@ export type UserUpdateWithoutCastigosCanceladosInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
   pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
@@ -1491,6 +1544,7 @@ export type UserUncheckedUpdateWithoutCastigosCanceladosInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
   pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
@@ -1513,6 +1567,7 @@ export type UserUpdateWithoutRolesInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
   pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
   tarjetas?: Prisma.TarjetasUpdateManyWithoutUserNestedInput
@@ -1535,6 +1590,7 @@ export type UserUncheckedUpdateWithoutRolesInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
   pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
   tarjetas?: Prisma.TarjetasUncheckedUpdateManyWithoutUserNestedInput
@@ -1557,6 +1613,7 @@ export type UserUncheckedUpdateManyWithoutRolesInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
 }
 
 export type UserUpdateWithoutPichangasInput = {
@@ -1572,6 +1629,7 @@ export type UserUpdateWithoutPichangasInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
   inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
   tarjetas?: Prisma.TarjetasUpdateManyWithoutUserNestedInput
@@ -1594,6 +1652,7 @@ export type UserUncheckedUpdateWithoutPichangasInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
   inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
   tarjetas?: Prisma.TarjetasUncheckedUpdateManyWithoutUserNestedInput
@@ -1616,6 +1675,7 @@ export type UserUncheckedUpdateManyWithoutPichangasInput = {
   aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
+  posiciones?: Prisma.UserUpdateposicionesInput | string[]
 }
 
 
@@ -1725,6 +1785,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: boolean
+  posiciones?: boolean
   pichangas?: boolean | Prisma.User$pichangasArgs<ExtArgs>
   inscripciones?: boolean | Prisma.User$inscripcionesArgs<ExtArgs>
   roles?: boolean | Prisma.User$rolesArgs<ExtArgs>
@@ -1749,6 +1810,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: boolean
+  posiciones?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1764,6 +1826,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: boolean
+  posiciones?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -1779,9 +1842,10 @@ export type UserSelectScalar = {
   aprobado_por_admin?: boolean
   rechazado_por_admin?: boolean
   permisos?: boolean
+  posiciones?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "email" | "apodo" | "password" | "createdAt" | "updatedAt" | "es_admin" | "es_valido" | "aprobado_por_admin" | "rechazado_por_admin" | "permisos", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "email" | "apodo" | "password" | "createdAt" | "updatedAt" | "es_admin" | "es_valido" | "aprobado_por_admin" | "rechazado_por_admin" | "permisos" | "posiciones", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   pichangas?: boolean | Prisma.User$pichangasArgs<ExtArgs>
   inscripciones?: boolean | Prisma.User$inscripcionesArgs<ExtArgs>
@@ -1821,6 +1885,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     aprobado_por_admin: boolean
     rechazado_por_admin: boolean
     permisos: string[]
+    posiciones: string[]
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -2264,6 +2329,7 @@ export interface UserFieldRefs {
   readonly aprobado_por_admin: Prisma.FieldRef<"User", 'Boolean'>
   readonly rechazado_por_admin: Prisma.FieldRef<"User", 'Boolean'>
   readonly permisos: Prisma.FieldRef<"User", 'String[]'>
+  readonly posiciones: Prisma.FieldRef<"User", 'String[]'>
 }
     
 

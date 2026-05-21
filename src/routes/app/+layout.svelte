@@ -1,11 +1,36 @@
 <script lang="ts">
-    import { SidebarProvider, SidebarTrigger, SidebarInset } from "$lib/components/ui/sidebar";
-    import SideBarApp from "$lib/components/app/sidebar.svelte";
+    import {
+        SidebarProvider,
+        SidebarTrigger,
+        SidebarInset,
+    } from '$lib/components/ui/sidebar'
+    import SideBarApp from '$lib/components/app/sidebar.svelte'
+    import { toast } from 'svelte-sonner'
 
-    import { page } from "$app/state";
+    import { page } from '$app/state'
+    import { onMount } from 'svelte'
+    import { goto } from '$app/navigation'
 
-    let { children, data } = $props();
-    
+    let { children, data } = $props()
+
+    onMount(() => {
+        const posiciones = data.user?.posiciones || []
+
+        if (posiciones.length === 0) {
+            toast.info(
+                "No tienes posiciones asignadas. Entra a tu perfil para asignarlas.",
+                {
+                    duration: 10000,
+                    action: {
+                        label: 'Ir a perfil',
+                        onClick: () => {
+                            goto('/app/profile#positions')
+                        }
+                    }
+                }
+            )
+        }
+    })
 </script>
 
 <SidebarProvider>
@@ -23,9 +48,21 @@
         </main>
         <footer class="p-4 border-t text-center text-sm">
             &copy; {new Date().getFullYear()} GGOO. Todos los derechos reservados.
-            <a href="/app/extras/contributors" class="text-blue-500 hover:underline ml-2">Contribuidores</a>
-            <a href="/app/extras/contributions_money" class="text-blue-500 hover:underline ml-2">Contribuciones monetarias</a>
-            <a href="https://github.com/SeiGenTa/GGOO" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline ml-2">GitHub</a>
+            <a
+                href="/app/extras/contributors"
+                class="text-blue-500 hover:underline ml-2">Contribuidores</a
+            >
+            <a
+                href="/app/extras/contributions_money"
+                class="text-blue-500 hover:underline ml-2"
+                >Contribuciones monetarias</a
+            >
+            <a
+                href="https://github.com/SeiGenTa/GGOO"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-blue-500 hover:underline ml-2">GitHub</a
+            >
         </footer>
     </SidebarInset>
 </SidebarProvider>

@@ -29,7 +29,8 @@ model User {
     castigos            Castigo[]       @relation("CastigosUser")
     castigosCancelados  Castigo[]       @relation("CastigosCancelados")
     reclamosCartas      ReclamosCarta[] @relation("ReclamosAtendidos")
-}
+    posiciones          String[]        @default([])
+}   
 
 model Rol {
     id         String   @id @default(uuid())

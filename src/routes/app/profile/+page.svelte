@@ -4,20 +4,64 @@
 	import { Input } from "$lib/components/ui/input";
 	import * as Alert from "$lib/components/ui/alert/index.js";
 	import * as Dialog from "$lib/components/ui/dialog";
+	import { Badge } from "$lib/components/ui/badge";
 	import { Field, FieldDescription, FieldGroup, FieldLabel } from "$lib/components/ui/field";
 	import type { PageProps } from "./$types";
 	import AlertCircleIcon from "@lucide/svelte/icons/alert-circle";
+	import { enhance } from "$app/forms";
+
+	const positionOptions = ["Punta", "Centro", "Armador", "Libero", "Opuesto"];
 
 	let { data, form }: PageProps = $props();
 
 	let nameDialogOpen = $state(false);
 	let emailDialogOpen = $state(false);
+	let selectedPositions = $state<string[]>([]);
 	let nameDraft = $state("");
 	let emailDraft = $state("");
 	let nameConfirmation = $state(false);
 	let emailConfirmation = $state(false);
 
+	const currentPositions = $derived(
+		form?.success && Array.isArray(form.positions) ? form.positions : data.user.posiciones,
+	);
+	const availablePositions = $derived(
+		positionOptions.filter((position) => !selectedPositions.includes(position)),
+	);
+	const positionsReady = $derived(selectedPositions.length === positionOptions.length);
+
+	const addPosition = (position: string) => {
+		if (selectedPositions.includes(position)) {
+			return;
+		}
+		if (selectedPositions.length >= positionOptions.length) {
+			return;
+		}
+
+
+		if (ViewTransition) {
+			document.startViewTransition(() => {
+				selectedPositions = [...selectedPositions, position];
+			});
+		} else {
+			selectedPositions = [...selectedPositions, position];
+		}
+	};
+
+	const removePosition = (index: number) => {
+		if (ViewTransition) {
+			document.startViewTransition(() => {
+				selectedPositions = selectedPositions.filter((_, currentIndex) => currentIndex !== index);
+			});
+		} else {
+			selectedPositions = selectedPositions.filter((_, currentIndex) => currentIndex !== index);
+		}
+	};
+
 	$effect(() => {
+		selectedPositions = Array.from(
+			new Set(data.user.posiciones.filter((position) => positionOptions.includes(position))),
+		).slice(0, positionOptions.length);
 		nameDraft = data.user.nombre;
 		emailDraft = data.user.email;
 	});
@@ -62,7 +106,7 @@
 			<Card.Description>Puedes definir o corregir tu apodo visible.</Card.Description>
 		</Card.Header>
 		<Card.Content>
-			<form method="POST" action="?/set_user" class="space-y-4">
+			<form method="POST" action="?/set_user" class="space-y-4" use:enhance>
 				<FieldGroup>
 					<Field>
 						<FieldLabel for="apodo">Apodo</FieldLabel>
@@ -75,6 +119,74 @@
 			</form>
 		</Card.Content>
 	</Card.Root>
+	<section id="positions" class="space-y-6">
+		<Card.Root>
+			<Card.Header>
+				<Card.Title>Posiciones</Card.Title>
+				<Card.Description>
+					Presiona un badge para agregarlo al orden de preferencia. Presiona un badge en tu lista para quitarlo.
+				</Card.Description>
+			</Card.Header>
+			<Card.Content class="space-y-4">
+				<div class="rounded-md border bg-muted/30 p-3">
+					<p class="text-sm text-muted-foreground">Orden actual guardado</p>
+					{#if currentPositions.length > 0}
+						<ol class="mt-2 list-decimal space-y-1 pl-5 text-sm">
+							{#each currentPositions as position}
+								<li>{position}</li>
+							{/each}
+						</ol>
+					{:else}
+						<p class="mt-2 text-sm text-muted-foreground">Todavía no has definido tus posiciones.</p>
+					{/if}
+				</div>
+
+				<form method="POST" action="?/set_positions" class="space-y-4" use:enhance>
+					{#each positionOptions as _, index}
+						<input type="hidden" name={`position_${index + 1}`} value={selectedPositions[index] ?? ""} />
+					{/each}
+
+					<FieldGroup>
+						<Field>
+							<FieldLabel>Posiciones disponibles</FieldLabel>
+							<div class="flex flex-wrap gap-2 rounded-md border p-3">
+								{#if availablePositions.length > 0}
+									{#each availablePositions as position}
+										<button type="button" onclick={() => addPosition(position)}>
+											<Badge style={`view-transition-name: ${position}`} variant="outline" class="cursor-pointer hover:bg-muted">{position}</Badge>
+										</button>
+									{/each}
+								{:else}
+									<p class="text-sm text-muted-foreground">Ya agregaste las 5 posiciones.</p>
+								{/if}
+							</div>
+						</Field>
+
+						<Field>
+							<FieldLabel>Tu orden de preferencia</FieldLabel>
+							<div class="flex min-h-14 flex-wrap gap-2 rounded-md border p-3">
+								{#if selectedPositions.length > 0}
+									{#each selectedPositions as position, index}
+										<button type="button" onclick={() => removePosition(index)}>
+											<Badge style={`view-transition-name: ${position}`} class="cursor-pointer">{index + 1}. {position}</Badge>
+										</button>
+									{/each}
+								{:else}
+									<p class="text-sm text-muted-foreground">Aun no seleccionas posiciones.</p>
+								{/if}
+							</div>
+						</Field>
+					</FieldGroup>
+
+					<FieldDescription>
+						Debes completar las cinco posiciones sin repetir ninguna. Si falta una, vuelve a intentar.
+					</FieldDescription>
+
+					<Button type="submit" disabled={!positionsReady}>Guardar posiciones</Button>
+				</form>
+			</Card.Content>
+		</Card.Root>
+	</section>
 
 	<Card.Root>
 		<Card.Header>
@@ -134,7 +246,7 @@
 			<Card.Description>Actualiza tu contraseña para mantener segura tu cuenta.</Card.Description>
 		</Card.Header>
 		<Card.Content>
-			<form method="POST" action="?/set_password" class="space-y-4">
+			<form method="POST" action="?/set_password" class="space-y-4" use:enhance>
 				<FieldGroup>
 					<Field>
 						<FieldLabel for="current_password">Contraseña actual</FieldLabel>
@@ -169,7 +281,7 @@
 			</Dialog.Description>
 		</Dialog.Header>
 
-		<form method="POST" action="?/set_name" id="set-name-form" class="space-y-3">
+		<form method="POST" action="?/set_name" id="set-name-form" class="space-y-3" use:enhance>
 			<div class="rounded-md border bg-muted/30 p-3 text-sm">
 				<p class="text-muted-foreground">Nuevo nombre:</p>
 				<p class="font-medium">{nameDraft}</p>
@@ -211,7 +323,7 @@
 			</Dialog.Description>
 		</Dialog.Header>
 
-		<form method="POST" action="?/set_email" id="set-email-form" class="space-y-3">
+		<form method="POST" action="?/set_email" id="set-email-form" class="space-y-3" use:enhance>
 			<div class="rounded-md border bg-muted/30 p-3 text-sm">
 				<p class="text-muted-foreground">Nuevo correo:</p>
 				<p class="font-medium">{emailDraft}</p>
