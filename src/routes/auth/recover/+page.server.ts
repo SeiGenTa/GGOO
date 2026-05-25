@@ -66,6 +66,6 @@ export const actions = {
         await sendRecoverPasswordEmail(user.email, resetUrl);
         logger.info({ action: "action_recover_password_email_sent", userId: user.id, email: user.email }, "Correo de recuperacion de clave enviado");
 
-        throw redirect(303, resetUrl);
+        throw redirect(303, "/auth");
     }
 } satisfies Actions;

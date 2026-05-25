@@ -28,3 +28,5 @@ app.logs
 ./dev.db
 
 contributors.json
+
+app-production.tar
