@@ -1,42 +1,28 @@
-name: Construir y publicar imagen Docker
+name: Construir y Guardar Imagen Docker
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  build-and-push:
+  build-and-save:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
 
     steps:
       - name: Checkout del código
         uses: actions/checkout@v4
 
-      - name: Iniciar sesión en GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Convertir repositorio a minúsculas
-        id: string
+      - name: Construir servicio de producción
         run: |
-          echo "repo_lowercase=${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
+          docker compose build app-production
 
-      - name: Extraer metadatos (etiquetas, etc.) para Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ghcr.io/${{ steps.string.outputs.repo_lowercase }}
+      - name: Guardar imagen Docker en archivo TAR
+        run: |
+          docker save -o app-production.tar ghcr.io/seigenta/ggoo:latest
 
-      - name: Construir y subir imagen a GitHub
-        uses: docker/build-push-action@v5
+      - name: Subir artefacto a GitHub
+        uses: actions/upload-artifact@v4
         with:
-          context: .
-          push: true
-          tags: ghcr.io/${{ steps.string.outputs.repo_lowercase }}:latest
-          labels: ${{ steps.meta.outputs.labels }}
+          name: imagen-produccion-tar
+          path: app-production.tar
+          retention-days: 7
