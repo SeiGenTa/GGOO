@@ -18,7 +18,7 @@ jobs:
 
       - name: Guardar imagen Docker en archivo TAR
         run: |
-          docker save -o app-production.tar ghcr.io/seigenta/ggoo:latest
+          docker save -o app-production.tar app-production:latest
 
       - name: Subir artefacto a GitHub
         uses: actions/upload-artifact@v4
