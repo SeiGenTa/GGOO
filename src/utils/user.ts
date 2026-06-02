@@ -28,6 +28,7 @@ class UserUtils {
             es_admin: user.es_admin,
             version: VERSION_JWT,
             posiciones: user.posiciones,
+            cumpleanos: user.cumpleanos,
         };
         const payload_refresh = {
             id: user.id,
@@ -139,6 +140,7 @@ class UserUtils {
             es_admin: (decoded as JwtPayload).es_admin,
             permisos: (decoded as JwtPayload).permisos,
             posiciones: (decoded as JwtPayload).posiciones,
+            cumpleanos: (decoded as JwtPayload).cumpleanos ?? null,
         } as {
             id: string;
             email: string;
@@ -147,6 +149,7 @@ class UserUtils {
             es_admin: boolean;
             permisos: string[];
             posiciones: string[];
+            cumpleanos: Date | null;
         };
     }
 }

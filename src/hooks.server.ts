@@ -41,6 +41,7 @@ export const handle: Handle = async ({ event, resolve }) => {
             es_admin: user.es_admin,
             permisos: user.permisos,
             posiciones: user.posiciones,
+            cumpleanos: user.cumpleanos,
         };
     } else {
         event.locals.user = null;

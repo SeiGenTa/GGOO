@@ -6,9 +6,18 @@
 	import * as Dialog from "$lib/components/ui/dialog";
 	import { Badge } from "$lib/components/ui/badge";
 	import { Field, FieldDescription, FieldGroup, FieldLabel } from "$lib/components/ui/field";
+	import { Calendar } from "$lib/components/ui/calendar";
+	import * as Popover from "$lib/components/ui/popover";
 	import type { PageProps } from "./$types";
 	import AlertCircleIcon from "@lucide/svelte/icons/alert-circle";
+	import ChevronDownIcon from "@lucide/svelte/icons/chevron-down";
 	import { enhance } from "$app/forms";
+	import {
+		CalendarDate,
+		getLocalTimeZone,
+		today,
+		type DateValue,
+	} from "@internationalized/date";
 
 	const positionOptions = ["Punta", "Centro", "Armador", "Libero", "Opuesto"];
 
@@ -21,10 +30,45 @@
 	let emailDraft = $state("");
 	let nameConfirmation = $state(false);
 	let emailConfirmation = $state(false);
+	let cumpleanosValue = $state<DateValue | undefined>(undefined);
+	let cumpleanosPopoverOpen = $state(false);
 
 	const currentPositions = $derived(
 		form?.success && Array.isArray(form.positions) ? form.positions : data.user.posiciones,
 	);
+	const cumpleanosSaved = $derived.by(() => {
+		if (form && "cumpleanos" in form) {
+			return form.cumpleanos ?? null;
+		}
+		return data.user.cumpleanos;
+	});
+	const cumpleanosDisplay = $derived.by(() => {
+		if (!cumpleanosSaved) return null;
+		const d = new Date(cumpleanosSaved);
+		if (Number.isNaN(d.getTime())) return null;
+		return new Intl.DateTimeFormat("es-CL", {
+			day: "numeric",
+			month: "long",
+			timeZone: "UTC",
+		}).format(d);
+	});
+	const cumpleanosHiddenValue = $derived.by(() => {
+		if (!cumpleanosValue) return "";
+		const y = cumpleanosValue.year.toString().padStart(4, "0");
+		const m = cumpleanosValue.month.toString().padStart(2, "0");
+		const d = cumpleanosValue.day.toString().padStart(2, "0");
+		return `${y}-${m}-${d}`;
+	});
+	const cumpleanosButtonLabel = $derived.by(() => {
+		if (!cumpleanosValue) return "Selecciona una fecha";
+		const monthName = new Intl.DateTimeFormat("es-CL", {
+			month: "long",
+			timeZone: "UTC",
+		}).format(new Date(Date.UTC(1900, cumpleanosValue.month - 1, cumpleanosValue.day)));
+		return `${cumpleanosValue.day} de ${monthName}`;
+	});
+	const cumpleanosHasSavedValue = $derived(cumpleanosSaved != null);
+	const cumpleanosToday = today(getLocalTimeZone());
 	const availablePositions = $derived(
 		positionOptions.filter((position) => !selectedPositions.includes(position)),
 	);
@@ -64,6 +108,23 @@
 		).slice(0, positionOptions.length);
 		nameDraft = data.user.nombre;
 		emailDraft = data.user.email;
+	});
+
+	$effect(() => {
+		if (!cumpleanosSaved) {
+			cumpleanosValue = undefined;
+			return;
+		}
+		const d = new Date(cumpleanosSaved);
+		if (Number.isNaN(d.getTime())) {
+			cumpleanosValue = undefined;
+			return;
+		}
+		cumpleanosValue = new CalendarDate(
+			d.getUTCFullYear(),
+			d.getUTCMonth() + 1,
+			d.getUTCDate(),
+		);
 	});
 </script>
 
@@ -184,6 +245,83 @@
 
 					<Button type="submit" disabled={!positionsReady}>Guardar posiciones</Button>
 				</form>
+			</Card.Content>
+		</Card.Root>
+	</section>
+
+	<section id="cumpleanos" class="space-y-6">
+		<Card.Root>
+			<Card.Header>
+				<Card.Title>Cumpleaños</Card.Title>
+				<Card.Description>
+					Registra tu fecha de cumpleaños. Solo guardamos el día y el mes; el año no se almacena.
+				</Card.Description>
+			</Card.Header>
+			<Card.Content class="space-y-4">
+				<div class="rounded-md border bg-muted/30 p-3">
+					<p class="text-sm text-muted-foreground">Fecha registrada</p>
+					{#if cumpleanosDisplay}
+						<p class="mt-1 text-sm font-medium">Tu cumpleaños es el {cumpleanosDisplay}.</p>
+					{:else}
+						<p class="mt-1 text-sm text-muted-foreground">Aún no has registrado tu fecha de cumpleaños.</p>
+					{/if}
+				</div>
+
+				<form method="POST" action="?/set_cumpleanos" class="space-y-4" use:enhance>
+					<FieldGroup>
+						<Field>
+							<FieldLabel for="cumpleanos-trigger">Fecha de cumpleaños</FieldLabel>
+							<input
+								id="cumpleanos-trigger"
+								type="hidden"
+								name="cumpleanos"
+								value={cumpleanosHiddenValue}
+							/>
+							<Popover.Root bind:open={cumpleanosPopoverOpen}>
+								<Popover.Trigger>
+									{#snippet child({ props })}
+										<Button
+											{...props}
+											variant="outline"
+											class="w-64 justify-between font-normal"
+										>
+											<span class={cumpleanosValue ? "" : "text-muted-foreground"}>
+												{cumpleanosButtonLabel}
+											</span>
+											<ChevronDownIcon />
+										</Button>
+									{/snippet}
+								</Popover.Trigger>
+								<Popover.Content class="w-auto overflow-hidden p-0" align="start">
+									<Calendar
+										type="single"
+										bind:value={cumpleanosValue}
+										placeholder={cumpleanosToday}
+										captionLayout="dropdown"
+										maxValue={cumpleanosToday}
+										onValueChange={() => {
+											cumpleanosPopoverOpen = false;
+										}}
+									/>
+								</Popover.Content>
+							</Popover.Root>
+							<FieldDescription>
+								Selecciona el día y mes de tu cumpleaños. El año se descarta al guardar.
+							</FieldDescription>
+						</Field>
+					</FieldGroup>
+
+					<div class="flex flex-wrap gap-2">
+						<Button type="submit" disabled={!cumpleanosValue}>Guardar cumpleaños</Button>
+					</div>
+				</form>
+
+				{#if cumpleanosHasSavedValue}
+					<form method="POST" action="?/set_cumpleanos" use:enhance>
+						<input type="hidden" name="cumpleanos" value="" />
+						<Button type="submit" variant="outline">Quitar fecha de cumpleaños</Button>
+					</form>
+				{/if}
 			</Card.Content>
 		</Card.Root>
 	</section>

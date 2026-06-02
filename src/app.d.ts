@@ -12,6 +12,7 @@ declare global {
 				es_admin: boolean;
 				permisos: string[];
 				posiciones: string[];
+				cumpleanos: Date | null;
 			} | null;
 		}
 		// interface PageData {}

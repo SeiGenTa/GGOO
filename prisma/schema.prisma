@@ -30,6 +30,7 @@ model User {
     castigosCancelados  Castigo[]       @relation("CastigosCancelados")
     reclamosCartas      ReclamosCarta[] @relation("ReclamosAtendidos")
     posiciones          String[]        @default([])
+    cumpleanos          DateTime?
 }   
 
 model Rol {

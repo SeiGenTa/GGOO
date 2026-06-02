@@ -25,6 +25,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     nombre: locals.user.nombre,
     apodo: locals.user.apodo,
     posiciones: locals.user.posiciones,
+    cumpleanos: locals.user.cumpleanos,
   };
   return { user: user_data };
 };
@@ -94,6 +95,86 @@ export const actions = {
       success: true,
       message: "Posiciones actualizadas correctamente",
       positions,
+    };
+  },
+  set_cumpleanos: async ({ request, locals, cookies }) => {
+    if (!locals.user) {
+      return fail(401, { success: false, message: "No autorizado" });
+    }
+
+    const formData = await request.formData();
+    const cumpleanosRaw =
+      (formData.get("cumpleanos") as string | null)?.trim() ?? "";
+
+    if (cumpleanosRaw.length === 0) {
+      await prisma.user.update({
+        where: { id: locals.user.id },
+        data: { cumpleanos: null },
+      });
+
+      cookies.delete("token", { path: "/" });
+
+      return {
+        success: true,
+        message: "Fecha de cumpleaños eliminada correctamente",
+        cumpleanos: null,
+      };
+    }
+
+    const dateMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(cumpleanosRaw);
+    if (!dateMatch) {
+      return fail(400, {
+        success: false,
+        message: "Fecha de cumpleaños inválida",
+      });
+    }
+
+    const inputYear = Number(dateMatch[1]);
+    const inputMonth = Number(dateMatch[2]);
+    const inputDay = Number(dateMatch[3]);
+
+    const candidate = new Date(inputYear, inputMonth - 1, inputDay);
+    if (
+      candidate.getFullYear() !== inputYear ||
+      candidate.getMonth() !== inputMonth - 1 ||
+      candidate.getDate() !== inputDay
+    ) {
+      return fail(400, {
+        success: false,
+        message: "Fecha de cumpleaños inválida",
+      });
+    }
+
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    if (candidate.getTime() > today.getTime()) {
+      return fail(400, {
+        success: false,
+        message: "La fecha de cumpleaños no puede ser futura",
+      });
+    }
+
+    const minDate = new Date(today.getFullYear() - 120, 0, 1);
+    if (candidate.getTime() < minDate.getTime()) {
+      return fail(400, {
+        success: false,
+        message: "La fecha de cumpleaños no puede ser anterior a hace 120 años",
+      });
+    }
+
+    const cumpleanos = new Date(Date.UTC(1900, inputMonth - 1, inputDay));
+
+    const updatedUser = await prisma.user.update({
+      where: { id: locals.user.id },
+      data: { cumpleanos },
+    });
+
+    cookies.delete("token", { path: "/" });
+
+    return {
+      success: true,
+      message: "Fecha de cumpleaños actualizada correctamente",
+      cumpleanos: updatedUser.cumpleanos,
     };
   },
   set_name: async ({ request, locals, cookies }) => {
