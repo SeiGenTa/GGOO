@@ -59,6 +59,11 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
       
+      - name: Install Redis CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y redis-tools
+
       - name: Trigger deployment
         run: |
           redis-cli \
