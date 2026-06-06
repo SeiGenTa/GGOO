@@ -1,13 +1,16 @@
 name: Build and Publish Docker Image
 
-# El proceso se activará cada vez que hagas un 'push' a la rama principal (main o master)
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
+    paths-ignore:
+      - "*.md"
+      - ".gitignore"
+      - ".vscode/**"
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
-  # Esto transformará el nombre a minúsculas automáticamente para evitar errores de Docker
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
@@ -15,36 +18,43 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write # Crucial para que GitHub pueda guardar la imagen
+      packages: write
+      attestations: write
+      id-token: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Nos logueamos en el GitHub Container Registry
-      - name: Log in to the Container registry
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }} # GitHub genera este token automáticamente
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Extrae metadatos (como la versión o tags) para la imagen
-      - name: Extract metadata (tags, labels) for Docker
+      - name: Extract metadata (tags, labels)
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=latest
-            type=sha
+            type=sha,prefix=
+            type=ref,event=branch
 
-      # Construye la imagen y la sube (Push)
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./Dockerfile  # Asegúrate de tener tu Dockerfile en la raíz
+          file: ./Dockerfile
+          target: production
+          platforms: linux/amd64
           push: true
-          tags: ${{ id.meta.outputs.tags }}
-          labels: ${{ id.meta.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

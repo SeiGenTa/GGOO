@@ -3,6 +3,9 @@
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
+	"pnpm": {
+		"onlyBuiltDependencies": ["@prisma/engines", "esbuild", "prisma"]
+	},
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
