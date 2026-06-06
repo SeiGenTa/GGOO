@@ -46,7 +46,9 @@
 
 <section class="pichangas-view">
     {#if data.user!.permisos.includes(Permissions.CrearPartidos)}
-        <ModalAddPichanga gestores={data.gestores} />
+        {#await data.gestores then gestores}
+            <ModalAddPichanga {gestores} />
+        {/await}
     {/if}
 
     {#await data.future.pichangas}

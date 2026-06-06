@@ -53,3 +53,6 @@ save-prod:
 
 load-prod:
 	docker load -i app-production.tar
+
+check:
+	npx prettier -c .

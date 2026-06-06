@@ -1,5 +1,5 @@
 import { prisma } from '$utils/prisma'
-import { fail, redirect } from '@sveltejs/kit'
+import { error, fail, redirect } from '@sveltejs/kit'
 import { publishPichangaUpdate } from '$lib/server/pichanga-stream'
 import type { Actions, PageServerLoad } from './$types'
 import { Permissions } from '$lib/permissions'
@@ -25,51 +25,50 @@ const getPichangaWindow = async (id_pichanga: string) => {
 export const load: PageServerLoad = async ({ params }) => {
     const { id_pichanga } = params
 
-    const pichanga_data = await prisma.pichanga.findUnique({
-        where: {
-            id: id_pichanga,
-        },
-        select: {
-            id: true,
-            nombre: true,
-            lugar: true,
-            fecha: true,
-            fechaInicioIncripcion: true,
-            admins: {
+    return {
+        name_page: 'Lista en tiempo real',
+        pichanga: prisma.pichanga
+            .findUnique({
+                where: {
+                    id: id_pichanga,
+                },
                 select: {
                     id: true,
                     nombre: true,
-                },
-            },
-            inscripciones: {
-                select: {
-                    id: true,
-                    createdAt: true,
-                    tiempoSalidaLista: true,
-                    posicionEnLista: true,
-                    user: {
+                    lugar: true,
+                    fecha: true,
+                    fechaInicioIncripcion: true,
+                    admins: {
                         select: {
                             id: true,
                             nombre: true,
-                            apodo: true,
                         },
                     },
+                    inscripciones: {
+                        select: {
+                            id: true,
+                            createdAt: true,
+                            tiempoSalidaLista: true,
+                            posicionEnLista: true,
+                            user: {
+                                select: {
+                                    id: true,
+                                    nombre: true,
+                                    apodo: true,
+                                },
+                            },
+                        },
+                        orderBy: {
+                            createdAt: 'asc',
+                        },
+                    },
+                    maxJugadores: true,
                 },
-                orderBy: {
-                    createdAt: 'asc',
-                },
-            },
-            maxJugadores: true,
-        },
-    })
-
-    if (!pichanga_data) {
-        throw new Error('Pichanga no encontrada')
-    }
-
-    return {
-        name_page: 'Lista en tiempo real',
-        pichanga: pichanga_data,
+            })
+            .then((data) => {
+                if (!data) error(404, 'Pichanga no encontrada')
+                return data
+            }),
     }
 }
 

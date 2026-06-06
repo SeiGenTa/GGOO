@@ -44,8 +44,8 @@
                 >GitHub</a
             >. Se aceptan aportes al proyecto, ya sea mediante
             <strong>pull requests</strong>
-            con mejoras o nuevas funcionalidades, o simplemente compartiendo
-            ideas y sugerencias a través de <strong>issues</strong>.
+            con mejoras o nuevas funcionalidades, o simplemente compartiendo ideas
+            y sugerencias a través de <strong>issues</strong>.
         </p>
         <p class="mt-3 max-w-3xl text-muted-foreground">
             Si encuentras algún <strong>error</strong> o comportamiento

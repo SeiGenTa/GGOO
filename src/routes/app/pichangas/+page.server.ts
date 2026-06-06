@@ -15,41 +15,43 @@ export const load: PageServerLoad = async ({ url, depends, locals }) => {
         redirect(302, `/app/pichangas?page=1`)
     }
 
-    const gestores = await prisma.user.findMany({
-        where: {
-            OR: [
-                {
-                    roles: {
-                        some: {
+    return {
+        name_page: 'Pichangas',
+        gestores: prisma.user
+            .findMany({
+                where: {
+                    OR: [
+                        {
+                            roles: {
+                                some: {
+                                    permisos: {
+                                        has: Permissions.AdministrarPichanga.toString(),
+                                    },
+                                },
+                            },
+                        },
+                        {
                             permisos: {
                                 has: Permissions.AdministrarPichanga.toString(),
                             },
                         },
-                    },
+                        {
+                            es_admin: true,
+                        },
+                    ],
                 },
-                {
-                    permisos: {
-                        has: Permissions.AdministrarPichanga.toString(),
-                    },
+                select: {
+                    id: true,
+                    nombre: true,
+                    apodo: true,
                 },
-                {
-                    es_admin: true,
-                },
-            ],
-        },
-        select: {
-            id: true,
-            nombre: true,
-            apodo: true,
-        },
-    })
-
-    return {
-        name_page: 'Pichangas',
-        gestores: gestores.map((g) => ({
-            value: g.id,
-            label: `${g.nombre} ${g.apodo ? `(${g.apodo})` : ''}`,
-        })),
+            })
+            .then((gestores) =>
+                gestores.map((g) => ({
+                    value: g.id,
+                    label: `${g.nombre} ${g.apodo ? `(${g.apodo})` : ''}`,
+                }))
+            ),
         future: {
             pichangas: load_pichangas_promise(page),
         },
