@@ -30,6 +30,21 @@
                 }
             )
         }
+
+        if (data.user?.cumpleanos == null) {
+            toast.info(
+                'No tienes fecha de cumpleaños registrada. Entra a tu perfil para agregarla.',
+                {
+                    duration: 10000,
+                    action: {
+                        label: 'Ir a perfil',
+                        onClick: () => {
+                            goto('/app/profile#cumpleanos')
+                        }
+                    }
+                }
+            )
+        }
     })
 </script>
 

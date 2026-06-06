@@ -36,6 +36,7 @@ export type UserMinAggregateOutputType = {
   es_valido: boolean | null
   aprobado_por_admin: boolean | null
   rechazado_por_admin: boolean | null
+  cumpleanos: Date | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -50,6 +51,7 @@ export type UserMaxAggregateOutputType = {
   es_valido: boolean | null
   aprobado_por_admin: boolean | null
   rechazado_por_admin: boolean | null
+  cumpleanos: Date | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -66,6 +68,7 @@ export type UserCountAggregateOutputType = {
   rechazado_por_admin: number
   permisos: number
   posiciones: number
+  cumpleanos: number
   _all: number
 }
 
@@ -82,6 +85,7 @@ export type UserMinAggregateInputType = {
   es_valido?: true
   aprobado_por_admin?: true
   rechazado_por_admin?: true
+  cumpleanos?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -96,6 +100,7 @@ export type UserMaxAggregateInputType = {
   es_valido?: true
   aprobado_por_admin?: true
   rechazado_por_admin?: true
+  cumpleanos?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -112,6 +117,7 @@ export type UserCountAggregateInputType = {
   rechazado_por_admin?: true
   permisos?: true
   posiciones?: true
+  cumpleanos?: true
   _all?: true
 }
 
@@ -201,6 +207,7 @@ export type UserGroupByOutputType = {
   rechazado_por_admin: boolean
   permisos: string[]
   posiciones: string[]
+  cumpleanos: Date | null
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
@@ -238,6 +245,7 @@ export type UserWhereInput = {
   rechazado_por_admin?: Prisma.BoolFilter<"User"> | boolean
   permisos?: Prisma.StringNullableListFilter<"User">
   posiciones?: Prisma.StringNullableListFilter<"User">
+  cumpleanos?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   pichangas?: Prisma.PichangaListRelationFilter
   inscripciones?: Prisma.InscripcionListRelationFilter
   roles?: Prisma.RolListRelationFilter
@@ -262,6 +270,7 @@ export type UserOrderByWithRelationInput = {
   rechazado_por_admin?: Prisma.SortOrder
   permisos?: Prisma.SortOrder
   posiciones?: Prisma.SortOrder
+  cumpleanos?: Prisma.SortOrderInput | Prisma.SortOrder
   pichangas?: Prisma.PichangaOrderByRelationAggregateInput
   inscripciones?: Prisma.InscripcionOrderByRelationAggregateInput
   roles?: Prisma.RolOrderByRelationAggregateInput
@@ -289,6 +298,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   rechazado_por_admin?: Prisma.BoolFilter<"User"> | boolean
   permisos?: Prisma.StringNullableListFilter<"User">
   posiciones?: Prisma.StringNullableListFilter<"User">
+  cumpleanos?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   pichangas?: Prisma.PichangaListRelationFilter
   inscripciones?: Prisma.InscripcionListRelationFilter
   roles?: Prisma.RolListRelationFilter
@@ -313,6 +323,7 @@ export type UserOrderByWithAggregationInput = {
   rechazado_por_admin?: Prisma.SortOrder
   permisos?: Prisma.SortOrder
   posiciones?: Prisma.SortOrder
+  cumpleanos?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
@@ -335,6 +346,7 @@ export type UserScalarWhereWithAggregatesInput = {
   rechazado_por_admin?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   permisos?: Prisma.StringNullableListFilter<"User">
   posiciones?: Prisma.StringNullableListFilter<"User">
+  cumpleanos?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
 }
 
 export type UserCreateInput = {
@@ -351,6 +363,7 @@ export type UserCreateInput = {
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
   posiciones?: Prisma.UserCreateposicionesInput | string[]
+  cumpleanos?: Date | string | null
   pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
   roles?: Prisma.RolCreateNestedManyWithoutUsersInput
@@ -375,6 +388,7 @@ export type UserUncheckedCreateInput = {
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
   posiciones?: Prisma.UserCreateposicionesInput | string[]
+  cumpleanos?: Date | string | null
   pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
   roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
@@ -399,6 +413,7 @@ export type UserUpdateInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
@@ -423,6 +438,7 @@ export type UserUncheckedUpdateInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
@@ -447,6 +463,7 @@ export type UserCreateManyInput = {
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
   posiciones?: Prisma.UserCreateposicionesInput | string[]
+  cumpleanos?: Date | string | null
 }
 
 export type UserUpdateManyMutationInput = {
@@ -463,6 +480,7 @@ export type UserUpdateManyMutationInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -479,6 +497,7 @@ export type UserUncheckedUpdateManyInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type StringNullableListFilter<$PrismaModel = never> = {
@@ -503,6 +522,7 @@ export type UserCountOrderByAggregateInput = {
   rechazado_por_admin?: Prisma.SortOrder
   permisos?: Prisma.SortOrder
   posiciones?: Prisma.SortOrder
+  cumpleanos?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -517,6 +537,7 @@ export type UserMaxOrderByAggregateInput = {
   es_valido?: Prisma.SortOrder
   aprobado_por_admin?: Prisma.SortOrder
   rechazado_por_admin?: Prisma.SortOrder
+  cumpleanos?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -531,6 +552,7 @@ export type UserMinOrderByAggregateInput = {
   es_valido?: Prisma.SortOrder
   aprobado_por_admin?: Prisma.SortOrder
   rechazado_por_admin?: Prisma.SortOrder
+  cumpleanos?: Prisma.SortOrder
 }
 
 export type UserListRelationFilter = {
@@ -585,6 +607,10 @@ export type UserUpdatepermisosInput = {
 export type UserUpdateposicionesInput = {
   set?: string[]
   push?: string | string[]
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 export type UserCreateNestedManyWithoutRolesInput = {
@@ -767,6 +793,7 @@ export type UserCreateWithoutRolesInput = {
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
   posiciones?: Prisma.UserCreateposicionesInput | string[]
+  cumpleanos?: Date | string | null
   pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
   tarjetas?: Prisma.TarjetasCreateNestedManyWithoutUserInput
@@ -790,6 +817,7 @@ export type UserUncheckedCreateWithoutRolesInput = {
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
   posiciones?: Prisma.UserCreateposicionesInput | string[]
+  cumpleanos?: Date | string | null
   pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
   tarjetas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutUserInput
@@ -837,6 +865,7 @@ export type UserScalarWhereInput = {
   rechazado_por_admin?: Prisma.BoolFilter<"User"> | boolean
   permisos?: Prisma.StringNullableListFilter<"User">
   posiciones?: Prisma.StringNullableListFilter<"User">
+  cumpleanos?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
 }
 
 export type UserCreateWithoutPichangasInput = {
@@ -853,6 +882,7 @@ export type UserCreateWithoutPichangasInput = {
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
   posiciones?: Prisma.UserCreateposicionesInput | string[]
+  cumpleanos?: Date | string | null
   inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
   roles?: Prisma.RolCreateNestedManyWithoutUsersInput
   tarjetas?: Prisma.TarjetasCreateNestedManyWithoutUserInput
@@ -876,6 +906,7 @@ export type UserUncheckedCreateWithoutPichangasInput = {
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
   posiciones?: Prisma.UserCreateposicionesInput | string[]
+  cumpleanos?: Date | string | null
   inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
   roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
   tarjetas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutUserInput
@@ -920,6 +951,7 @@ export type UserCreateWithoutInscripcionesInput = {
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
   posiciones?: Prisma.UserCreateposicionesInput | string[]
+  cumpleanos?: Date | string | null
   pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
   roles?: Prisma.RolCreateNestedManyWithoutUsersInput
   tarjetas?: Prisma.TarjetasCreateNestedManyWithoutUserInput
@@ -943,6 +975,7 @@ export type UserUncheckedCreateWithoutInscripcionesInput = {
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
   posiciones?: Prisma.UserCreateposicionesInput | string[]
+  cumpleanos?: Date | string | null
   pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
   roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
   tarjetas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutUserInput
@@ -982,6 +1015,7 @@ export type UserUpdateWithoutInscripcionesInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
   roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
   tarjetas?: Prisma.TarjetasUpdateManyWithoutUserNestedInput
@@ -1005,6 +1039,7 @@ export type UserUncheckedUpdateWithoutInscripcionesInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
   roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
   tarjetas?: Prisma.TarjetasUncheckedUpdateManyWithoutUserNestedInput
@@ -1028,6 +1063,7 @@ export type UserCreateWithoutTarjetasInput = {
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
   posiciones?: Prisma.UserCreateposicionesInput | string[]
+  cumpleanos?: Date | string | null
   pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
   roles?: Prisma.RolCreateNestedManyWithoutUsersInput
@@ -1051,6 +1087,7 @@ export type UserUncheckedCreateWithoutTarjetasInput = {
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
   posiciones?: Prisma.UserCreateposicionesInput | string[]
+  cumpleanos?: Date | string | null
   pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
   roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
@@ -1079,6 +1116,7 @@ export type UserCreateWithoutTarjetasAsignadasInput = {
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
   posiciones?: Prisma.UserCreateposicionesInput | string[]
+  cumpleanos?: Date | string | null
   pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
   roles?: Prisma.RolCreateNestedManyWithoutUsersInput
@@ -1102,6 +1140,7 @@ export type UserUncheckedCreateWithoutTarjetasAsignadasInput = {
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
   posiciones?: Prisma.UserCreateposicionesInput | string[]
+  cumpleanos?: Date | string | null
   pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
   roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
@@ -1141,6 +1180,7 @@ export type UserUpdateWithoutTarjetasInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
@@ -1164,6 +1204,7 @@ export type UserUncheckedUpdateWithoutTarjetasInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
@@ -1198,6 +1239,7 @@ export type UserUpdateWithoutTarjetasAsignadasInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
@@ -1221,6 +1263,7 @@ export type UserUncheckedUpdateWithoutTarjetasAsignadasInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
@@ -1244,6 +1287,7 @@ export type UserCreateWithoutReclamosCartasInput = {
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
   posiciones?: Prisma.UserCreateposicionesInput | string[]
+  cumpleanos?: Date | string | null
   pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
   roles?: Prisma.RolCreateNestedManyWithoutUsersInput
@@ -1267,6 +1311,7 @@ export type UserUncheckedCreateWithoutReclamosCartasInput = {
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
   posiciones?: Prisma.UserCreateposicionesInput | string[]
+  cumpleanos?: Date | string | null
   pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
   roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
@@ -1306,6 +1351,7 @@ export type UserUpdateWithoutReclamosCartasInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
@@ -1329,6 +1375,7 @@ export type UserUncheckedUpdateWithoutReclamosCartasInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
@@ -1352,6 +1399,7 @@ export type UserCreateWithoutCastigosInput = {
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
   posiciones?: Prisma.UserCreateposicionesInput | string[]
+  cumpleanos?: Date | string | null
   pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
   roles?: Prisma.RolCreateNestedManyWithoutUsersInput
@@ -1375,6 +1423,7 @@ export type UserUncheckedCreateWithoutCastigosInput = {
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
   posiciones?: Prisma.UserCreateposicionesInput | string[]
+  cumpleanos?: Date | string | null
   pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
   roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
@@ -1403,6 +1452,7 @@ export type UserCreateWithoutCastigosCanceladosInput = {
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
   posiciones?: Prisma.UserCreateposicionesInput | string[]
+  cumpleanos?: Date | string | null
   pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
   roles?: Prisma.RolCreateNestedManyWithoutUsersInput
@@ -1426,6 +1476,7 @@ export type UserUncheckedCreateWithoutCastigosCanceladosInput = {
   rechazado_por_admin?: boolean
   permisos?: Prisma.UserCreatepermisosInput | string[]
   posiciones?: Prisma.UserCreateposicionesInput | string[]
+  cumpleanos?: Date | string | null
   pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
   inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
   roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
@@ -1465,6 +1516,7 @@ export type UserUpdateWithoutCastigosInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
@@ -1488,6 +1540,7 @@ export type UserUncheckedUpdateWithoutCastigosInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
@@ -1522,6 +1575,7 @@ export type UserUpdateWithoutCastigosCanceladosInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
@@ -1545,6 +1599,7 @@ export type UserUncheckedUpdateWithoutCastigosCanceladosInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
@@ -1568,6 +1623,7 @@ export type UserUpdateWithoutRolesInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
   tarjetas?: Prisma.TarjetasUpdateManyWithoutUserNestedInput
@@ -1591,6 +1647,7 @@ export type UserUncheckedUpdateWithoutRolesInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
   inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
   tarjetas?: Prisma.TarjetasUncheckedUpdateManyWithoutUserNestedInput
@@ -1614,6 +1671,7 @@ export type UserUncheckedUpdateManyWithoutRolesInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserUpdateWithoutPichangasInput = {
@@ -1630,6 +1688,7 @@ export type UserUpdateWithoutPichangasInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
   tarjetas?: Prisma.TarjetasUpdateManyWithoutUserNestedInput
@@ -1653,6 +1712,7 @@ export type UserUncheckedUpdateWithoutPichangasInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
   roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
   tarjetas?: Prisma.TarjetasUncheckedUpdateManyWithoutUserNestedInput
@@ -1676,6 +1736,7 @@ export type UserUncheckedUpdateManyWithoutPichangasInput = {
   rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   permisos?: Prisma.UserUpdatepermisosInput | string[]
   posiciones?: Prisma.UserUpdateposicionesInput | string[]
+  cumpleanos?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -1786,6 +1847,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   rechazado_por_admin?: boolean
   permisos?: boolean
   posiciones?: boolean
+  cumpleanos?: boolean
   pichangas?: boolean | Prisma.User$pichangasArgs<ExtArgs>
   inscripciones?: boolean | Prisma.User$inscripcionesArgs<ExtArgs>
   roles?: boolean | Prisma.User$rolesArgs<ExtArgs>
@@ -1811,6 +1873,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   rechazado_por_admin?: boolean
   permisos?: boolean
   posiciones?: boolean
+  cumpleanos?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1827,6 +1890,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   rechazado_por_admin?: boolean
   permisos?: boolean
   posiciones?: boolean
+  cumpleanos?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -1843,9 +1907,10 @@ export type UserSelectScalar = {
   rechazado_por_admin?: boolean
   permisos?: boolean
   posiciones?: boolean
+  cumpleanos?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "email" | "apodo" | "password" | "createdAt" | "updatedAt" | "es_admin" | "es_valido" | "aprobado_por_admin" | "rechazado_por_admin" | "permisos" | "posiciones", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "email" | "apodo" | "password" | "createdAt" | "updatedAt" | "es_admin" | "es_valido" | "aprobado_por_admin" | "rechazado_por_admin" | "permisos" | "posiciones" | "cumpleanos", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   pichangas?: boolean | Prisma.User$pichangasArgs<ExtArgs>
   inscripciones?: boolean | Prisma.User$inscripcionesArgs<ExtArgs>
@@ -1886,6 +1951,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     rechazado_por_admin: boolean
     permisos: string[]
     posiciones: string[]
+    cumpleanos: Date | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -2330,6 +2396,7 @@ export interface UserFieldRefs {
   readonly rechazado_por_admin: Prisma.FieldRef<"User", 'Boolean'>
   readonly permisos: Prisma.FieldRef<"User", 'String[]'>
   readonly posiciones: Prisma.FieldRef<"User", 'String[]'>
+  readonly cumpleanos: Prisma.FieldRef<"User", 'DateTime'>
 }
     
 

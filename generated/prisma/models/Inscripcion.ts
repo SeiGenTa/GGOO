@@ -491,10 +491,6 @@ export type InscripcionUncheckedUpdateManyWithoutPichangaNestedInput = {
   deleteMany?: Prisma.InscripcionScalarWhereInput | Prisma.InscripcionScalarWhereInput[]
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type NullableIntFieldUpdateOperationsInput = {
   set?: number | null
   increment?: number

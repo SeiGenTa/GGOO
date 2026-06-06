@@ -55,5 +55,17 @@ services:
       - "${PORT_APP:-5173}:3000"
     restart: unless-stopped
 
+  app-production-web:
+    image: ghcr.io/seigenta/ggoo:latest
+    container_name: ggoo-app-production-web
+    volumes:
+      - ./app.logs:/app/app.logs
+      - ./contributors.json:/app/contributors.json
+    env_file:
+      - .env
+    ports:
+      - "${PORT_APP:-5173}:3000"
+    restart: unless-stopped
+
 volumes:
   postgres_data:

@@ -3,6 +3,9 @@
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
+	"pnpm": {
+		"onlyBuiltDependencies": ["@prisma/engines", "esbuild", "prisma"]
+	},
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
@@ -14,7 +17,7 @@
 	"devDependencies": {
 		"@fontsource-variable/inter": "^5.2.8",
 		"@internationalized/date": "^3.12.1",
-		"@lucide/svelte": "^1.16.0",
+		"@lucide/svelte": "^1.17.0",
 		"@prisma/engines": "^7.8.0",
 		"@sveltejs/adapter-auto": "^7.0.1",
 		"@sveltejs/adapter-node": "^5.5.4",
