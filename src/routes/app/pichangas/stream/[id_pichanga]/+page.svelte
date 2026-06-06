@@ -14,7 +14,6 @@
     import { onMount } from "svelte";
     import { toast } from "svelte-sonner";
 
-
     let { data } = $props();
     const pichanga = $derived(data.pichanga);
 

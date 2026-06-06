@@ -46,11 +46,13 @@ export const load: PageServerLoad = async ({ url, depends, locals }) => {
 
     return {
         name_page: 'Pichangas',
-        pichangas: load_pichangas_promise(page),
         gestores: gestores.map((g) => ({
             value: g.id,
             label: `${g.nombre} ${g.apodo ? `(${g.apodo})` : ''}`,
         })),
+        future: {
+            pichangas: load_pichangas_promise(page),
+        }
     }
 }
 
@@ -81,6 +83,8 @@ const load_pichangas_promise = async (page: string) => {
         skip: (parseInt(page) - 1) * 10,
         take: 10,
     })
+
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
     const pichangas: Pichanga_struct[] = [
         ...data_pichangas.map((pichanga) => ({
