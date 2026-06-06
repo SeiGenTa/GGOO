@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+cd "$(dirname "$0")"
+
+echo "=== Directorio actual de trabajo: $(pwd) ==="
+
 set -euo pipefail
 
 echo "=== Pulling latest code ==="
