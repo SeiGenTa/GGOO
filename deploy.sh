@@ -1,3 +1,17 @@
-# Funcionará al instante sin pedir contraseñas ni tokens
-docker compose pull
-docker compose up -d app-production-web
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "=== Pulling latest code ==="
+git pull
+
+echo "=== Pulling latest image ==="
+docker compose pull app-production-web
+
+echo "=== Recreating container ==="
+docker compose up -d --force-recreate app-production-web
+
+echo "=== Cleaning up old images ==="
+docker image prune -f
+
+echo "=== Deploy complete ==="
+docker compose ps app-production-web

@@ -58,3 +58,13 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      
+      - name: Trigger deployment
+        run: |
+          redis-cli \
+            -h "${{ secrets.REDIS_HOST }}" \
+            -p "${{ secrets.REDIS_PORT }}" \
+            -n "${{ secrets.REDIS_DB }}" \
+            -a "${{ secrets.REDIS_PASSWORD }}" \
+            --no-auth-warning \
+            PUBLISH "${{ secrets.REDIS_CHANNEL }}" "${{ secrets.REDIS_MESSAGE }}"
