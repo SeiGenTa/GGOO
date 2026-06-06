@@ -13,4 +13,19 @@
 			<div class="rounded-xl border bg-background/80 p-3">Herramienta pensada para las necesidades del grupo.</div>
 		</div>
 	</section>
+
+	<section class="mt-6 rounded-2xl border bg-linear-to-r from-amber-500/10 via-orange-500/10 to-rose-500/10 p-8 shadow-sm">
+		<h2 class="text-xl font-bold tracking-tight">Código abierto</h2>
+		<p class="mt-3 max-w-3xl text-muted-foreground">
+			Este proyecto es de <strong>código abierto</strong> y está disponible en
+			<a href="https://github.com/SeiGenTa/GGOO" target="_blank" rel="noopener noreferrer" class="font-medium underline underline-offset-2 hover:text-foreground">GitHub</a>.
+			Se aceptan aportes al proyecto, ya sea mediante <strong>pull requests</strong> con mejoras o nuevas funcionalidades,
+			o simplemente compartiendo ideas y sugerencias a través de <strong>issues</strong>.
+		</p>
+		<p class="mt-3 max-w-3xl text-muted-foreground">
+			Si encuentras algún <strong>error</strong> o comportamiento inesperado, por favor repórtalo creando un issue en GitHub
+			con el título comenzando con <code class="rounded bg-muted px-1.5 py-0.5 text-xs font-mono">[ERROR]</code>
+			para que podamos identificarlo y solucionarlo rápidamente.
+		</p>
+	</section>
 </div>
