@@ -55,18 +55,18 @@ export const actions = {
         const userId = form.get('userId') as string
 
         const user = await prisma.user.findUnique({
-          where: { id: userId },
-          select: {
-            aprobado_por_admin: true,
-            rechazado_por_admin: true
-          }
+            where: { id: userId },
+            select: {
+                aprobado_por_admin: true,
+                rechazado_por_admin: true,
+            },
         })
-        if (!user){
-          redirect(301, "/auth?error=usuario%20no%20encontrado")
+        if (!user) {
+            redirect(301, '/auth?error=usuario%20no%20encontrado')
         }
 
-        if(!user.rechazado_por_admin){
-          redirect(301, "/auth?error=usuario%20no%20rechazado%20por%20admin")
+        if (!user.rechazado_por_admin) {
+            redirect(301, '/auth?error=usuario%20no%20rechazado%20por%20admin')
         }
 
         await prisma.user.updateMany({

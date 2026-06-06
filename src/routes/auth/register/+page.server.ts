@@ -1,59 +1,50 @@
-import { redirect, type Actions } from "@sveltejs/kit";
-import { prisma } from "$utils/prisma";
-import type { PageServerLoad } from "./$types";
-import UserUtils from "$utils/user";
-import { fail } from "@sveltejs/kit";
+import { redirect, type Actions } from '@sveltejs/kit'
+import { prisma } from '$utils/prisma'
+import type { PageServerLoad } from './$types'
+import UserUtils from '$utils/user'
+import { fail } from '@sveltejs/kit'
 
-export const load: PageServerLoad = async ({ }) => { }
+export const load: PageServerLoad = async ({}) => {}
 
 export const actions = {
     default: async ({ request, cookies }) => {
-        const formData = await request.formData();
-        const name = formData.get("name") as string;
-        const nickname = formData.get("nickname") as string;
-        const email = formData.get("email") as string;
-        const password = formData.get("password") as string;
-        const confirmPassword = formData.get("confirm-password") as string;
+        const formData = await request.formData()
+        const name = formData.get('name') as string
+        const nickname = formData.get('nickname') as string
+        const email = formData.get('email') as string
+        const password = formData.get('password') as string
+        const confirmPassword = formData.get('confirm-password') as string
 
         if (!email || !password || !confirmPassword) {
-            return fail(
-                400,
-                {
-                    success: false,
-                    message: "Por favor, completa todos los campos requeridos",
-                },
-            );
+            return fail(400, {
+                success: false,
+                message: 'Por favor, completa todos los campos requeridos',
+            })
         }
 
         if (password !== confirmPassword) {
-            return fail(
-                400,
-                {
-                    success: false,
-                    message: "Contraseñas no coinciden",
-                }
-            );
+            return fail(400, {
+                success: false,
+                message: 'Contraseñas no coinciden',
+            })
         }
 
         const existingUser = await prisma.user.findUnique({
             where: {
                 email,
             },
-        });
+        })
 
         if (existingUser) {
-            return fail(
-                400,
-                {
-                    success: false,
-                    message: "Ya existe una cuenta con ese correo electrónico",
-                }
-            );
+            return fail(400, {
+                success: false,
+                message: 'Ya existe una cuenta con ese correo electrónico',
+            })
         }
 
-        const hashedPassword = UserUtils.hashPassword(password);
+        const hashedPassword = UserUtils.hashPassword(password)
 
-        const nombre_cumple = /^[a-zA-Z]+ [a-zA-Z]+$/.test(name);
+        const nombre_cumple = /^[a-zA-Z]+ [a-zA-Z]+$/.test(name)
 
         // Aplicamos el rol por defecto de usuario a los nuevos registros
         const defaultRole = await prisma.rol.findFirst({
@@ -77,27 +68,25 @@ export const actions = {
                       }
                     : undefined,
             },
-        });
+        })
 
-
-
-        await sendEmailValidator(email);
+        await sendEmailValidator(email)
 
         return {
             success: true,
-        };
-    }
-} satisfies Actions;
+        }
+    },
+} satisfies Actions
 
-import { sendEmail } from "$lib/email/resend";
-import { encript_string } from "$utils/encript";
+import { sendEmail } from '$lib/email/resend'
+import { encript_string } from '$utils/encript'
 
 const sendEmailValidator = async (to: string) => {
-    const validationKey = encript_string(to);
+    const validationKey = encript_string(to)
 
-    const uriDirectory = process.env.ORIGIN || "http://localhost:5173/";
+    const uriDirectory = process.env.ORIGIN || 'http://localhost:5173/'
 
-    const subject = "Bienvenido a GGOO";
+    const subject = 'Bienvenido a GGOO'
     const html = `<p>Hola ${to},</p>
     <h1> ¡Bienvenido a GGOO!</h1>
     <p>Gracias por registrarte en GGOO. Estamos emocionados de tenerte con nosotros.</p>
@@ -111,6 +100,6 @@ const sendEmailValidator = async (to: string) => {
     <h3>Si no te registraste en GGOO, puedes ignorar este correo electrónico.</h3>
 
     
-    `;
-    await sendEmail(to, subject, html);
+    `
+    await sendEmail(to, subject, html)
 }

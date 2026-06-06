@@ -52,7 +52,7 @@ export const load: PageServerLoad = async ({ url, depends, locals }) => {
         })),
         future: {
             pichangas: load_pichangas_promise(page),
-        }
+        },
     }
 }
 
@@ -84,8 +84,6 @@ const load_pichangas_promise = async (page: string) => {
         take: 10,
     })
 
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
     const pichangas: Pichanga_struct[] = [
         ...data_pichangas.map((pichanga) => ({
             id: pichanga.id,
@@ -108,14 +106,23 @@ const load_pichangas_promise = async (page: string) => {
 export const actions = {
     add_pichanga: async ({ request, locals }) => {
         if (!locals.user) {
-            logger.info({ action: 'action_add_pichanga_unauthorized' }, 'Intento de crear pichanga sin autenticación')
+            logger.info(
+                { action: 'action_add_pichanga_unauthorized' },
+                'Intento de crear pichanga sin autenticación'
+            )
             return fail(401, {
                 error: 'No autorizado',
             })
         }
 
         if (!locals.user!.permisos.includes(Permissions.CrearPartidos)) {
-            logger.info({ action: 'action_add_pichanga_forbidden', userId: locals.user.id }, 'Intento de crear pichanga sin permisos')
+            logger.info(
+                {
+                    action: 'action_add_pichanga_forbidden',
+                    userId: locals.user.id,
+                },
+                'Intento de crear pichanga sin permisos'
+            )
             return fail(403, {
                 error: 'No tienes permisos para crear una pichanga',
             })

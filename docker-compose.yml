@@ -1,71 +1,75 @@
 services:
-  postgres:
-    image: postgres:17
-    container_name: ggoo-postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-ggoo}
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-ggoo}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    postgres:
+        image: postgres:17
+        container_name: ggoo-postgres
+        restart: unless-stopped
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB:-ggoo}
+            POSTGRES_USER: ${POSTGRES_USER:-postgres}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+        ports:
+            - '5432:5432'
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        healthcheck:
+            test:
+                [
+                    'CMD-SHELL',
+                    'pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-ggoo}',
+                ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: development
-    container_name: ggoo-app
-    user: "${UID:-1000}:${GID:-1000}"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    env_file:
-      - .env
-    ports:
-      - "${PORT_APP:-5173}:5173"
-      - "${PORT_PRISMA:-51212}:51212"
-    volumes:
-      - .:/app
-      - /app/node_modules
-    restart: unless-stopped
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: development
+        container_name: ggoo-app
+        user: '${UID:-1000}:${GID:-1000}'
+        depends_on:
+            postgres:
+                condition: service_healthy
+        env_file:
+            - .env
+        ports:
+            - '${PORT_APP:-5173}:5173'
+            - '${PORT_PRISMA:-51212}:51212'
+        volumes:
+            - .:/app
+            - /app/node_modules
+        restart: unless-stopped
 
-  app-production:
-    image: ggoo-app-production:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: production
-      args:
-        - DATABASE_URL=${DATABASE_URL}
-    container_name: ggoo-app-production
-    volumes:
-      - ./app.logs:/app/app.logs
-      - ./contributors.json:/app/contributors.json
-    env_file:
-      - .env
-    ports:
-      - "${PORT_APP:-5173}:3000"
-    restart: unless-stopped
+    app-production:
+        image: ggoo-app-production:latest
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: production
+            args:
+                - DATABASE_URL=${DATABASE_URL}
+        container_name: ggoo-app-production
+        volumes:
+            - ./app.logs:/app/app.logs
+            - ./contributors.json:/app/contributors.json
+        env_file:
+            - .env
+        ports:
+            - '${PORT_APP:-5173}:3000'
+        restart: unless-stopped
 
-  app-production-web:
-    image: ghcr.io/seigenta/ggoo:latest
-    container_name: ggoo-app-production-web
-    volumes:
-      - ./app.logs:/app/app.logs
-      - ./contributors.json:/app/contributors.json
-    env_file:
-      - .env
-    ports:
-      - "${PORT_APP:-5173}:3000"
-    restart: unless-stopped
+    app-production-web:
+        image: ghcr.io/seigenta/ggoo:latest
+        container_name: ggoo-app-production-web
+        volumes:
+            - ./app.logs:/app/app.logs
+            - ./contributors.json:/app/contributors.json
+        env_file:
+            - .env
+        ports:
+            - '${PORT_APP:-5173}:3000'
+        restart: unless-stopped
 
 volumes:
-  postgres_data:
+    postgres_data:

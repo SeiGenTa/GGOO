@@ -1,11 +1,11 @@
 <script lang="ts">
-    import Input from "$lib/components/app/input.svelte";
-    import Button from "$lib/components/ui/button/button.svelte";
-    import * as Card from "$lib/components/ui/card";
-    import Separator from "$lib/components/ui/separator/separator.svelte";
-    import type { PageData, ActionData } from "./$types";
+    import Input from '$lib/components/app/input.svelte'
+    import Button from '$lib/components/ui/button/button.svelte'
+    import * as Card from '$lib/components/ui/card'
+    import Separator from '$lib/components/ui/separator/separator.svelte'
+    import type { PageData, ActionData } from './$types'
 
-    let { data, form }: { data: PageData; form: ActionData } = $props();
+    let { data, form }: { data: PageData; form: ActionData } = $props()
 </script>
 
 <div class="flex items-center justify-center min-h-screen p-2">

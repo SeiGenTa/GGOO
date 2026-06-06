@@ -1,9 +1,9 @@
 interface Pichanga_struct {
-    id: string;
-    name: string|null;
-    admins_name: string[];
-    date: string;
-    fechaInicioIncripcion: string;
-    limit_members: number;
-    members: { id: string; name: string }[];
+    id: string
+    name: string | null
+    admins_name: string[]
+    date: string
+    fechaInicioIncripcion: string
+    limit_members: number
+    members: { id: string; name: string }[]
 }
