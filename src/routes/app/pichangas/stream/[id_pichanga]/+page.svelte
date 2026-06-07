@@ -19,6 +19,27 @@
 
     let { data } = $props()
 
+    // ── Captura local: skeleton solo en primera carga ──
+    let pichanga: any = $state(null)
+    let pichangaLoading = $state(true)
+    let pichangaError: string | null = $state(null)
+
+    $effect(() => {
+        data.pichanga
+            .then((result) => {
+                pichanga = result
+                pichangaError = null
+            })
+            .catch((err) => {
+                pichangaError =
+                    err instanceof Error ? err.message : 'Error desconocido'
+            })
+            .finally(() => {
+                pichangaLoading = false
+            })
+    })
+    // ─────────────────────────────────────────
+
     let open_edit = $state(false)
     let loading_edit = $state(false)
     let options_admins: { value: string; label: string }[] = $state([])
@@ -86,24 +107,40 @@
     })
 </script>
 
-{#await data.pichanga}
+{#if pichangaLoading}
     <Skeleton />
-{:then pichanga}
+{:else if pichangaError}
+    <div class="min-h-full rounded-2xl sm:p-5 flex items-center justify-center">
+        <div class="text-center space-y-3">
+            <p class="text-lg font-semibold text-destructive">
+                Error al cargar la pichanga
+            </p>
+            <p class="text-sm text-muted-foreground">{pichangaError}</p>
+            <a href="/app/pichangas" class="text-sm underline text-primary"
+                >Volver a pichangas</a
+            >
+        </div>
+    </div>
+{:else if pichanga}
     {@const inscripciones_activas = pichanga.inscripciones.filter(
-        (i) => !i.tiempoSalidaLista
+        (i: { tiempoSalidaLista: string | null }) => !i.tiempoSalidaLista
     )}
     {@const inscripciones_salieron = [...pichanga.inscripciones]
-        .filter((i) => i.tiempoSalidaLista)
+        .filter(
+            (i: { tiempoSalidaLista: string | null }) => i.tiempoSalidaLista
+        )
         .sort(
             (a, b) =>
                 new Date(b.tiempoSalidaLista ?? 0).getTime() -
                 new Date(a.tiempoSalidaLista ?? 0).getTime()
         )}
     {@const inscrito = user_id
-        ? inscripciones_activas.some((i) => i.user.id === user_id)
+        ? inscripciones_activas.some(
+              (i: { user: { id: string } }) => i.user.id === user_id
+          )
         : false}
     {@const admin_partido = user_id
-        ? pichanga.admins.some((a) => a.id === user_id)
+        ? pichanga.admins.some((a: { id: string }) => a.id === user_id)
         : false}
     {@const inscripciones_abierta =
         new Date() >= new Date(pichanga.fechaInicioIncripcion) &&
@@ -635,18 +672,6 @@
             </Card.Root>
         </div>
     </div>
-{:catch error}
-    <div class="min-h-full rounded-2xl sm:p-5 flex items-center justify-center">
-        <div class="text-center space-y-3">
-            <p class="text-lg font-semibold text-destructive">
-                Error al cargar la pichanga
-            </p>
-            <p class="text-sm text-muted-foreground">
-                {error instanceof Error ? error.message : 'Error desconocido'}
-            </p>
-            <a href="/app/pichangas" class="text-sm underline text-primary"
-                >Volver a pichangas</a
-            >
-        </div>
-    </div>
-{/await}
+{:else}
+    <Skeleton />
+{/if}

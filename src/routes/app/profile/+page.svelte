@@ -5,6 +5,7 @@
     import * as Alert from '$lib/components/ui/alert/index.js'
     import * as Dialog from '$lib/components/ui/dialog'
     import { Badge } from '$lib/components/ui/badge'
+    import { version } from '$src/version'
     import {
         Field,
         FieldDescription,
@@ -151,6 +152,7 @@
 </script>
 
 <section class="mx-auto w-full max-w-3xl space-y-6 px-3 py-6">
+    <p>version:{version}</p>
     <Card.Root>
         <Card.Header>
             <Card.Title>Mi perfil</Card.Title>
