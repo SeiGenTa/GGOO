@@ -1,31 +1,34 @@
-export type PichangaStreamEventType = "edited" | "joined" | "left" | "deleted";
+export type PichangaStreamEventType = 'edited' | 'joined' | 'left' | 'deleted'
 
 export type PichangaStreamEvent = {
-    pichangaId: string;
-    type: PichangaStreamEventType;
-    at: string;
-};
+    pichangaId: string
+    type: PichangaStreamEventType
+    at: string
+}
 
-type Listener = (event: PichangaStreamEvent) => void;
+type Listener = (event: PichangaStreamEvent) => void
 
-const listeners = new Set<Listener>();
+const listeners = new Set<Listener>()
 
 export const subscribePichangaStream = (listener: Listener) => {
-    listeners.add(listener);
+    listeners.add(listener)
 
     return () => {
-        listeners.delete(listener);
-    };
-};
+        listeners.delete(listener)
+    }
+}
 
-export const publishPichangaUpdate = (pichangaId: string, type: PichangaStreamEventType) => {
+export const publishPichangaUpdate = (
+    pichangaId: string,
+    type: PichangaStreamEventType
+) => {
     const payload: PichangaStreamEvent = {
         pichangaId,
         type,
         at: new Date().toISOString(),
-    };
+    }
 
     for (const listener of listeners) {
-        listener(payload);
+        listener(payload)
     }
-};
+}

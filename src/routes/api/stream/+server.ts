@@ -1,29 +1,35 @@
-import { subscribePichangaStream } from "$lib/server/pichanga-stream";
-import { produce } from "sveltekit-sse";
-import type { RequestHandler } from "./$types";
+import { subscribePichangaStream } from '$lib/server/pichanga-stream'
+import { produce } from 'sveltekit-sse'
+import type { RequestHandler } from './$types'
 
 export const GET: RequestHandler = ({ url }) => {
-    const pichangaId = url.searchParams.get("id_pichanga");
+    const pichangaId = url.searchParams.get('id_pichanga')
 
     return produce(({ emit }) => {
-        const { error } = emit("ready", JSON.stringify({ connected: true, pichangaId }));
+        const { error } = emit(
+            'ready',
+            JSON.stringify({ connected: true, pichangaId })
+        )
         if (error) {
-            return;
+            return
         }
 
         const unsubscribe = subscribePichangaStream((event) => {
             if (pichangaId && event.pichangaId !== pichangaId) {
-                return;
+                return
             }
 
-            const { error: emitError } = emit("pichanga-update", JSON.stringify(event));
+            const { error: emitError } = emit(
+                'pichanga-update',
+                JSON.stringify(event)
+            )
             if (emitError) {
-                unsubscribe();
+                unsubscribe()
             }
-        });
+        })
 
         return () => {
-            unsubscribe();
-        };
-    });
+            unsubscribe()
+        }
+    })
 }

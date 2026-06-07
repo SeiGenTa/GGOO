@@ -1,7 +1,7 @@
 allowBuilds:
-  '@prisma/engines': true
-  esbuild: true
-  prisma: true
+    '@prisma/engines': true
+    esbuild: true
+    prisma: true
 minimumReleaseAgeExclude:
-  - cookie@0.7.0
-  - '@hono/node-server@1.19.13'
+    - cookie@0.7.0
+    - '@hono/node-server@1.19.13'

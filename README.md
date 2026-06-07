@@ -12,12 +12,12 @@ La idea es que esta aplicación crezca según las necesidades del grupo y reciba
 
 En esta sección se muestran los objetivos actuales del proyecto. Los elementos marcados con `X` ya están implementados; los marcados con `O` aún están pendientes.
 
-- [X] Crear pichangas en las que los miembros puedan registrarse y ver el estado de la lista en tiempo real.
-- [X] Gestor de miembros.
-- [X] Gestor de permisos para administradores.
-- [X] Aplicación de permisos dentro de toda la app.
+- [x] Crear pichangas en las que los miembros puedan registrarse y ver el estado de la lista en tiempo real.
+- [x] Gestor de miembros.
+- [x] Gestor de permisos para administradores.
+- [x] Aplicación de permisos dentro de toda la app.
 - [A MEDIAS] Sistema de registro de tarjetas y consecuencias dentro del sistema de pichangas.
-- [X] Vista de contribuyentes.
+- [x] Vista de contribuyentes.
 
 ## Cómo apoyar en el desarrollo
 

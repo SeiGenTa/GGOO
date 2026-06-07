@@ -18,15 +18,15 @@
 
         if (posiciones.length === 0) {
             toast.info(
-                "No tienes posiciones asignadas. Entra a tu perfil para asignarlas.",
+                'No tienes posiciones asignadas. Entra a tu perfil para asignarlas.',
                 {
                     duration: 10000,
                     action: {
                         label: 'Ir a perfil',
                         onClick: () => {
                             goto('/app/profile#positions')
-                        }
-                    }
+                        },
+                    },
                 }
             )
         }
@@ -40,8 +40,8 @@
                         label: 'Ir a perfil',
                         onClick: () => {
                             goto('/app/profile#cumpleanos')
-                        }
-                    }
+                        },
+                    },
                 }
             )
         }

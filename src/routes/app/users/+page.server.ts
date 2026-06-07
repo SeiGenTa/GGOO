@@ -137,12 +137,21 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 export const actions: Actions = {
     accept_member: async ({ request, locals }) => {
         if (!locals.user) {
-            logger.info({ action: 'action_accept_member_unauthorized' }, 'Intento de aprobar miembro sin autenticación')
+            logger.info(
+                { action: 'action_accept_member_unauthorized' },
+                'Intento de aprobar miembro sin autenticación'
+            )
             return fail(401, { message: 'No autorizado.' })
         }
 
         if (!locals.user.permisos.includes(Permissions.AceptarMiembros)) {
-            logger.info({ action: 'action_accept_member_forbidden', userId: locals.user.id }, 'Intento de aprobar miembro sin permisos')
+            logger.info(
+                {
+                    action: 'action_accept_member_forbidden',
+                    userId: locals.user.id,
+                },
+                'Intento de aprobar miembro sin permisos'
+            )
             return fail(403, {
                 message: 'No tienes permisos para aceptar miembros.',
             })
@@ -222,12 +231,21 @@ export const actions: Actions = {
 
     reject_member: async ({ request, locals }) => {
         if (!locals.user) {
-            logger.info({ action: 'action_reject_member_unauthorized' }, 'Intento de rechazar miembro sin autenticación')
+            logger.info(
+                { action: 'action_reject_member_unauthorized' },
+                'Intento de rechazar miembro sin autenticación'
+            )
             return fail(401, { message: 'No autorizado.' })
         }
 
         if (!locals.user.permisos.includes(Permissions.AceptarMiembros)) {
-            logger.info({ action: 'action_reject_member_forbidden', userId: locals.user.id }, 'Intento de rechazar miembro sin permisos')
+            logger.info(
+                {
+                    action: 'action_reject_member_forbidden',
+                    userId: locals.user.id,
+                },
+                'Intento de rechazar miembro sin permisos'
+            )
             return fail(403, {
                 message: 'No tienes permisos para rechazar miembros.',
             })
@@ -245,7 +263,7 @@ export const actions: Actions = {
             where: { id: userId },
             select: {
                 id: true,
-				email: true,
+                email: true,
             },
         })
 
@@ -263,11 +281,7 @@ export const actions: Actions = {
         })
 
         //! Enviar correo para cambiar el nombre
-		sendEmailNameRechazed(
-			user.email,
-			comment,
-			user.id
-		)
+        sendEmailNameRechazed(user.email, comment, user.id)
 
         return {
             success: true,
@@ -288,7 +302,7 @@ const sendEmailNameRechazed = async (
     const dataChangeName: DataEncripted = {
         action: ActionsDataEncripted.ChangeName,
         id: userId,
-		max_age: 60 * 60 * 1000 *24 * 7, // 7 días para cambiar el nombre
+        max_age: 60 * 60 * 1000 * 24 * 7, // 7 días para cambiar el nombre
     }
     const dataChangeNameEncripted = encript_json(dataChangeName)
     const urlRedirect = `${process.env.ORIGIN ?? 'http://localhost:5173/'}auth/change_name?data=${encodeURIComponent(dataChangeNameEncripted)}`

@@ -1,93 +1,108 @@
 <script lang="ts">
-    import * as Sidebar from "$lib/components/ui/sidebar";
-    import Button from "../ui/button/button.svelte";
-    import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
-    import * as Dialog from "$lib/components/ui/dialog";
-    import { User, Key, Users, Volleyball, BadgeAlertIcon } from "@lucide/svelte/icons";
-    import { toggleMode } from "mode-watcher";
-    import { page } from "$app/state";
-    import * as Item from "$lib/components/ui/item";
+    import * as Sidebar from '$lib/components/ui/sidebar'
+    import Button from '../ui/button/button.svelte'
+    import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
+    import * as Dialog from '$lib/components/ui/dialog'
+    import {
+        User,
+        Key,
+        Users,
+        Volleyball,
+        BadgeAlertIcon,
+    } from '@lucide/svelte/icons'
+    import { toggleMode } from 'mode-watcher'
+    import { page } from '$app/state'
+    import * as Item from '$lib/components/ui/item'
 
     const sections = [
         {
-            title: "General",
+            title: 'General',
             items: [
                 {
                     icon: Volleyball,
-                    label: "Pichangas",
-                    href: "/app/pichangas",
+                    label: 'Pichangas',
+                    href: '/app/pichangas',
                 },
                 {
                     icon: BadgeAlertIcon,
-                    label: "Mis tarjetas",
-                    href: "/app/tarjetas",
+                    label: 'Mis tarjetas',
+                    href: '/app/tarjetas',
                 },
             ],
         },
         {
-            title: "Administración",
+            title: 'Administración',
             items: [
                 {
                     icon: User,
-                    label: "Usuarios",
-                    href: "/app/users",
+                    label: 'Usuarios',
+                    href: '/app/users',
                 },
                 {
                     icon: Key,
-                    label: "Roles",
-                    href: "/app/roles",
+                    label: 'Roles',
+                    href: '/app/roles',
                 },
                 {
                     icon: Users,
-                    label: "Permisos",
-                    href: "/app/permissions",
+                    label: 'Permisos',
+                    href: '/app/permissions',
                 },
                 {
                     icon: BadgeAlertIcon,
-                    label: "Gestion de tarjetas",
-                    href: "/app/gestion_tarjetas",
+                    label: 'Gestion de tarjetas',
+                    href: '/app/gestion_tarjetas',
                 },
             ],
         },
-    ];
+    ]
     interface userInfo {
-        id: string;
-        email: string;
-        nombre: string;
-        apodo: string | null;
-        es_admin: boolean;
+        id: string
+        email: string
+        nombre: string
+        apodo: string | null
+        es_admin: boolean
     }
 
-    const { user, app_name }: { user: userInfo | undefined, app_name: string } = $props();
+    const { user, app_name }: { user: userInfo | undefined; app_name: string } =
+        $props()
 
-    let showCloseSessionDialog = $state(false);
+    let showCloseSessionDialog = $state(false)
 
     const isRouteActive = (href: string) => {
-        if (href === "/app") {
-            return false;
+        if (href === '/app') {
+            return false
         }
 
-        return page.url.pathname === href || page.url.pathname.startsWith(`${href}/`);
-    };
+        return (
+            page.url.pathname === href ||
+            page.url.pathname.startsWith(`${href}/`)
+        )
+    }
 
-    
+    import { useSidebar } from '$lib/components/ui/sidebar/index.js'
+    const sidebar = useSidebar()
 
-    import { useSidebar } from "$lib/components/ui/sidebar/index.js";
-    const sidebar = useSidebar();
+    let isSidebarOpen = $state(sidebar.open)
 
-    let isSidebarOpen = $state(sidebar.open);
-
-    import logo from "/src/public/logo.jpg";
+    import logo from '/src/public/logo.jpg'
 </script>
 
 <Sidebar.Root variant="floating" collapsible="icon" class="h-screen">
     <Sidebar.Header>
         <Sidebar.Menu>
             <Sidebar.MenuItem>
-                <Sidebar.MenuButton class="h-12" isActive={isRouteActive("/app")}>
+                <Sidebar.MenuButton
+                    class="h-12"
+                    isActive={isRouteActive('/app')}
+                >
                     {#snippet child({ props })}
                         <a href="/app" {...props}>
-                            <img src={logo} alt="Volley Beauchef Logo" class="w-8 h-8 mr-2 border rounded-lg object-cover" />
+                            <img
+                                src={logo}
+                                alt="Volley Beauchef Logo"
+                                class="w-8 h-8 mr-2 border rounded-lg object-cover"
+                            />
                             <div>
                                 <h2 class="text-xl">{app_name}</h2>
                                 <h3>Gestión de pichangas</h3>
@@ -106,7 +121,9 @@
                     <Sidebar.Menu>
                         {#each section.items as item}
                             <Sidebar.MenuItem>
-                                <Sidebar.MenuButton isActive={isRouteActive(item.href)}>
+                                <Sidebar.MenuButton
+                                    isActive={isRouteActive(item.href)}
+                                >
                                     {#snippet child({ props })}
                                         <a href={item.href} {...props}>
                                             {#if item.icon}
@@ -127,14 +144,24 @@
         <DropdownMenu.Root>
             <DropdownMenu.Trigger>
                 {#snippet child({ props })}
-                    <Item.Root variant="outline" size="sm"  class="w-full flex" {...props}>
+                    <Item.Root
+                        variant="outline"
+                        size="sm"
+                        class="w-full flex"
+                        {...props}
+                    >
                         <Item.Media>
                             <User class="size-5" />
                         </Item.Media>
                         {#if sidebar.open}
                             <Item.Content class="">
                                 <Item.Title>{user?.nombre}</Item.Title>
-                                <Item.Description>{user?.apodo} {user?.es_admin ? "(Admin)" : ""}</Item.Description>
+                                <Item.Description
+                                    >{user?.apodo}
+                                    {user?.es_admin
+                                        ? '(Admin)'
+                                        : ''}</Item.Description
+                                >
                             </Item.Content>
                         {/if}
                     </Item.Root>
@@ -146,9 +173,14 @@
                         <a {...props} href="/app/profile"> Perfil </a>
                     {/snippet}
                 </DropdownMenu.Item>
-                <DropdownMenu.Item onSelect={toggleMode}>Cambiar tema</DropdownMenu.Item>
+                <DropdownMenu.Item onSelect={toggleMode}
+                    >Cambiar tema</DropdownMenu.Item
+                >
                 <DropdownMenu.Separator />
-                <DropdownMenu.Item onSelect={() => (showCloseSessionDialog = true)}>Cerrar sesión</DropdownMenu.Item>
+                <DropdownMenu.Item
+                    onSelect={() => (showCloseSessionDialog = true)}
+                    >Cerrar sesión</DropdownMenu.Item
+                >
             </DropdownMenu.Content>
         </DropdownMenu.Root>
     </Sidebar.Footer>
@@ -158,14 +190,18 @@
     <Dialog.Content>
         <Dialog.Header>
             <Dialog.Title>¿Cerrar sesión?</Dialog.Title>
-            <Dialog.Description>¿Estás seguro de que quieres cerrar sesión?</Dialog.Description>
+            <Dialog.Description
+                >¿Estás seguro de que quieres cerrar sesión?</Dialog.Description
+            >
         </Dialog.Header>
         <Dialog.Footer>
             <Dialog.Close>
                 <Button variant="outline">Cancelar</Button>
             </Dialog.Close>
             <form method="POST" action="/auth?/logout">
-                <Button type="submit" variant="destructive">Cerrar sesión</Button>
+                <Button type="submit" variant="destructive"
+                    >Cerrar sesión</Button
+                >
             </form>
         </Dialog.Footer>
     </Dialog.Content>
