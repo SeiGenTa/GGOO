@@ -13,7 +13,7 @@ echo "=== Pulling latest image ==="
 docker image pull ghcr.io/seigenta/ggoo:latest
 
 echo "=== Recreating container ==="
-docker stack deploy -c docker-compose.yml ggoo-production
+docker stack deploy -c docker-compose.prod.yml ggoo-production
 
 echo "=== Cleaning up old images ==="
 docker image prune -f
