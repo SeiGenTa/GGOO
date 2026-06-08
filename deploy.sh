@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 cd "$(dirname "$0")"
 
-echo "=== Directorio actual de trabajo: $(pwd) ==="
-
-# Detiene el script si algún comando falla
 set -euo pipefail
 
 echo "=== 1. Tirando últimos cambios de Git ==="
@@ -12,18 +9,31 @@ git pull
 echo "=== 2. Descargando la última imagen de producción ==="
 docker image pull ghcr.io/seigenta/ggoo:latest
 
-echo "=== 3. Forzando limpieza de redes huérfanas para evitar Pool Overlap ==="
-# El '|| true' evita que el script se caiga si no encuentra redes para borrar
+echo "=== 3. Forzando limpieza de redes huérfanas ==="
 docker network prune -f || true
 
-echo "=== 4. Desplegando en Docker Swarm ==="
-# Usamos el archivo exclusivo de producción y el nombre de stack elegido
+echo "=== 4. Cargando variables del .env a la memoria de Swarm ==="
+# 👇 ESTA LÍNEA ES CRÍTICA: Lee el .env, ignora comentarios y exporta todo al entorno
+echo "=== 4. Cargando variables del .env a la memoria de Swarm ==="
+# 👇 REEMPLAZA LA LÍNEA DEL EXPORT VIEJO POR ESTE BLOQUE SEGURO 👇
+if [ -f .env ]; then
+    while IFS= read -r line || [ -n "$line" ]; do
+        # Ignora líneas vacías y comentarios
+        if [[ ! "$line" =~ ^# && -n "$line" ]]; then
+            export "$line"
+        fi
+    done < .env
+else
+    echo "ERROR: No se encontró el archivo .env"
+    exit 1
+fi
+
+echo "=== 5. Desplegando en Docker Swarm con Variables de Entorno ==="
 docker stack deploy --with-registry-auth -c docker-compose.prod.yml ggoo-production
 
-echo "=== 5. Limpiando imágenes antiguas en desuso ==="
+echo "=== 6. Limpiando imágenes antiguas ==="
 docker image prune -f
 
-echo "=== 6. Despliegue solicitado. Verificando estado... ==="
-# Esperamos 3 segundos breves para darle tiempo a Swarm de registrar la tarea
+echo "=== 7. Verificando estado... ==="
 sleep 3
 docker service ps ggoo-production_app-production-web

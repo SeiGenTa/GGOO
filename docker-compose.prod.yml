@@ -8,8 +8,17 @@ services:
       - /root/git/GGOO/contributors.json:/app/contributors.json
     env_file:
       - .env
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - PORT_APP=${PORT_APP:-3031}
+      - ORIGIN=${ORIGIN}
+      - SECRET_KEY=${SECRET_KEY}
+      - DIR_LOGS=${DIR_LOGS}
     ports:
-      - '9000:3000' # <--- Forzamos el puerto 9000 temporalmente para no tocar tu app activa
+      - '${PORT_APP:-3031}:3000'
     networks:
       - red-swarm-completamente-nueva
     healthcheck:
