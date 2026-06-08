@@ -18,10 +18,7 @@ services:
       - SECRET_KEY=${SECRET_KEY}
       - DIR_LOGS=${DIR_LOGS}
     ports:
-      - target: 3000
-        published: ${PORT_APP:-3031}
-        protocol: tcp
-        mode: host
+      - "${PORT_APP:-3031}:3000"
     networks:
       - red-swarm-completamente-nueva
     healthcheck:
@@ -42,6 +39,8 @@ services:
 networks:
   red-swarm-completamente-nueva:
     driver: overlay
-    ipam:
-      config:
-        - subnet: 10.180.0.0/16 # <--- Un rango totalmente nuevo para evitar el "Pool overlap"
+    driver_opts:
+      # 🟢 ESTA ES LA CLAVE: Le dice al driver de red de Swarm que optimice 
+      # para envío inmediato de paquetes (baja latencia) en lugar de acumularlos.
+      com.docker.network.driver.mtu: "1500"
+        
