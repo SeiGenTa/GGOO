@@ -3,21 +3,27 @@ cd "$(dirname "$0")"
 
 echo "=== Directorio actual de trabajo: $(pwd) ==="
 
+# Detiene el script si algún comando falla
 set -euo pipefail
 
-echo "=== Pulling latest code ==="
+echo "=== 1. Tirando últimos cambios de Git ==="
 git pull
 
-# Descargamos la imagen exacta desde tu registro de GitHub
-echo "=== Pulling latest image ==="
+echo "=== 2. Descargando la última imagen de producción ==="
 docker image pull ghcr.io/seigenta/ggoo:latest
 
-echo "=== Recreating container ==="
-docker stack deploy -c docker-compose.prod.yml ggoo-production
+echo "=== 3. Forzando limpieza de redes huérfanas para evitar Pool Overlap ==="
+# El '|| true' evita que el script se caiga si no encuentra redes para borrar
+docker network prune -f || true
 
-echo "=== Cleaning up old images ==="
+echo "=== 4. Desplegando en Docker Swarm ==="
+# Usamos el archivo exclusivo de producción y el nombre de stack elegido
+docker stack deploy --with-registry-auth -c docker-compose.prod.yml ggoo-production
+
+echo "=== 5. Limpiando imágenes antiguas en desuso ==="
 docker image prune -f
 
-echo "=== Deploy complete ==="
-# Consultamos el estado real del servicio en el clúster
-docker service ps ggoo-production-production-web
+echo "=== 6. Despliegue solicitado. Verificando estado... ==="
+# Esperamos 3 segundos breves para darle tiempo a Swarm de registrar la tarea
+sleep 3
+docker service ps ggoo-production_app-production-web
