@@ -73,3 +73,11 @@ jobs:
                     -a "${{ secrets.REDIS_PASSWORD }}" \
                     --no-auth-warning \
                     PUBLISH "${{ secrets.REDIS_CHANNEL }}" "${{ secrets.REDIS_MESSAGE }}"
+
+            - name: Delete images olders than 2 versions, except 'latest'
+              uses: actions/delete-package-versions@v5
+              with:
+                package-name: 'ggoo' 
+                package-type: 'container'
+                min-versions-to-keep: 2
+                ignore-versions: '^(latest)$'
