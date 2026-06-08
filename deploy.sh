@@ -8,14 +8,16 @@ set -euo pipefail
 echo "=== Pulling latest code ==="
 git pull
 
+# Descargamos la imagen exacta desde tu registro de GitHub
 echo "=== Pulling latest image ==="
-docker compose pull app-production-web
+docker image pull ghcr.io/seigenta/ggoo:latest
 
 echo "=== Recreating container ==="
-docker compose up -d --force-recreate app-production-web
+docker stack deploy -c docker-compose.yml mi-produccion
 
 echo "=== Cleaning up old images ==="
 docker image prune -f
 
 echo "=== Deploy complete ==="
-docker compose ps app-production-web
+# Consultamos el estado real del servicio en el clúster
+docker service ps mi-produccion_app-production-web

@@ -70,6 +70,21 @@ services:
         ports:
             - '${PORT_APP:-5173}:3000'
         restart: unless-stopped
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:3000"]
+            interval: 10s
+            timeout: 5s
+            retries: 3
+            start_period: 30s
+
+        deploy:
+            replicas: 1
+            update_config:
+                parallelism: 1
+                order: start-first
+                failure_action: rollback
+                delay: 10s
+                monitor: 20s
 
 volumes:
     postgres_data:

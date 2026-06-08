@@ -41,6 +41,7 @@ RUN pnpm prune --prod
 FROM node:24-alpine as production
 
 RUN apk add --no-cache openssl
+RUN apk add --no-cache curl
 
 WORKDIR /app
 RUN chown -R node:node /app
