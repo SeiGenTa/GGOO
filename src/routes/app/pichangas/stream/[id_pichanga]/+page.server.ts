@@ -22,8 +22,10 @@ const getPichangaWindow = async (id_pichanga: string) => {
     })
 }
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, locals}) => {
     const { id_pichanga } = params
+
+    console.log("permisos de usuario:", locals.user?.permisos)
 
     return {
         name_page: 'Lista en tiempo real',
@@ -333,7 +335,7 @@ export const actions = {
             return fail(401, { error: 'Usuario no autenticado' })
         }
 
-        if (user.permisos.includes(Permissions.EditarPartidos)) {
+        if (!user.permisos.includes(Permissions.EditarPartidos)) {
             logger.info(
                 {
                     action: 'action_delete_pichanga_forbidden',
