@@ -18,7 +18,10 @@ services:
       - SECRET_KEY=${SECRET_KEY}
       - DIR_LOGS=${DIR_LOGS}
     ports:
-      - '${PORT_APP:-3031}:3000'
+      - target: 3000
+        published: ${PORT_APP:-3031}
+        protocol: tcp
+        mode: host
     networks:
       - red-swarm-completamente-nueva
     healthcheck:
