@@ -3,20 +3,21 @@ version: '3.8'
 services:
   app-production-web:
     image: ghcr.io/seigenta/ggoo:latest
-    # Se eliminó "depends_on" y "postgres"
     volumes:
       - /root/git/GGOO/app.logs:/app/app.logs
       - /root/git/GGOO/contributors.json:/app/contributors.json
     env_file:
       - .env
     ports:
-      - '${PORT_APP:-5173}:3000'
+      - '9000:3000' # <--- Forzamos el puerto 9000 temporalmente para no tocar tu app activa
+    networks:
+      - red-swarm-completamente-nueva
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
       interval: 10s
       timeout: 5s
       retries: 3
-      start_period: 10s
+      start_period: 30s
     deploy:
       replicas: 1
       update_config:
@@ -25,3 +26,10 @@ services:
         failure_action: rollback
         delay: 10s
         monitor: 20s
+
+networks:
+  red-swarm-completamente-nueva:
+    driver: overlay
+    ipam:
+      config:
+        - subnet: 10.180.0.0/16 # <--- Un rango totalmente nuevo para evitar el "Pool overlap"
