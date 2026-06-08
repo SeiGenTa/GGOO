@@ -21,6 +21,10 @@ const config = {
             $utils: './src/utils',
             $src: './src',
         },
+        version: {
+            // Revisa en el servidor cada 1 minuto si cambiaron los archivos .js
+            pollInterval: 60000 
+        }
     },
 }
 
