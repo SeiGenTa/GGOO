@@ -74,11 +74,13 @@ jobs:
                     --no-auth-warning \
                     PUBLISH "${{ secrets.REDIS_CHANNEL }}" "${{ secrets.REDIS_MESSAGE }}"
 
+            - name: Esperar 15 segundos antes del despliegue
+              run: sleep 15
+
             - name: Delete images olders than 2 versions, except 'latest'
               uses: actions/delete-package-versions@v5
               with:
                 package-name: 'ggoo' 
-                package-type: 'ggoo-app-production-web'
+                package-type: 'container'
                 min-versions-to-keep: 2
                 ignore-versions: '^(latest)$'
-                delete-only-untagged-versions: 'true'
