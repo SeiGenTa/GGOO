@@ -1,7 +1,6 @@
 services:
     app-production-web:
         image: ghcr.io/seigenta/ggoo:latest
-        container_name: ggoo-app-production-web
         volumes:
             - ./app.logs:/app/app.logs
             - ./contributors.json:/app/contributors.json
