@@ -1,25 +1,27 @@
-services:
-    app-production-web:
-        image: ghcr.io/seigenta/ggoo:latest
-        volumes:
-            - ./app.logs:/app/app.logs
-            - ./contributors.json:/app/contributors.json
-        env_file:
-            - .env
-        ports:
-            - '${PORT_APP:-5173}:3000'
-        healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:3000"]
-            interval: 10s
-            timeout: 5s
-            retries: 3
-            start_period: 30s
+version: '3.8'
 
-        deploy:
-            replicas: 1
-            update_config:
-                parallelism: 1
-                order: start-first
-                failure_action: rollback
-                delay: 10s
-                monitor: 20s
+services:
+  app-production-web:
+    image: ghcr.io/seigenta/ggoo:latest
+    # Se eliminó "depends_on" y "postgres"
+    volumes:
+      - /root/git/GGOO/app.logs:/app/app.logs
+      - /root/git/GGOO/contributors.json:/app/contributors.json
+    env_file:
+      - .env
+    ports:
+      - '${PORT_APP:-5173}:3000'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+        monitor: 20s
