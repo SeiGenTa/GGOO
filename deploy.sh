@@ -13,11 +13,11 @@ echo "=== Pulling latest image ==="
 docker image pull ghcr.io/seigenta/ggoo:latest
 
 echo "=== Recreating container ==="
-docker stack deploy -c docker-compose.yml mi-produccion
+docker stack deploy -c docker-compose.yml ggoo-production
 
 echo "=== Cleaning up old images ==="
 docker image prune -f
 
 echo "=== Deploy complete ==="
 # Consultamos el estado real del servicio en el clúster
-docker service ps mi-produccion_app-production-web
+docker service ps ggoo-production-production-web
