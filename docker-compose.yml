@@ -75,16 +75,7 @@ services:
             interval: 10s
             timeout: 5s
             retries: 3
-            start_period: 30s
-
-        deploy:
-            replicas: 1
-            update_config:
-                parallelism: 1
-                order: start-first
-                failure_action: rollback
-                delay: 10s
-                monitor: 20s
+            start_period: 10s
 
 volumes:
     postgres_data:
