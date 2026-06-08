@@ -81,3 +81,4 @@ jobs:
                 package-type: 'ggoo-app-production-web'
                 min-versions-to-keep: 2
                 ignore-versions: '^(latest)$'
+                delete-only-untagged-versions: 'true'
