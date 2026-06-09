@@ -46,6 +46,7 @@
     let switch_init_now = $state(false)
     let loading_join = $state(false)
     let loading_leave = $state(false)
+    let open_leave_confirm = $state(false)
 
     // Sincroniza el formulario de edición con la pichanga cargada y
     // lo resetea cada vez que se abre el diálogo.
@@ -64,6 +65,70 @@
     })
 
     const user_id = $derived(data.user?.id ?? '')
+
+    // Helpers para operar en horario de Chile (UTC-3/-4 con cambio DST
+    // manejado por el navegador vía timeZone: 'America/Santiago').
+    const chileDateTimeParts = (date: string | Date) => {
+        const d = new Date(date)
+        if (Number.isNaN(d.getTime())) {
+            return null
+        }
+
+        const fmt = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'America/Santiago',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+        })
+
+        const parts = fmt.formatToParts(d).reduce<Record<string, string>>(
+            (acc, part) => {
+                if (part.type !== 'literal') {
+                    acc[part.type] = part.value
+                }
+                return acc
+            },
+            {}
+        )
+
+        return {
+            year: Number(parts.year),
+            month: Number(parts.month),
+            day: Number(parts.day),
+            hour: Number(parts.hour),
+            minute: Number(parts.minute),
+            dateKey: `${parts.year}-${parts.month}-${parts.day}`,
+        }
+    }
+
+    // El diálogo de "salir" sólo se habilita desde las 08:00 hora Chile
+    // del día de la pichanga. Antes de ese momento el usuario no puede
+    // abandonar la lista.
+    const puede_confirmar_salida = $derived.by(() => {
+        if (!pichanga) return false
+
+        const now = chileDateTimeParts(new Date())
+        const partido = chileDateTimeParts(pichanga.fecha)
+        if (!now || !partido) return false
+
+        const mismoDia =
+            now.year === partido.year &&
+            now.month === partido.month &&
+            now.day === partido.day
+
+        if (!mismoDia) {
+            // Si el partido es hoy, el día coincide; si es otro día, todavía
+            // no se cumple la condición. Si el partido ya pasó, se permite
+            // (caso borde que el server igual bloqueará por la ventana).
+            return now.dateKey > partido.dateKey
+        }
+
+        const minutosNow = now.hour * 60 + now.minute
+        return minutosNow >= 8 * 60
+    })
 
     const toDateTimeLocal = (date: string | Date) => {
         const d = new Date(date)
@@ -414,44 +479,98 @@
                         {#if !admin_partido && data.user}
                             {#if inscrito}
                                 {#if inscripciones_abierta}
-                                    <form
-                                        method="POST"
-                                        action="?/salir"
-                                        use:enhance={() => {
-                                            loading_leave = true
-                                            return async ({
-                                                result,
-                                                update,
-                                            }) => {
-                                                loading_leave = false
-                                                if (result.type === 'success') {
-                                                    await update()
-                                                }
-                                                if (result.type === 'failure') {
-                                                    toast('No se pudo salir', {
-                                                        description:
-                                                            (result.data as any)
-                                                                .error ??
-                                                            'Intenta nuevamente.',
-                                                    })
-                                                }
-                                            }
-                                        }}
-                                    >
-                                        <Button
-                                            type="submit"
-                                            variant="outline"
-                                            size="sm"
-                                            disabled={loading_leave}
-                                        >
-                                            {#if loading_leave}
-                                                <Spinner class="mr-1" />
-                                                Saliendo...
-                                            {:else}
-                                                Salir
-                                            {/if}
-                                        </Button>
-                                    </form>
+                                    <Dialog.Root bind:open={open_leave_confirm}>
+                                        <Dialog.Trigger>
+                                            {#snippet child({ props })}
+                                                <Button
+                                                    {...props}
+                                                    class="cursor-pointer"
+                                                    variant="outline"
+                                                    size="sm"
+                                                >
+                                                    Salir
+                                                </Button>
+                                            {/snippet}
+                                        </Dialog.Trigger>
+                                        <Dialog.Content>
+                                            <Dialog.Header>
+                                                <Dialog.Title
+                                                    >¿Salir de la pichanga?</Dialog.Title
+                                                >
+                                                <Dialog.Description>
+                                                    {#if puede_confirmar_salida}
+                                                        ¿Estás seguro que quieres
+                                                        salir? Perderás tu lugar
+                                                        en la lista y
+                                                        <span
+                                                            class="font-semibold text-destructive"
+                                                            >te arriesgas a recibir
+                                                            una tarjeta</span
+                                                        >.
+                                                    {:else}
+                                                        ¿Estás seguro que quieres
+                                                        salir? Perderás tu lugar
+                                                        en la lista.
+                                                    {/if}
+                                                </Dialog.Description>
+                                            </Dialog.Header>
+                                            <Dialog.Footer class="space-x-2">
+                                                <Dialog.Close
+                                                    >Cancelar</Dialog.Close
+                                                >
+                                                <form
+                                                    id="form-leave"
+                                                    method="POST"
+                                                    action="?/salir"
+                                                    use:enhance={() => {
+                                                        loading_leave = true
+                                                        open_leave_confirm = false
+                                                        return async ({
+                                                            result,
+                                                            update,
+                                                        }) => {
+                                                            loading_leave = false
+                                                            if (
+                                                                result.type ===
+                                                                'success'
+                                                            ) {
+                                                                await update()
+                                                            }
+                                                            if (
+                                                                result.type ===
+                                                                'failure'
+                                                            ) {
+                                                                toast(
+                                                                    'No se pudo salir',
+                                                                    {
+                                                                        description:
+                                                                            (
+                                                                                result.data as any
+                                                                            )
+                                                                                .error ??
+                                                                            'Intenta nuevamente.',
+                                                                    }
+                                                                )
+                                                            }
+                                                        }
+                                                    }}
+                                                >
+                                                    <Button
+                                                        type="submit"
+                                                        variant="destructive"
+                                                        disabled={loading_leave}
+                                                    >
+                                                        {#if loading_leave}
+                                                            <Spinner class="mr-1" />
+                                                            Saliendo...
+                                                        {:else}
+                                                            Sí, salir
+                                                        {/if}
+                                                    </Button>
+                                                </form>
+                                            </Dialog.Footer>
+                                        </Dialog.Content>
+                                    </Dialog.Root>
                                 {:else}
                                     <Badge variant="secondary"
                                         >Solo lectura</Badge

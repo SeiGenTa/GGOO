@@ -96,8 +96,8 @@ export const load: PageServerLoad = async ({ locals, depends, url }) => {
             take: PAGE_SIZE,
             skip,
         })
-        .then(async (tarjetas) => {
-            tarjetas.map((tarjeta) => {
+        .then((tarjetas) => {
+            return tarjetas.map((tarjeta) => {
                 const latestComplaint = tarjeta.reclamosCartas[0] ?? null
 
                 return {

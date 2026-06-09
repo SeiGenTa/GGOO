@@ -22,6 +22,45 @@ const getPichangaWindow = async (id_pichanga: string) => {
     })
 }
 
+// Devuelve true si el momento actual está dentro del día de la pichanga en
+// horario de Chile (UTC-3/-4 manejado por el runtime vía
+// timeZone: 'America/Santiago') y son las 08:00 o más.
+const isAfter8amChileOnMatchDay = (fechaPichanga: Date): boolean => {
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'America/Santiago',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+    })
+
+    const nowParts = formatter.formatToParts(new Date()).reduce<
+        Record<string, string>
+    >((acc, part) => {
+        if (part.type !== 'literal') acc[part.type] = part.value
+        return acc
+    }, {})
+
+    const matchParts = formatter.formatToParts(fechaPichanga).reduce<
+        Record<string, string>
+    >((acc, part) => {
+        if (part.type !== 'literal') acc[part.type] = part.value
+        return acc
+    }, {})
+
+    const mismoDia =
+        nowParts.year === matchParts.year &&
+        nowParts.month === matchParts.month &&
+        nowParts.day === matchParts.day
+
+    if (!mismoDia) return false
+
+    const minutosNow = Number(nowParts.hour) * 60 + Number(nowParts.minute)
+    return minutosNow >= 8 * 60
+}
+
 export const load: PageServerLoad = async ({ params, locals}) => {
     const { id_pichanga } = params
 
@@ -255,6 +294,22 @@ export const actions = {
             })
         }
 
+        const tarjetaRojaVigente = await prisma.tarjetas.findFirst({
+            where: {
+                userId: user.id,
+                tipoCarta: 'roja',
+                usado: false,
+                venceEn: { gt: now },
+            },
+            select: { id: true, venceEn: true },
+        })
+
+        if (tarjetaRojaVigente) {
+            return fail(403, {
+                error: 'No puedes inscribirte: tienes una tarjeta roja vigente',
+            })
+        }
+
         const existingInscription = await prisma.inscripcion.findFirst({
             where: {
                 pichangaId: id_pichanga,
@@ -314,6 +369,79 @@ export const actions = {
             return fail(400, {
                 error: 'Las acciones solo están habilitadas entre el inicio de inscripción y el inicio del evento',
             })
+        }
+
+        if (isAfter8amChileOnMatchDay(pichanga.fecha)) {
+            const ahora = new Date()
+            const venceEnAmarilla = new Date(
+                ahora.getTime() + 6 * 24 * 60 * 60 * 1000
+            )
+
+            await prisma.tarjetas.create({
+                data: {
+                    userId: user.id,
+                    tipoCarta: 'amarilla',
+                    razon: 'Salida tardía de la pichanga después de las 08:00 hora Chile del día del partido',
+                    usado: false,
+                    quienAsignoId: null,
+                    venceEn: venceEnAmarilla,
+                },
+            })
+
+            logger.info(
+                {
+                    accion: 'tarjeta_amarilla_salida_tardia',
+                    usuarioId: user.id,
+                    pichangaId: id_pichanga,
+                    venceEn: venceEnAmarilla,
+                },
+                `Se asignó una tarjeta amarilla al usuario ${user.id} por salida tardía de la pichanga ${id_pichanga}`
+            )
+
+            const amarillasPreviasSinUsar = await prisma.tarjetas.findMany({
+                where: {
+                    userId: user.id,
+                    tipoCarta: 'amarilla',
+                    usado: false,
+                    venceEn: { gt: ahora },
+                },
+                select: { id: true },
+            })
+
+            if (amarillasPreviasSinUsar.length > 0) {
+                await prisma.tarjetas.updateMany({
+                    where: {
+                        id: { in: amarillasPreviasSinUsar.map((t) => t.id) },
+                    },
+                    data: { usado: true },
+                })
+
+                const venceEnRoja = new Date(
+                    ahora.getTime() + 6 * 24 * 60 * 60 * 1000
+                )
+
+                await prisma.tarjetas.create({
+                    data: {
+                        userId: user.id,
+                        tipoCarta: 'roja',
+                        razon: 'Acumulación de tarjetas amarillas sin usar',
+                        usado: false,
+                        quienAsignoId: null,
+                        venceEn: venceEnRoja,
+                    },
+                })
+
+                logger.info(
+                    {
+                        accion: 'tarjeta_roja_acumulacion_amarillas',
+                        usuarioId: user.id,
+                        pichangaId: id_pichanga,
+                        amarillasConsumidas: amarillasPreviasSinUsar.length,
+                        venceEn: venceEnRoja,
+                    },
+                    `Se asignó una tarjeta roja al usuario ${user.id} tras acumular amarillas sin usar`
+                )
+            }
         }
 
         const activeInscription = await prisma.inscripcion.findFirst({
