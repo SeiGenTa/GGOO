@@ -52,89 +52,97 @@ export const load: PageServerLoad = async ({ locals, depends, url }) => {
     const page = Math.min(requestedPage, totalPages)
     const skip = (page - 1) * PAGE_SIZE
 
-    const tarjetas = await prisma.tarjetas.findMany({
-        where,
-        include: {
-            reclamosCartas: {
-                orderBy: {
-                    fechaReclamo: 'desc',
-                },
-                take: 1,
-                include: {
-                    administradorAtendio: {
-                        select: {
-                            id: true,
-                            nombre: true,
-                            apodo: true,
+    // El conteo y la paginación se resuelven en el servidor para que el
+    // paginador esté listo desde el primer paint. La lista de tarjetas
+    // se devuelve como promesa para que se hidrate en segundo plano
+    // mientras la vista muestra un skeleton.
+    const tarjetasPromise = prisma.tarjetas
+        .findMany({
+            where,
+            include: {
+                reclamosCartas: {
+                    orderBy: {
+                        fechaReclamo: 'desc',
+                    },
+                    take: 1,
+                    include: {
+                        administradorAtendio: {
+                            select: {
+                                id: true,
+                                nombre: true,
+                                apodo: true,
+                            },
                         },
                     },
                 },
-            },
-            quienAsigno: {
-                select: {
-                    id: true,
-                    nombre: true,
-                    apodo: true,
+                quienAsigno: {
+                    select: {
+                        id: true,
+                        nombre: true,
+                        apodo: true,
+                    },
+                },
+                user: {
+                    select: {
+                        id: true,
+                        nombre: true,
+                        apodo: true,
+                    },
                 },
             },
-            user: {
-                select: {
-                    id: true,
-                    nombre: true,
-                    apodo: true,
-                },
+            orderBy: {
+                createdAt: 'desc',
             },
-        },
-        orderBy: {
-            createdAt: 'desc',
-        },
-        take: PAGE_SIZE,
-        skip,
-    })
+            take: PAGE_SIZE,
+            skip,
+        })
+        .then(async (tarjetas) => {
+            tarjetas.map((tarjeta) => {
+                const latestComplaint = tarjeta.reclamosCartas[0] ?? null
+
+                return {
+                    id: tarjeta.id,
+                    tipo: tarjeta.tipoCarta,
+                    razon: tarjeta.razon,
+                    usado: tarjeta.usado,
+                    venceEn: tarjeta.venceEn,
+                    vencida: isExpired(tarjeta.venceEn, tarjeta.usado),
+                    createdAt: tarjeta.createdAt,
+                    assignedBy: tarjeta.quienAsigno
+                        ? {
+                              id: tarjeta.quienAsigno.id,
+                              nombre: tarjeta.quienAsigno.nombre,
+                              apodo: tarjeta.quienAsigno.apodo,
+                          }
+                        : null,
+                    complaint: latestComplaint
+                        ? {
+                              id: latestComplaint.id,
+                              razon: latestComplaint.razon,
+                              fechaReclamo: latestComplaint.fechaReclamo,
+                              atendido: latestComplaint.atendido,
+                              respuesta: latestComplaint.respuesta,
+                              administradorAtendio:
+                                  latestComplaint.administradorAtendio
+                                      ? {
+                                            id: latestComplaint
+                                                .administradorAtendio.id,
+                                            nombre: latestComplaint
+                                                .administradorAtendio.nombre,
+                                            apodo: latestComplaint
+                                                .administradorAtendio.apodo,
+                                        }
+                                      : null,
+                          }
+                        : null,
+                    canComplain: tarjeta.reclamosCartas.length === 0,
+                }
+            })
+        })
 
     return {
         name_page: 'Tarjetas',
-        tarjetas: tarjetas.map((tarjeta) => {
-            const latestComplaint = tarjeta.reclamosCartas[0] ?? null
-
-            return {
-                id: tarjeta.id,
-                tipo: tarjeta.tipoCarta,
-                razon: tarjeta.razon,
-                usado: tarjeta.usado,
-                venceEn: tarjeta.venceEn,
-                vencida: isExpired(tarjeta.venceEn, tarjeta.usado),
-                createdAt: tarjeta.createdAt,
-                assignedBy: tarjeta.quienAsigno
-                    ? {
-                          id: tarjeta.quienAsigno.id,
-                          nombre: tarjeta.quienAsigno.nombre,
-                          apodo: tarjeta.quienAsigno.apodo,
-                      }
-                    : null,
-                complaint: latestComplaint
-                    ? {
-                          id: latestComplaint.id,
-                          razon: latestComplaint.razon,
-                          fechaReclamo: latestComplaint.fechaReclamo,
-                          atendido: latestComplaint.atendido,
-                          respuesta: latestComplaint.respuesta,
-                          administradorAtendio:
-                              latestComplaint.administradorAtendio
-                                  ? {
-                                        id: latestComplaint.administradorAtendio
-                                            .id,
-                                        nombre: latestComplaint
-                                            .administradorAtendio.nombre,
-                                        apodo: latestComplaint
-                                            .administradorAtendio.apodo,
-                                    }
-                                  : null,
-                      }
-                    : null,
-                canComplain: tarjeta.reclamosCartas.length === 0,
-            }
-        }),
+        tarjetas: tarjetasPromise,
         pagination: {
             page,
             pageSize: PAGE_SIZE,

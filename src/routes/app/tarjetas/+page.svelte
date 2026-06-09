@@ -4,10 +4,10 @@
     import { toast } from 'svelte-sonner'
     import * as Card from '$lib/components/ui/card'
     import * as Dialog from '$lib/components/ui/dialog'
-    import { Input } from '$lib/components/ui/input'
     import { Button } from '$lib/components/ui/button'
     import { Badge } from '$lib/components/ui/badge'
     import type { PageProps } from './$types'
+    import TarjetasSkeleton from './components/skeleton.svelte'
 
     type Complaint = {
         id: string
@@ -40,7 +40,7 @@
     }
 
     type PageData = PageProps['data'] & {
-        tarjetas: TarjetaRow[]
+        tarjetas: Promise<TarjetaRow[]>
         pagination: {
             page: number
             pageSize: number
@@ -52,6 +52,32 @@
     }
 
     let { data }: { data: PageData } = $props()
+
+    // ── Carga diferida: la lista de tarjetas llega como promesa desde
+    //    el servidor. La guardamos en estado local para mostrar un
+    //    skeleton mientras se resuelve.
+    let tarjetas = $state<TarjetaRow[] | null>(null)
+    let tarjetasLoading = $state(true)
+    let tarjetasError: string | null = $state(null)
+
+    $effect(() => {
+        tarjetasLoading = true
+        tarjetasError = null
+        data.tarjetas
+            .then((rows) => {
+                tarjetas = rows
+            })
+            .catch((err) => {
+                tarjetasError =
+                    err instanceof Error
+                        ? err.message
+                        : 'No fue posible cargar tus tarjetas.'
+            })
+            .finally(() => {
+                tarjetasLoading = false
+            })
+    })
+    // ─────────────────────────────────────────
 
     let complaintDialogOpen = $state(false)
     let helpDialogOpen = $state(false)
@@ -151,292 +177,306 @@
 
     <Card.Root>
         <Card.Content class="p-0">
-            <div class="grid gap-3 p-4 lg:hidden">
-                {#if data.tarjetas.length === 0}
-                    <div
-                        class="rounded-lg border p-6 text-center text-sm text-muted-foreground"
-                    >
-                        No tienes tarjetas registradas.
-                    </div>
-                {:else}
-                    {#each data.tarjetas as tarjeta}
-                        <div class="rounded-xl border bg-card p-4 shadow-sm">
-                            <div class="flex items-start justify-between gap-3">
-                                <div class="min-w-0">
-                                    <p class="font-semibold">{tarjeta.razon}</p>
-                                    <p class="text-xs text-muted-foreground">
-                                        {tarjeta.id}
-                                    </p>
-                                </div>
-                                <Badge
-                                    variant={tarjeta.tipo === 'roja'
-                                        ? 'destructive'
-                                        : 'outline'}
-                                    class={getCardTypeBadgeClass(tarjeta.tipo)}
-                                    >{tarjeta.tipo}</Badge
-                                >
-                            </div>
-
-                            <div class="mt-3 space-y-2 text-sm">
-                                <div>
-                                    <p
-                                        class="text-xs font-medium uppercase tracking-wide text-muted-foreground"
-                                    >
-                                        Asignada por
-                                    </p>
-                                    <p>
-                                        {tarjeta.assignedBy
-                                            ? getUserLabel(tarjeta.assignedBy)
-                                            : 'Usuario no encontrado'}
-                                    </p>
-                                </div>
-
-                                <div
-                                    class="grid gap-2 text-xs text-muted-foreground sm:grid-cols-2"
-                                >
-                                    <p>
-                                        <span class="font-medium">Creada:</span>
-                                        {formatDate(tarjeta.createdAt)}
-                                    </p>
-                                    <p>
-                                        <span class="font-medium">Vence:</span>
-                                        {formatDate(tarjeta.venceEn)}
-                                    </p>
-                                </div>
-
-                                <div class="flex flex-wrap gap-2">
-                                    {#if tarjeta.usado}
-                                        <Badge variant="secondary">Usada</Badge>
-                                    {/if}
-                                    {#if tarjeta.vencida}
-                                        <Badge variant="destructive"
-                                            >Vencida</Badge
-                                        >
-                                    {:else if !tarjeta.usado}
-                                        <Badge>Vigente</Badge>
-                                    {/if}
-                                </div>
-
-                                {#if tarjeta.complaint}
-                                    <div
-                                        class="rounded-lg border bg-muted/30 p-3 text-sm space-y-2"
-                                    >
-                                        <div>
-                                            <p
-                                                class="text-xs font-medium uppercase tracking-wide text-muted-foreground"
-                                            >
-                                                Tu reclamo
-                                            </p>
-                                            <p>{tarjeta.complaint.razon}</p>
-                                        </div>
-                                        <div>
-                                            <p
-                                                class="text-xs font-medium uppercase tracking-wide text-muted-foreground"
-                                            >
-                                                Respuesta
-                                            </p>
-                                            {#if tarjeta.complaint.atendido}
-                                                <p>
-                                                    {tarjeta.complaint
-                                                        .respuesta ??
-                                                        'Sin respuesta registrada.'}
-                                                </p>
-                                            {:else}
-                                                <p
-                                                    class="text-muted-foreground"
-                                                >
-                                                    Pendiente de revisión.
-                                                </p>
-                                            {/if}
-                                        </div>
-                                    </div>
-                                    <p class="text-xs text-muted-foreground">
-                                        Solo puedes reclamar esta tarjeta una
-                                        vez.
-                                    </p>
-                                {:else if tarjeta.canComplain}
-                                    <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onclick={() =>
-                                            openComplaintDialog(tarjeta)}
-                                        >Reclamar tarjeta</Button
-                                    >
-                                {:else}
-                                    <span class="text-xs text-muted-foreground"
-                                        >Ya existe un reclamo para esta tarjeta.</span
-                                    >
-                                {/if}
-                            </div>
+            {#if tarjetasLoading}
+                <TarjetasSkeleton rows={8} />
+            {:else if tarjetasError}
+                <div class="p-6 text-center space-y-2">
+                    <p class="text-sm font-semibold text-destructive">
+                        No fue posible cargar tus tarjetas
+                    </p>
+                    <p class="text-xs text-muted-foreground">
+                        {tarjetasError}
+                    </p>
+                </div>
+            {:else}
+                {@const lista = tarjetas ?? []}
+                <div class="grid gap-3 p-4 lg:hidden">
+                    {#if lista.length === 0}
+                        <div
+                            class="rounded-lg border p-6 text-center text-sm text-muted-foreground"
+                        >
+                            No tienes tarjetas registradas.
                         </div>
-                    {/each}
-                {/if}
-            </div>
-
-            <div class="hidden overflow-x-auto lg:block">
-                <table class="w-full min-w-260 text-sm">
-                    <thead>
-                        <tr class="border-b bg-muted/30 text-left">
-                            <th class="px-4 py-3 font-semibold">Tipo</th>
-                            <th class="px-4 py-3 font-semibold">Razón</th>
-                            <th class="px-4 py-3 font-semibold">Asignada por</th
-                            >
-                            <th class="px-4 py-3 font-semibold">Creada</th>
-                            <th class="px-4 py-3 font-semibold">Vence en</th>
-                            <th class="px-4 py-3 font-semibold">Estado</th>
-                            <th class="px-4 py-3 font-semibold">Reclamo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {#if data.tarjetas.length === 0}
-                            <tr>
-                                <td
-                                    colspan="7"
-                                    class="px-4 py-10 text-center text-muted-foreground"
-                                >
-                                    No tienes tarjetas registradas.
-                                </td>
-                            </tr>
-                        {:else}
-                            {#each data.tarjetas as tarjeta}
-                                <tr class="border-b align-top">
-                                    <td class="px-4 py-3">
-                                        <Badge
-                                            variant={tarjeta.tipo === 'roja'
-                                                ? 'destructive'
-                                                : 'outline'}
-                                            class={getCardTypeBadgeClass(
-                                                tarjeta.tipo
-                                            )}
-                                        >
-                                            {tarjeta.tipo}
-                                        </Badge>
-                                    </td>
-                                    <td class="px-4 py-3 max-w-96">
-                                        <p class="leading-relaxed">
-                                            {tarjeta.razon}
+                    {:else}
+                        {#each lista as tarjeta}
+                            <div class="rounded-xl border bg-card p-4 shadow-sm">
+                                <div class="flex items-start justify-between gap-3">
+                                    <div class="min-w-0">
+                                        <p class="font-semibold">{tarjeta.razon}</p>
+                                        <p class="text-xs text-muted-foreground">
+                                            {tarjeta.id}
                                         </p>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        {#if tarjeta.assignedBy}
-                                            <p class="font-medium">
-                                                {getUserLabel(
-                                                    tarjeta.assignedBy
-                                                )}
-                                            </p>
-                                        {:else}
-                                            <span class="text-muted-foreground"
-                                                >Usuario no encontrado</span
-                                            >
+                                    </div>
+                                    <Badge
+                                        variant={tarjeta.tipo === 'roja'
+                                            ? 'destructive'
+                                            : 'outline'}
+                                        class={getCardTypeBadgeClass(tarjeta.tipo)}
+                                        >{tarjeta.tipo}</Badge
+                                    >
+                                </div>
+
+                                <div class="mt-3 space-y-2 text-sm">
+                                    <div>
+                                        <p
+                                            class="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+                                        >
+                                            Asignada por
+                                        </p>
+                                        <p>
+                                            {tarjeta.assignedBy
+                                                ? getUserLabel(tarjeta.assignedBy)
+                                                : 'Usuario no encontrado'}
+                                        </p>
+                                    </div>
+
+                                    <div
+                                        class="grid gap-2 text-xs text-muted-foreground sm:grid-cols-2"
+                                    >
+                                        <p>
+                                            <span class="font-medium">Creada:</span>
+                                            {formatDate(tarjeta.createdAt)}
+                                        </p>
+                                        <p>
+                                            <span class="font-medium">Vence:</span>
+                                            {formatDate(tarjeta.venceEn)}
+                                        </p>
+                                    </div>
+
+                                    <div class="flex flex-wrap gap-2">
+                                        {#if tarjeta.usado}
+                                            <Badge variant="secondary">Usada</Badge>
                                         {/if}
-                                    </td>
-                                    <td
-                                        class="px-4 py-3 text-xs text-muted-foreground"
-                                        >{formatDate(tarjeta.createdAt)}</td
-                                    >
-                                    <td
-                                        class="px-4 py-3 text-xs text-muted-foreground"
-                                        >{formatDate(tarjeta.venceEn)}</td
-                                    >
-                                    <td class="px-4 py-3">
-                                        <div class="flex flex-wrap gap-2">
-                                            {#if tarjeta.usado}
-                                                <Badge variant="secondary"
-                                                    >Usada</Badge
-                                                >
-                                            {/if}
-                                            {#if tarjeta.vencida}
-                                                <Badge variant="destructive"
-                                                    >Vencida</Badge
-                                                >
-                                            {:else if !tarjeta.usado}
-                                                <Badge>Vigente</Badge>
-                                            {/if}
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3 space-y-2">
-                                        {#if tarjeta.complaint}
-                                            <div
-                                                class="rounded-lg border bg-muted/30 p-3 text-sm space-y-2"
+                                        {#if tarjeta.vencida}
+                                            <Badge variant="destructive"
+                                                >Vencida</Badge
                                             >
-                                                <div>
-                                                    <p
-                                                        class="text-xs font-medium uppercase tracking-wide text-muted-foreground"
-                                                    >
-                                                        Tu reclamo
-                                                    </p>
+                                        {:else if !tarjeta.usado}
+                                            <Badge>Vigente</Badge>
+                                        {/if}
+                                    </div>
+
+                                    {#if tarjeta.complaint}
+                                        <div
+                                            class="rounded-lg border bg-muted/30 p-3 text-sm space-y-2"
+                                        >
+                                            <div>
+                                                <p
+                                                    class="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+                                                >
+                                                    Tu reclamo
+                                                </p>
+                                                <p>{tarjeta.complaint.razon}</p>
+                                            </div>
+                                            <div>
+                                                <p
+                                                    class="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+                                                >
+                                                    Respuesta
+                                                </p>
+                                                {#if tarjeta.complaint.atendido}
                                                     <p>
                                                         {tarjeta.complaint
-                                                            .razon}
+                                                            .respuesta ??
+                                                            'Sin respuesta registrada.'}
                                                     </p>
-                                                </div>
-                                                <div>
+                                                {:else}
                                                     <p
-                                                        class="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+                                                        class="text-muted-foreground"
                                                     >
-                                                        Respuesta del
-                                                        administrador
+                                                        Pendiente de revisión.
                                                     </p>
-                                                    {#if tarjeta.complaint.atendido}
-                                                        <p>
-                                                            {tarjeta.complaint
-                                                                .respuesta ??
-                                                                'Sin respuesta registrada.'}
-                                                        </p>
-                                                        {#if tarjeta.complaint.administradorAtendio}
-                                                            <p
-                                                                class="mt-1 text-xs text-muted-foreground"
-                                                            >
-                                                                Atendido por {getUserLabel(
-                                                                    tarjeta
-                                                                        .complaint
-                                                                        .administradorAtendio
-                                                                )} el {formatDate(
-                                                                    tarjeta
-                                                                        .complaint
-                                                                        .fechaReclamo
-                                                                )}
-                                                            </p>
-                                                        {/if}
-                                                    {:else}
-                                                        <p
-                                                            class="text-muted-foreground"
-                                                        >
-                                                            Pendiente de
-                                                            revisión.
-                                                        </p>
-                                                    {/if}
-                                                </div>
+                                                {/if}
                                             </div>
-                                            <p
-                                                class="text-xs text-muted-foreground"
-                                            >
-                                                Solo puedes reclamar esta
-                                                tarjeta una vez.
-                                            </p>
-                                        {:else if tarjeta.canComplain}
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
-                                                onclick={() =>
-                                                    openComplaintDialog(
-                                                        tarjeta
-                                                    )}>Reclamar tarjeta</Button
-                                            >
-                                        {:else}
-                                            <span
-                                                class="text-xs text-muted-foreground"
-                                                >Ya existe un reclamo para esta
-                                                tarjeta.</span
-                                            >
-                                        {/if}
+                                        </div>
+                                        <p class="text-xs text-muted-foreground">
+                                            Solo puedes reclamar esta tarjeta una
+                                            vez.
+                                        </p>
+                                    {:else if tarjeta.canComplain}
+                                        <Button
+                                            size="sm"
+                                            variant="outline"
+                                            onclick={() =>
+                                                openComplaintDialog(tarjeta)}
+                                            >Reclamar tarjeta</Button
+                                        >
+                                    {:else}
+                                        <span class="text-xs text-muted-foreground"
+                                            >Ya existe un reclamo para esta tarjeta.</span
+                                        >
+                                    {/if}
+                                </div>
+                            </div>
+                        {/each}
+                    {/if}
+                </div>
+
+                <div class="hidden overflow-x-auto lg:block">
+                    <table class="w-full min-w-260 text-sm">
+                        <thead>
+                            <tr class="border-b bg-muted/30 text-left">
+                                <th class="px-4 py-3 font-semibold">Tipo</th>
+                                <th class="px-4 py-3 font-semibold">Razón</th>
+                                <th class="px-4 py-3 font-semibold">Asignada por</th
+                                >
+                                <th class="px-4 py-3 font-semibold">Creada</th>
+                                <th class="px-4 py-3 font-semibold">Vence en</th>
+                                <th class="px-4 py-3 font-semibold">Estado</th>
+                                <th class="px-4 py-3 font-semibold">Reclamo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {#if lista.length === 0}
+                                <tr>
+                                    <td
+                                        colspan="7"
+                                        class="px-4 py-10 text-center text-muted-foreground"
+                                    >
+                                        No tienes tarjetas registradas.
                                     </td>
                                 </tr>
-                            {/each}
-                        {/if}
-                    </tbody>
-                </table>
-            </div>
+                            {:else}
+                                {#each lista as tarjeta}
+                                    <tr class="border-b align-top">
+                                        <td class="px-4 py-3">
+                                            <Badge
+                                                variant={tarjeta.tipo === 'roja'
+                                                    ? 'destructive'
+                                                    : 'outline'}
+                                                class={getCardTypeBadgeClass(
+                                                    tarjeta.tipo
+                                                )}
+                                            >
+                                                {tarjeta.tipo}
+                                            </Badge>
+                                        </td>
+                                        <td class="px-4 py-3 max-w-96">
+                                            <p class="leading-relaxed">
+                                                {tarjeta.razon}
+                                            </p>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            {#if tarjeta.assignedBy}
+                                                <p class="font-medium">
+                                                    {getUserLabel(
+                                                        tarjeta.assignedBy
+                                                    )}
+                                                </p>
+                                            {:else}
+                                                <span class="text-muted-foreground"
+                                                    >Usuario no encontrado</span
+                                                >
+                                            {/if}
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 text-xs text-muted-foreground"
+                                            >{formatDate(tarjeta.createdAt)}</td
+                                        >
+                                        <td
+                                            class="px-4 py-3 text-xs text-muted-foreground"
+                                            >{formatDate(tarjeta.venceEn)}</td
+                                        >
+                                        <td class="px-4 py-3">
+                                            <div class="flex flex-wrap gap-2">
+                                                {#if tarjeta.usado}
+                                                    <Badge variant="secondary"
+                                                        >Usada</Badge
+                                                    >
+                                                {/if}
+                                                {#if tarjeta.vencida}
+                                                    <Badge variant="destructive"
+                                                        >Vencida</Badge
+                                                    >
+                                                {:else if !tarjeta.usado}
+                                                    <Badge>Vigente</Badge>
+                                                {/if}
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3 space-y-2">
+                                            {#if tarjeta.complaint}
+                                                <div
+                                                    class="rounded-lg border bg-muted/30 p-3 text-sm space-y-2"
+                                                >
+                                                    <div>
+                                                        <p
+                                                            class="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+                                                        >
+                                                            Tu reclamo
+                                                        </p>
+                                                        <p>
+                                                            {tarjeta.complaint
+                                                                .razon}
+                                                        </p>
+                                                    </div>
+                                                    <div>
+                                                        <p
+                                                            class="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+                                                        >
+                                                            Respuesta del
+                                                            administrador
+                                                        </p>
+                                                        {#if tarjeta.complaint.atendido}
+                                                            <p>
+                                                                {tarjeta.complaint
+                                                                    .respuesta ??
+                                                                    'Sin respuesta registrada.'}
+                                                            </p>
+                                                            {#if tarjeta.complaint.administradorAtendio}
+                                                                <p
+                                                                    class="mt-1 text-xs text-muted-foreground"
+                                                                >
+                                                                    Atendido por {getUserLabel(
+                                                                        tarjeta
+                                                                            .complaint
+                                                                            .administradorAtendio
+                                                                    )} el {formatDate(
+                                                                        tarjeta
+                                                                            .complaint
+                                                                            .fechaReclamo
+                                                                    )}
+                                                                </p>
+                                                            {/if}
+                                                        {:else}
+                                                            <p
+                                                                class="text-muted-foreground"
+                                                            >
+                                                                Pendiente de
+                                                                revisión.
+                                                            </p>
+                                                        {/if}
+                                                    </div>
+                                                </div>
+                                                <p
+                                                    class="text-xs text-muted-foreground"
+                                                >
+                                                    Solo puedes reclamar esta
+                                                    tarjeta una vez.
+                                                </p>
+                                            {:else if tarjeta.canComplain}
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    onclick={() =>
+                                                        openComplaintDialog(
+                                                            tarjeta
+                                                        )}>Reclamar tarjeta</Button
+                                                >
+                                            {:else}
+                                                <span
+                                                    class="text-xs text-muted-foreground"
+                                                    >Ya existe un reclamo para esta
+                                                    tarjeta.</span
+                                                >
+                                            {/if}
+                                        </td>
+                                    </tr>
+                                {/each}
+                            {/if}
+                        </tbody>
+                    </table>
+                </div>
+            {/if}
 
             <div
                 class="flex flex-wrap items-center justify-between gap-3 border-t px-4 py-3 text-sm"
