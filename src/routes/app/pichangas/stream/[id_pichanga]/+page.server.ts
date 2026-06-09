@@ -25,8 +25,6 @@ const getPichangaWindow = async (id_pichanga: string) => {
 export const load: PageServerLoad = async ({ params, locals}) => {
     const { id_pichanga } = params
 
-    console.log("permisos de usuario:", locals.user?.permisos)
-
     return {
         name_page: 'Lista en tiempo real',
         pichanga: prisma.pichanga
@@ -81,29 +79,16 @@ export const actions = {
         const name = form.get('name-pichanga')
         const date = form.get('date-pichanga')
         const location = form.get('location')
-        const admins = form.getAll('admins')
+        const admins = form
+            .getAll('admins')
+            .map((a) => a.toString())
+            .filter((a) => a.length > 0)
         const max_players = form.get('max_players')
-        const habilitar = form.get('habilitar')
-        const date_init_register_input = form.get('date-init-register')
+        const habilitar = form.get('habilitar')?.toString()
+        const date_init_register_input = form
+            .get('date-init-register')
+            ?.toString()
 
-        let date_init_register: Date | null = null
-        if (habilitar === 'on') {
-            date_init_register = new Date()
-        } else if (date_init_register_input) {
-            date_init_register = new Date(date_init_register_input.toString())
-        }
-
-        if (
-            !date ||
-            !admins ||
-            admins.length === 0 ||
-            !max_players ||
-            !date_init_register
-        ) {
-            return fail(400, {
-                error: 'Todos los campos son requeridos, incluyendo al menos un admin y la fecha de inicio de registro',
-            })
-        }
         if (!locals.user) {
             logger.info(
                 { action: 'action_edit_pichanga_unauthorized' },
@@ -121,24 +106,99 @@ export const actions = {
                 },
                 'Intento de editar pichanga sin permisos'
             )
-            redirect(
+            throw redirect(
                 302,
                 '/app?error=No tienes permisos para editar esta pichanga.'
             )
         }
 
+        // ── Validaciones ──────────────────────────────────────────────
+        const nameStr = (name ?? '').toString().trim()
+        if (!nameStr) {
+            return fail(400, {
+                error: 'El nombre de la pichanga es obligatorio',
+            })
+        }
+
+        if (!date) {
+            return fail(400, { error: 'La fecha de la pichanga es obligatoria' })
+        }
+        const fechaDate = new Date(date.toString())
+        if (Number.isNaN(fechaDate.getTime())) {
+            return fail(400, { error: 'La fecha de la pichanga no es válida' })
+        }
+
+        const locationStr = (location ?? '').toString().trim()
+
+        if (admins.length === 0) {
+            return fail(400, {
+                error: 'Debes seleccionar al menos un administrador',
+            })
+        }
+
+        const maxPlayersNum = parseInt((max_players ?? '').toString(), 10)
+        if (
+            !max_players ||
+            Number.isNaN(maxPlayersNum) ||
+            maxPlayersNum <= 0
+        ) {
+            return fail(400, {
+                error: 'El número máximo de jugadores debe ser un entero positivo',
+            })
+        }
+
+        // Fecha de inicio de inscripción: si el switch está activo, ahora;
+        // si no, se usa la fecha del input (que es obligatoria en ese caso).
+        let fechaInicioIncripcion: Date
+        if (habilitar === 'on') {
+            fechaInicioIncripcion = new Date()
+        } else {
+            if (!date_init_register_input) {
+                return fail(400, {
+                    error: 'Indica la fecha de inicio de inscripción o activa el switch',
+                })
+            }
+            const parsed = new Date(date_init_register_input)
+            if (Number.isNaN(parsed.getTime())) {
+                return fail(400, {
+                    error: 'La fecha de inicio de inscripción no es válida',
+                })
+            }
+            fechaInicioIncripcion = parsed
+        }
+
+        if (fechaInicioIncripcion >= fechaDate) {
+            return fail(400, {
+                error: 'La fecha de inicio de inscripción debe ser anterior a la fecha del partido',
+            })
+        }
+
+        // Verificar que todos los admins existan antes de hacer update
+        const existingAdmins = await prisma.user.findMany({
+            where: { id: { in: admins } },
+            select: { id: true },
+        })
+        if (existingAdmins.length !== admins.length) {
+            const found = new Set(existingAdmins.map((a) => a.id))
+            const missing = admins.filter((id) => !found.has(id))
+            return fail(400, {
+                error: `Los siguientes admins no existen: ${missing.join(', ')}`,
+            })
+        }
+
+        // ── Persistir ────────────────────────────────────────────────
         await prisma.pichanga.update({
             where: {
                 id: id_pichanga,
             },
             data: {
-                nombre: name?.toString() || undefined,
-                fecha: new Date(date.toString()),
-                lugar: location?.toString() || undefined,
-                maxJugadores: parseInt(max_players.toString()),
-                fechaInicioIncripcion: date_init_register,
+                nombre: nameStr,
+                fecha: fechaDate,
+                lugar: locationStr || null,
+                maxJugadores: maxPlayersNum,
+                fechaInicioIncripcion,
                 admins: {
-                    set: (admins as string[]).map((admin) => ({ id: admin })),
+                    set: admins.map((id) => ({ id })),
                 },
             },
         })
@@ -149,22 +209,20 @@ export const actions = {
                 usuarioId: locals.user.id,
                 pichangaId: id_pichanga,
                 new_status: {
-                    nombre: name?.toString() || null,
-                    fecha: new Date(date.toString()).toISOString(),
-                    lugar: location?.toString() || null,
-                    maxJugadores: parseInt(max_players.toString()),
-                    fechaInicioIncripcion: date_init_register
-                        ? date_init_register.toISOString()
-                        : null,
-                    admins: (admins as string[]).map((admin) => ({
-                        id: admin,
-                    })),
+                    nombre: nameStr,
+                    fecha: fechaDate.toISOString(),
+                    lugar: locationStr || null,
+                    maxJugadores: maxPlayersNum,
+                    fechaInicioIncripcion: fechaInicioIncripcion.toISOString(),
+                    admins: admins.map((id) => ({ id })),
                 },
             },
             `Usuario ${locals.user.id} editó la pichanga ${id_pichanga}`
         )
 
         publishPichangaUpdate(id_pichanga, 'edited')
+
+        return { success: true }
     },
     inscribirse: async ({ params, locals }) => {
         const { id_pichanga } = params
@@ -344,7 +402,7 @@ export const actions = {
                 },
                 'Intento de eliminar pichanga sin permisos'
             )
-            redirect(
+            throw redirect(
                 302,
                 '/app?error=No tienes permisos para eliminar esta pichanga.'
             )

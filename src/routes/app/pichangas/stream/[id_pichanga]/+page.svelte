@@ -10,7 +10,6 @@
     import * as Item from '$lib/components/ui/item'
     import Label from '$lib/components/ui/label/label.svelte'
     import Separator from '$lib/components/ui/separator/separator.svelte'
-    import Switch from '$lib/components/ui/switch/switch.svelte'
     import { Spinner } from '$lib/components/ui/spinner'
     import { page } from '$app/state'
     import { onMount } from 'svelte'
@@ -47,6 +46,22 @@
     let switch_init_now = $state(false)
     let loading_join = $state(false)
     let loading_leave = $state(false)
+
+    // Sincroniza el formulario de edición con la pichanga cargada y
+    // lo resetea cada vez que se abre el diálogo.
+    $effect(() => {
+        if (open_edit && pichanga) {
+            selected_admins = pichanga.admins.map(
+                (a: { id: string }) => a.id
+            )
+            const fechaInscripcion = new Date(pichanga.fechaInicioIncripcion)
+            const ahora = new Date()
+            // Si la fecha de inscripción está a menos de 1 minuto del "ahora",
+            // interpretamos que equivale a "habilitar ahora".
+            switch_init_now =
+                Math.abs(fechaInscripcion.getTime() - ahora.getTime()) < 60_000
+        }
+    })
 
     const user_id = $derived(data.user?.id ?? '')
 
@@ -364,10 +379,18 @@
                                         <div
                                             class="flex items-center gap-2 rounded-lg border p-3"
                                         >
-                                            <Switch
-                                                id="habilitar"
+                                            <input
+                                                type="hidden"
                                                 name="habilitar"
+                                                value="off"
+                                            />
+                                            <input
+                                                id="habilitar"
+                                                type="checkbox"
+                                                name="habilitar"
+                                                value="on"
                                                 bind:checked={switch_init_now}
+                                                class="size-4 cursor-pointer accent-primary"
                                             />
                                             <Label for="habilitar"
                                                 >Habilitar inscripciones ahora</Label
