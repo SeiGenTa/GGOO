@@ -40,19 +40,19 @@ const isAfterHourChileOnMatchDay = (
         hour12: false,
     })
 
-    const nowParts = formatter.formatToParts(new Date()).reduce<
-        Record<string, string>
-    >((acc, part) => {
-        if (part.type !== 'literal') acc[part.type] = part.value
-        return acc
-    }, {})
+    const nowParts = formatter
+        .formatToParts(new Date())
+        .reduce<Record<string, string>>((acc, part) => {
+            if (part.type !== 'literal') acc[part.type] = part.value
+            return acc
+        }, {})
 
-    const matchParts = formatter.formatToParts(fechaPichanga).reduce<
-        Record<string, string>
-    >((acc, part) => {
-        if (part.type !== 'literal') acc[part.type] = part.value
-        return acc
-    }, {})
+    const matchParts = formatter
+        .formatToParts(fechaPichanga)
+        .reduce<Record<string, string>>((acc, part) => {
+            if (part.type !== 'literal') acc[part.type] = part.value
+            return acc
+        }, {})
 
     const mismoDia =
         nowParts.year === matchParts.year &&
@@ -65,7 +65,7 @@ const isAfterHourChileOnMatchDay = (
     return minutosNow >= horaCorte * 60
 }
 
-export const load: PageServerLoad = async ({ params, locals}) => {
+export const load: PageServerLoad = async ({ params, locals }) => {
     const { id_pichanga } = params
 
     return {
@@ -164,7 +164,9 @@ export const actions = {
         }
 
         if (!date) {
-            return fail(400, { error: 'La fecha de la pichanga es obligatoria' })
+            return fail(400, {
+                error: 'La fecha de la pichanga es obligatoria',
+            })
         }
         const fechaDate = new Date(date.toString())
         if (Number.isNaN(fechaDate.getTime())) {
@@ -180,11 +182,7 @@ export const actions = {
         }
 
         const maxPlayersNum = parseInt((max_players ?? '').toString(), 10)
-        if (
-            !max_players ||
-            Number.isNaN(maxPlayersNum) ||
-            maxPlayersNum <= 0
-        ) {
+        if (!max_players || Number.isNaN(maxPlayersNum) || maxPlayersNum <= 0) {
             return fail(400, {
                 error: 'El número máximo de jugadores debe ser un entero positivo',
             })

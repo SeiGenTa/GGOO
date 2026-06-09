@@ -52,9 +52,7 @@
     // lo resetea cada vez que se abre el diálogo.
     $effect(() => {
         if (open_edit && pichanga) {
-            selected_admins = pichanga.admins.map(
-                (a: { id: string }) => a.id
-            )
+            selected_admins = pichanga.admins.map((a: { id: string }) => a.id)
             const fechaInscripcion = new Date(pichanga.fechaInicioIncripcion)
             const ahora = new Date()
             // Si la fecha de inscripción está a menos de 1 minuto del "ahora",
@@ -84,15 +82,14 @@
             hour12: false,
         })
 
-        const parts = fmt.formatToParts(d).reduce<Record<string, string>>(
-            (acc, part) => {
+        const parts = fmt
+            .formatToParts(d)
+            .reduce<Record<string, string>>((acc, part) => {
                 if (part.type !== 'literal') {
                     acc[part.type] = part.value
                 }
                 return acc
-            },
-            {}
-        )
+            }, {})
 
         return {
             year: Number(parts.year),
@@ -499,18 +496,18 @@
                                                 >
                                                 <Dialog.Description>
                                                     {#if puede_confirmar_salida}
-                                                        ¿Estás seguro que quieres
-                                                        salir? Perderás tu lugar
-                                                        en la lista y
+                                                        ¿Estás seguro que
+                                                        quieres salir? Perderás
+                                                        tu lugar en la lista y
                                                         <span
                                                             class="font-semibold text-destructive"
-                                                            >te arriesgas a recibir
-                                                            una tarjeta</span
+                                                            >te arriesgas a
+                                                            recibir una tarjeta</span
                                                         >.
                                                     {:else}
-                                                        ¿Estás seguro que quieres
-                                                        salir? Perderás tu lugar
-                                                        en la lista.
+                                                        ¿Estás seguro que
+                                                        quieres salir? Perderás
+                                                        tu lugar en la lista.
                                                     {/if}
                                                 </Dialog.Description>
                                             </Dialog.Header>
@@ -561,7 +558,9 @@
                                                         disabled={loading_leave}
                                                     >
                                                         {#if loading_leave}
-                                                            <Spinner class="mr-1" />
+                                                            <Spinner
+                                                                class="mr-1"
+                                                            />
                                                             Saliendo...
                                                         {:else}
                                                             Sí, salir

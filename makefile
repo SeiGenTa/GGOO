@@ -56,3 +56,6 @@ load-prod:
 
 check:
 	npx prettier -c .
+
+format:
+	npx prettier -w .

@@ -71,7 +71,7 @@ services:
             - '${PORT_APP:-5173}:3000'
         restart: unless-stopped
         healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:3000"]
+            test: ['CMD', 'curl', '-f', 'http://localhost:3000']
             interval: 10s
             timeout: 5s
             retries: 3
