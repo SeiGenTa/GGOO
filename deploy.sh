@@ -12,7 +12,7 @@ echo "=== 2 Descargando nueva imagen ==="
 docker pull ghcr.io/seigenta/ggoo:latest
 
 echo "=== 3. Actualizando el servicio en Swarm ==="
-docker stack deploy -c docker-compose.prod.yml app-production-web
+docker stack deploy -c docker-compose.prod.yml ggoo-production_app
 
 echo "=== 4. Limpiando imágenes antiguas en el VPS ==="
 # Elimina las imágenes viejas que quedaron huérfanas tras el update
