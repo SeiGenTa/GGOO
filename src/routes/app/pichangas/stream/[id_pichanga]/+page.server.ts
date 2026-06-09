@@ -24,8 +24,12 @@ const getPichangaWindow = async (id_pichanga: string) => {
 
 // Devuelve true si el momento actual está dentro del día de la pichanga en
 // horario de Chile (UTC-3/-4 manejado por el runtime vía
-// timeZone: 'America/Santiago') y son las 08:00 o más.
-const isAfter8amChileOnMatchDay = (fechaPichanga: Date): boolean => {
+// timeZone: 'America/Santiago') y la hora local ya pasó la hora de corte
+// indicada (inclusive).
+const isAfterHourChileOnMatchDay = (
+    fechaPichanga: Date,
+    horaCorte: number
+): boolean => {
     const formatter = new Intl.DateTimeFormat('en-CA', {
         timeZone: 'America/Santiago',
         year: 'numeric',
@@ -58,7 +62,7 @@ const isAfter8amChileOnMatchDay = (fechaPichanga: Date): boolean => {
     if (!mismoDia) return false
 
     const minutosNow = Number(nowParts.hour) * 60 + Number(nowParts.minute)
-    return minutosNow >= 8 * 60
+    return minutosNow >= horaCorte * 60
 }
 
 export const load: PageServerLoad = async ({ params, locals}) => {
@@ -371,7 +375,33 @@ export const actions = {
             })
         }
 
-        if (isAfter8amChileOnMatchDay(pichanga.fecha)) {
+        if (isAfterHourChileOnMatchDay(pichanga.fecha, 12)) {
+            const ahora = new Date()
+            const venceEnRoja = new Date(
+                ahora.getTime() + 6 * 24 * 60 * 60 * 1000
+            )
+
+            await prisma.tarjetas.create({
+                data: {
+                    userId: user.id,
+                    tipoCarta: 'roja',
+                    razon: 'Salida tardía de la pichanga después de las 12:00 hora Chile del día del partido',
+                    usado: false,
+                    quienAsignoId: null,
+                    venceEn: venceEnRoja,
+                },
+            })
+
+            logger.info(
+                {
+                    accion: 'tarjeta_roja_salida_muy_tardia',
+                    usuarioId: user.id,
+                    pichangaId: id_pichanga,
+                    venceEn: venceEnRoja,
+                },
+                `Se asignó una tarjeta roja directa al usuario ${user.id} por salida muy tardía de la pichanga ${id_pichanga}`
+            )
+        } else if (isAfterHourChileOnMatchDay(pichanga.fecha, 8)) {
             const ahora = new Date()
             const venceEnAmarilla = new Date(
                 ahora.getTime() + 6 * 24 * 60 * 60 * 1000
