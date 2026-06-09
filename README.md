@@ -132,7 +132,7 @@ Al completar estos pasos, deberías poder acceder a la aplicación y comenzar a 
 
 ## Cómo aportar
 
-Para contribuir, crea una rama nueva con tus cambios y luego abre un MR explicando claramente qué incluye. Un administrador del repositorio revisará el MR y decidirá su integración.
+Para contribuir, crea una rama nueva con tus cambios y luego abre un MR apuntando a la rama `desarrollo`, explicando claramente qué incluye. Un administrador del repositorio revisará el MR y decidirá su integración.
 
 ### Antes de abrir un MR
 
