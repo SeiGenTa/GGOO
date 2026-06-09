@@ -1,45 +1,45 @@
 version: '3.8'
 
 services:
-  app-production-web:
-    image: ghcr.io/seigenta/ggoo:latest
-    volumes:
-      - /root/git/GGOO/app.logs:/app/app.logs
-      - /root/git/GGOO/contributors.json:/app/contributors.json
-    env_file:
-      - .env
-#    environment:
-    #  - DATABASE_URL=${DATABASE_URL}
-    #  - POSTGRES_DB=${POSTGRES_DB}
-    #  - POSTGRES_USER=${POSTGRES_USER}
-    #  - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    #  - PORT_APP=${PORT_APP:-3031}
-    #  - ORIGIN=${ORIGIN}
-    #  - SECRET_KEY=${SECRET_KEY}
-    #  - DIR_LOGS=${DIR_LOGS}
-    ports:
-      - "${PORT_APP:-3031}:3000"
-    networks:
-      - red-swarm-completamente-nueva
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
-    deploy:
-      replicas: 1
-      update_config:
-        parallelism: 1
-        order: start-first
-        failure_action: rollback
-        delay: 10s
-        monitor: 20s
+    app-production-web:
+        image: ghcr.io/seigenta/ggoo:latest
+        volumes:
+            - /root/git/GGOO/app.logs:/app/app.logs
+            - /root/git/GGOO/contributors.json:/app/contributors.json
+        env_file:
+            - .env
+        #    environment:
+        #  - DATABASE_URL=${DATABASE_URL}
+        #  - POSTGRES_DB=${POSTGRES_DB}
+        #  - POSTGRES_USER=${POSTGRES_USER}
+        #  - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+        #  - PORT_APP=${PORT_APP:-3031}
+        #  - ORIGIN=${ORIGIN}
+        #  - SECRET_KEY=${SECRET_KEY}
+        #  - DIR_LOGS=${DIR_LOGS}
+        ports:
+            - '${PORT_APP:-3031}:3000'
+        networks:
+            - red-swarm-completamente-nueva
+        healthcheck:
+            test: ['CMD', 'curl', '-f', 'http://localhost:3000']
+            interval: 10s
+            timeout: 5s
+            retries: 3
+            start_period: 30s
+        deploy:
+            replicas: 1
+            update_config:
+                parallelism: 1
+                order: start-first
+                failure_action: rollback
+                delay: 10s
+                monitor: 20s
 
 networks:
-  red-swarm-completamente-nueva:
-    driver: overlay
-    driver_opts:
-      # 🟢 ESTA ES LA CLAVE: Le dice al driver de red de Swarm que optimice 
-      # para envío inmediato de paquetes (baja latencia) en lugar de acumularlos.
-      com.docker.network.driver.mtu: "1500"
+    red-swarm-completamente-nueva:
+        driver: overlay
+        driver_opts:
+            # 🟢 ESTA ES LA CLAVE: Le dice al driver de red de Swarm que optimice
+            # para envío inmediato de paquetes (baja latencia) en lugar de acumularlos.
+            com.docker.network.driver.mtu: '1500'

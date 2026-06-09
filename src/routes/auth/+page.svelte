@@ -47,7 +47,10 @@
                                 'Credenciales aceptadas, redirigiendo...',
                         })
 
-                        const dir_next = new URLSearchParams(window.location.search).get('next') || '/'
+                        const dir_next =
+                            new URLSearchParams(window.location.search).get(
+                                'next'
+                            ) || '/'
 
                         loading = false
                         return goto(dir_next)

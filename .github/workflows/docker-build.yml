@@ -80,7 +80,7 @@ jobs:
             - name: Delete images olders than 5 versions, except 'latest'
               uses: actions/delete-package-versions@v5
               with:
-                package-name: 'ggoo' 
-                package-type: 'container'
-                min-versions-to-keep: 5
-                ignore-versions: '^(latest)$'
+                  package-name: 'ggoo'
+                  package-type: 'container'
+                  min-versions-to-keep: 5
+                  ignore-versions: '^(latest)$'

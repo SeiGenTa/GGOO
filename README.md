@@ -134,6 +134,20 @@ Al completar estos pasos, deberías poder acceder a la aplicación y comenzar a 
 
 Para contribuir, crea una rama nueva con tus cambios y luego abre un MR explicando claramente qué incluye. Un administrador del repositorio revisará el MR y decidirá su integración.
 
+### Antes de abrir un MR
+
+Antes de abrir un merge request, asegúrate de ejecutar los siguientes comandos dentro del contenedor `app` para validar que el código cumpla con los chequeos de calidad y formato del proyecto:
+
+```bash
+make check
+make format
+```
+
+- `make check` ejecuta las verificaciones de tipo y lint sobre el proyecto.
+- `make format` aplica el formato automático al código.
+
+Resolver cualquier warning o error que aparezca en estos comandos es requisito para que el MR sea revisado.
+
 ## Reutilizar el código para otros grupos
 
 Este proyecto puede adaptarse para otras comunidades deportivas o grupos organizados con dinámicas similares. Algunas recomendaciones para crear una variación:

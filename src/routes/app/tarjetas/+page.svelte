@@ -199,11 +199,19 @@
                         </div>
                     {:else}
                         {#each lista as tarjeta}
-                            <div class="rounded-xl border bg-card p-4 shadow-sm">
-                                <div class="flex items-start justify-between gap-3">
+                            <div
+                                class="rounded-xl border bg-card p-4 shadow-sm"
+                            >
+                                <div
+                                    class="flex items-start justify-between gap-3"
+                                >
                                     <div class="min-w-0">
-                                        <p class="font-semibold">{tarjeta.razon}</p>
-                                        <p class="text-xs text-muted-foreground">
+                                        <p class="font-semibold">
+                                            {tarjeta.razon}
+                                        </p>
+                                        <p
+                                            class="text-xs text-muted-foreground"
+                                        >
                                             {tarjeta.id}
                                         </p>
                                     </div>
@@ -211,8 +219,9 @@
                                         variant={tarjeta.tipo === 'roja'
                                             ? 'destructive'
                                             : 'outline'}
-                                        class={getCardTypeBadgeClass(tarjeta.tipo)}
-                                        >{tarjeta.tipo}</Badge
+                                        class={getCardTypeBadgeClass(
+                                            tarjeta.tipo
+                                        )}>{tarjeta.tipo}</Badge
                                     >
                                 </div>
 
@@ -225,7 +234,9 @@
                                         </p>
                                         <p>
                                             {tarjeta.assignedBy
-                                                ? getUserLabel(tarjeta.assignedBy)
+                                                ? getUserLabel(
+                                                      tarjeta.assignedBy
+                                                  )
                                                 : 'Usuario no encontrado'}
                                         </p>
                                     </div>
@@ -234,18 +245,24 @@
                                         class="grid gap-2 text-xs text-muted-foreground sm:grid-cols-2"
                                     >
                                         <p>
-                                            <span class="font-medium">Creada:</span>
+                                            <span class="font-medium"
+                                                >Creada:</span
+                                            >
                                             {formatDate(tarjeta.createdAt)}
                                         </p>
                                         <p>
-                                            <span class="font-medium">Vence:</span>
+                                            <span class="font-medium"
+                                                >Vence:</span
+                                            >
                                             {formatDate(tarjeta.venceEn)}
                                         </p>
                                     </div>
 
                                     <div class="flex flex-wrap gap-2">
                                         {#if tarjeta.usado}
-                                            <Badge variant="secondary">Usada</Badge>
+                                            <Badge variant="secondary"
+                                                >Usada</Badge
+                                            >
                                         {/if}
                                         {#if tarjeta.vencida}
                                             <Badge variant="destructive"
@@ -289,9 +306,11 @@
                                                 {/if}
                                             </div>
                                         </div>
-                                        <p class="text-xs text-muted-foreground">
-                                            Solo puedes reclamar esta tarjeta una
-                                            vez.
+                                        <p
+                                            class="text-xs text-muted-foreground"
+                                        >
+                                            Solo puedes reclamar esta tarjeta
+                                            una vez.
                                         </p>
                                     {:else if tarjeta.canComplain}
                                         <Button
@@ -302,8 +321,10 @@
                                             >Reclamar tarjeta</Button
                                         >
                                     {:else}
-                                        <span class="text-xs text-muted-foreground"
-                                            >Ya existe un reclamo para esta tarjeta.</span
+                                        <span
+                                            class="text-xs text-muted-foreground"
+                                            >Ya existe un reclamo para esta
+                                            tarjeta.</span
                                         >
                                     {/if}
                                 </div>
@@ -318,10 +339,12 @@
                             <tr class="border-b bg-muted/30 text-left">
                                 <th class="px-4 py-3 font-semibold">Tipo</th>
                                 <th class="px-4 py-3 font-semibold">Razón</th>
-                                <th class="px-4 py-3 font-semibold">Asignada por</th
+                                <th class="px-4 py-3 font-semibold"
+                                    >Asignada por</th
                                 >
                                 <th class="px-4 py-3 font-semibold">Creada</th>
-                                <th class="px-4 py-3 font-semibold">Vence en</th>
+                                <th class="px-4 py-3 font-semibold">Vence en</th
+                                >
                                 <th class="px-4 py-3 font-semibold">Estado</th>
                                 <th class="px-4 py-3 font-semibold">Reclamo</th>
                             </tr>
@@ -364,7 +387,8 @@
                                                     )}
                                                 </p>
                                             {:else}
-                                                <span class="text-muted-foreground"
+                                                <span
+                                                    class="text-muted-foreground"
                                                     >Usuario no encontrado</span
                                                 >
                                             {/if}
@@ -418,7 +442,8 @@
                                                         </p>
                                                         {#if tarjeta.complaint.atendido}
                                                             <p>
-                                                                {tarjeta.complaint
+                                                                {tarjeta
+                                                                    .complaint
                                                                     .respuesta ??
                                                                     'Sin respuesta registrada.'}
                                                             </p>
@@ -460,13 +485,14 @@
                                                     onclick={() =>
                                                         openComplaintDialog(
                                                             tarjeta
-                                                        )}>Reclamar tarjeta</Button
+                                                        )}
+                                                    >Reclamar tarjeta</Button
                                                 >
                                             {:else}
                                                 <span
                                                     class="text-xs text-muted-foreground"
-                                                    >Ya existe un reclamo para esta
-                                                    tarjeta.</span
+                                                    >Ya existe un reclamo para
+                                                    esta tarjeta.</span
                                                 >
                                             {/if}
                                         </td>

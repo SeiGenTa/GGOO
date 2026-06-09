@@ -23,8 +23,8 @@ const config = {
         },
         version: {
             // Revisa en el servidor cada 1 minuto si cambiaron los archivos .js
-            pollInterval: 60000 
-        }
+            pollInterval: 60000,
+        },
     },
 }
 
