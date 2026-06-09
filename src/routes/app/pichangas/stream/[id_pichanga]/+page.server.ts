@@ -438,7 +438,7 @@ export const actions = {
                 select: { id: true },
             })
 
-            if (amarillasPreviasSinUsar.length >= 1) {
+            if (amarillasPreviasSinUsar.length >= 2) {
                 await prisma.tarjetas.updateMany({
                     where: {
                         id: { in: amarillasPreviasSinUsar.map((t) => t.id) },
