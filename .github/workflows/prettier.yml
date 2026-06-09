@@ -21,21 +21,15 @@ jobs:
               with:
                   node-version: 'lts/*'
 
-            # Instalamos pnpm utilizando su opción nativa de caché
             - name: Setup pnpm
               uses: pnpm/action-setup@v4
               with:
                   version: 9
-                  dest: ${{ runner.tool_cache }}/pnpm # Asegura una ruta limpia independiente del workspace
 
-            # Si tienes un archivo pnpm-workspace.yaml vacío, este paso previene que rompa la instalación
-            - name: Fix potential empty workspace issue
+            # Forzamos la remoción de cualquier archivo de workspace corrupto o vacío en el CI
+            - name: Remove broken workspace file
               shell: bash
-              run: |
-                  if [ -f "pnpm-workspace.yaml" ] && [ ! -s "pnpm-workspace.yaml" ]; then
-                    echo "packages:" > pnpm-workspace.yaml
-                    echo "  - '*'" >> pnpm-workspace.yaml
-                  fi
+              run: rm -f pnpm-workspace.yaml
 
             - name: Install Dependencies
               run: pnpm install --frozen-lockfile
