@@ -46,8 +46,11 @@
                             description:
                                 'Credenciales aceptadas, redirigiendo...',
                         })
+
+                        const dir_next = new URLSearchParams(window.location.search).get('next') || '/'
+
                         loading = false
-                        return goto('/')
+                        return goto(dir_next)
                     }
                 }}
             >

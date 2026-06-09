@@ -105,7 +105,7 @@
                                                     >{finalizado
                                                         ? 'Ver lista'
                                                         : inscripcionesAbiertas
-                                                          ? 'Lista en vivo'
+                                                          ? 'Ir a inscribirse'
                                                           : 'Ver detalles'}</Button
                                                 ></Item.Title
                                             >
