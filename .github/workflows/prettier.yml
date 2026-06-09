@@ -16,32 +16,26 @@ jobs:
             - name: Checkout Code
               uses: actions/checkout@v4
 
-            # 1. Configuramos Node primero (sin activar caché aquí)
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
                   node-version: 'lts/*'
 
-            # 2. Instalamos pnpm y activamos su caché nativa directamente
+            # Instalamos pnpm utilizando su opción nativa de caché
             - name: Setup pnpm
               uses: pnpm/action-setup@v4
               with:
                   version: 9
-                  run_install: false # Evita que instale antes de configurar la caché
+                  dest: ${{ runner.tool_cache }}/pnpm # Asegura una ruta limpia independiente del workspace
 
-            # 3. Obtenemos de forma segura la ruta para la caché interna de GitHub
-            - name: Get pnpm store directory
+            # Si tienes un archivo pnpm-workspace.yaml vacío, este paso previene que rompa la instalación
+            - name: Fix potential empty workspace issue
               shell: bash
-              run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-            # 4. Usamos la acción nativa de GitHub para cachear la carpeta exacta de pnpm
-            - name: Cache pnpm modules
-              uses: actions/cache@v4
-              with:
-                  path: ${{ env.STORE_PATH }}
-                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-                  restore-keys: |
-                      ${{ runner.os }}-pnpm-store-
+              run: |
+                  if [ -f "pnpm-workspace.yaml" ] && [ ! -s "pnpm-workspace.yaml" ]; then
+                    echo "packages:" > pnpm-workspace.yaml
+                    echo "  - '*'" >> pnpm-workspace.yaml
+                  fi
 
             - name: Install Dependencies
               run: pnpm install --frozen-lockfile
