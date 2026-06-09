@@ -3,10 +3,10 @@ name: Prettier Check
 on:
     push:
         branches:
-            - '**' # Se ejecuta en todas las ramas al hacer push
+            - '**'
     pull_request:
         branches:
-            - '**' # Se ejecuta en todas las ramas al abrir un PR
+            - '**'
 
 jobs:
     prettier:
@@ -16,13 +16,19 @@ jobs:
             - name: Checkout Code
               uses: actions/checkout@v4
 
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 9 # O la versión específica que uses en tu PC
+
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
-                  node-version: 'lts/*' # Usa la última versión estable de Node
+                  node-version: 'lts/*'
+                  cache: 'pnpm' # Almacena en caché los paquetes para acelerar futuros runs
 
             - name: Install Dependencies
-              run: npm ci # Instalación limpia y rápida para entornos de CI
+              run: pnpm install --frozen-lockfile # Equivalente estricto a npm ci
 
             - name: Run Prettier Check
-              run: npx prettier --check .
+              run: pnpm exec prettier --check .
