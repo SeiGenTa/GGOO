@@ -149,6 +149,11 @@
                 )
                 return
             }
+            if (type === 'opened') {
+                toast.info('Inscripciones abiertas', {
+                    description: 'Ya puedes unirte a esta pichanga.',
+                })
+            }
             await invalidateAll()
         }
 

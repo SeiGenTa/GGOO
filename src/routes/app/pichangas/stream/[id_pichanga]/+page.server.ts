@@ -1,6 +1,10 @@
 import { prisma } from '$utils/prisma'
 import { error, fail, redirect } from '@sveltejs/kit'
-import { publishPichangaUpdate } from '$lib/server/pichanga-stream'
+import {
+    cancelPichangaOpen,
+    publishPichangaUpdate,
+    schedulePichangaOpen,
+} from '$lib/server/pichanga-stream'
 import type { Actions, PageServerLoad } from './$types'
 import { Permissions } from '$lib/permissions'
 import logger from '$lib/logger'
@@ -110,6 +114,12 @@ export const load: PageServerLoad = async ({ params, locals }) => {
             })
             .then((data) => {
                 if (!data) error(404, 'Pichanga no encontrada')
+                if (
+                    data.fechaInicioIncripcion &&
+                    data.fechaInicioIncripcion > new Date()
+                ) {
+                    schedulePichangaOpen(data.id, data.fechaInicioIncripcion)
+                }
                 return data
             }),
     }
@@ -262,6 +272,7 @@ export const actions = {
         )
 
         publishPichangaUpdate(id_pichanga, 'edited')
+        schedulePichangaOpen(id_pichanga, fechaInicioIncripcion)
 
         return { success: true }
     },
@@ -586,6 +597,8 @@ export const actions = {
                 id: id_pichanga,
             },
         })
+
+        cancelPichangaOpen(id_pichanga)
 
         logger.info(
             {

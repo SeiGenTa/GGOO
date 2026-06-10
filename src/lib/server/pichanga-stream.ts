@@ -1,4 +1,9 @@
-export type PichangaStreamEventType = 'edited' | 'joined' | 'left' | 'deleted'
+export type PichangaStreamEventType =
+    | 'edited'
+    | 'joined'
+    | 'left'
+    | 'deleted'
+    | 'opened'
 
 export type PichangaStreamEvent = {
     pichangaId: string
@@ -30,5 +35,38 @@ export const publishPichangaUpdate = (
 
     for (const listener of listeners) {
         listener(payload)
+    }
+}
+
+const openTimers = new Map<string, NodeJS.Timeout>()
+
+export const schedulePichangaOpen = (
+    pichangaId: string,
+    fechaInicioIncripcion: Date
+) => {
+    const existing = openTimers.get(pichangaId)
+    if (existing) {
+        clearTimeout(existing)
+        openTimers.delete(pichangaId)
+    }
+
+    const delay = fechaInicioIncripcion.getTime() - Date.now()
+    if (delay <= 0) {
+        return
+    }
+
+    const timeout = setTimeout(() => {
+        openTimers.delete(pichangaId)
+        publishPichangaUpdate(pichangaId, 'opened')
+    }, delay)
+
+    openTimers.set(pichangaId, timeout)
+}
+
+export const cancelPichangaOpen = (pichangaId: string) => {
+    const existing = openTimers.get(pichangaId)
+    if (existing) {
+        clearTimeout(existing)
+        openTimers.delete(pichangaId)
     }
 }

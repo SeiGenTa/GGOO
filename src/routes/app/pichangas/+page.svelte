@@ -8,6 +8,9 @@
     import ModalAddPichanga from './components/new_pichanga.svelte'
     import { Permissions } from '$lib/permissions'
     import SkeletonPichanga from './components/skeleton_pichanga.svelte'
+    import { onMount } from 'svelte'
+    import { invalidateAll } from '$app/navigation'
+    import { toast } from 'svelte-sonner'
 
     let { data } = $props()
 
@@ -42,6 +45,39 @@
             return ['Últimos cupos', 'link']
         return ['Inscripción abierta', 'default']
     }
+
+    onMount(() => {
+        const eventSource = new EventSource('/api/stream')
+
+        const handlePichangaUpdate = async (event: MessageEvent) => {
+            let payload: { type?: string; pichangaId?: string } = {}
+            try {
+                payload = JSON.parse(event.data)
+            } catch {
+                return
+            }
+
+            if (payload.type === 'opened') {
+                toast.info('Una pichanga abrió sus inscripciones', {
+                    description: 'Ya puedes inscribirte desde la lista.',
+                })
+                await invalidateAll()
+            }
+        }
+
+        eventSource.addEventListener('pichanga-update', handlePichangaUpdate)
+        eventSource.onerror = () => {
+            eventSource.close()
+        }
+
+        return () => {
+            eventSource.removeEventListener(
+                'pichanga-update',
+                handlePichangaUpdate
+            )
+            eventSource.close()
+        }
+    })
 </script>
 
 <section class="pichangas-view">
@@ -263,6 +299,19 @@
                     </Accordion.Content>
                 </Accordion.Item>
             {/each}
+            {#if pichangas.length === 0}
+                <div
+                    class="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground"
+                >
+                    {#if data.canManagePartidos}
+                        No hay pichangas registradas todavía.
+                    {:else}
+                        No hay pichangas disponibles para inscripción en este
+                        momento. Las próximas aperturas aparecen aquí
+                        automáticamente.
+                    {/if}
+                </div>
+            {/if}
         </Accordion.Root>
     {/await}
 </section>
