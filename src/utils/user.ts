@@ -1,10 +1,27 @@
-import { createHash } from 'node:crypto'
+import { createHash, randomBytes } from 'node:crypto'
 import jwt, { type JwtPayload } from 'jsonwebtoken'
-import { type User } from '$generated/prisma/client'
+import { type RefreshToken, type User } from '$generated/prisma/client'
 import { prisma } from './prisma'
 import { Permissions } from '$lib/permissions'
+import logger from '$lib/logger'
 
 const VERSION_JWT = 2
+
+const REFRESH_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000
+const ACCESS_TOKEN_TTL = '15m'
+const CLEANUP_PROBABILITY = 0.01
+const REVOKED_RETENTION_MS = 30 * 24 * 60 * 60 * 1000
+
+type GeneratedTokens = {
+    accessToken: string
+    refreshToken: string
+}
+
+type RefreshTokenRevokeReason =
+    | 'rotacion'
+    | 'logout'
+    | 'cambio_password'
+    | 'limpieza'
 
 class UserUtils {
     public static hashPassword = (password: string): string => {
@@ -21,7 +38,42 @@ class UserUtils {
         return hashedPassword === hash
     }
 
-    public static generateTokens = async (user: User) => {
+    private static hashRefreshToken = (raw: string): string => {
+        return createHash('sha256').update(raw).digest('hex')
+    }
+
+    private static generateRefreshTokenRaw = (): string => {
+        return randomBytes(48).toString('base64url')
+    }
+
+    private static maybeCleanupExpired = async (): Promise<void> => {
+        if (Math.random() < CLEANUP_PROBABILITY) {
+            await UserUtils.cleanupExpiredRefreshTokens()
+        }
+    }
+
+    public static cleanupExpiredRefreshTokens = async (): Promise<number> => {
+        const now = new Date()
+        const revokedRetentionThreshold = new Date(
+            now.getTime() - REVOKED_RETENTION_MS
+        )
+        const result = await prisma.refreshToken.deleteMany({
+            where: {
+                OR: [
+                    { fechaExpiracion: { lt: now } },
+                    {
+                        esValido: false,
+                        revocadoEn: { lt: revokedRetentionThreshold },
+                    },
+                ],
+            },
+        })
+        return result.count
+    }
+
+    private static generateAccessToken = async (
+        user: User
+    ): Promise<string> => {
         const payload = {
             id: user.id,
             email: user.email,
@@ -33,18 +85,187 @@ class UserUtils {
             posiciones: user.posiciones,
             cumpleanos: user.cumpleanos,
         }
-        const payload_refresh = {
-            id: user.id,
-            email: user.email,
-            password: user.password,
-            version: VERSION_JWT,
-        }
         const secretKey = process.env.SECRET_KEY || 'your_secret_key_here'
-        const token = jwt.sign(payload, secretKey, { expiresIn: '15m' })
-        const refreshToken = jwt.sign(payload_refresh, secretKey, {
-            expiresIn: '7d',
+        return jwt.sign(payload, secretKey, { expiresIn: ACCESS_TOKEN_TTL })
+    }
+
+    public static createRefreshToken = async (
+        user: User,
+        ip: string | null,
+        userAgent: string | null
+    ): Promise<string> => {
+        await UserUtils.maybeCleanupExpired()
+        const raw = UserUtils.generateRefreshTokenRaw()
+        const tokenHash = UserUtils.hashRefreshToken(raw)
+        const fechaExpiracion = new Date(Date.now() + REFRESH_TOKEN_TTL_MS)
+        await prisma.refreshToken.create({
+            data: {
+                token: tokenHash,
+                userId: user.id,
+                ip,
+                userAgent,
+                fechaExpiracion,
+            },
         })
-        return [token, refreshToken]
+        return raw
+    }
+
+    public static generateTokens = async (
+        user: User,
+        ip: string | null = null,
+        userAgent: string | null = null
+    ): Promise<GeneratedTokens> => {
+        const accessToken = await UserUtils.generateAccessToken(user)
+        const refreshToken = await UserUtils.createRefreshToken(
+            user,
+            ip,
+            userAgent
+        )
+        return { accessToken, refreshToken }
+    }
+
+    public static verifyRefreshToken = async (
+        raw: string
+    ): Promise<RefreshToken | null> => {
+        await UserUtils.maybeCleanupExpired()
+        if (!raw || raw.length === 0) {
+            return null
+        }
+        const tokenHash = UserUtils.hashRefreshToken(raw)
+        const record = await prisma.refreshToken.findUnique({
+            where: { token: tokenHash },
+        })
+        if (!record) {
+            return null
+        }
+        if (!record.esValido) {
+            return null
+        }
+        if (record.fechaExpiracion.getTime() <= Date.now()) {
+            return null
+        }
+        return record
+    }
+
+    public static rotateRefreshToken = async (
+        raw: string,
+        ip: string | null = null,
+        userAgent: string | null = null
+    ): Promise<GeneratedTokens | null> => {
+        await UserUtils.maybeCleanupExpired()
+        if (!raw || raw.length === 0) {
+            return null
+        }
+        const tokenHash = UserUtils.hashRefreshToken(raw)
+        const now = new Date()
+
+        return await prisma.$transaction(async (tx) => {
+            const record = await tx.refreshToken.findUnique({
+                where: { token: tokenHash },
+            })
+            if (
+                !record ||
+                !record.esValido ||
+                record.fechaExpiracion.getTime() <= now.getTime()
+            ) {
+                return null
+            }
+
+            const user = await tx.user.findUnique({
+                where: { id: record.userId },
+            })
+            if (!user) {
+                return null
+            }
+
+            await tx.refreshToken.update({
+                where: { id: record.id },
+                data: {
+                    esValido: false,
+                    revocadoEn: now,
+                    motivoRevocacion: 'rotacion',
+                },
+            })
+
+            const newRaw = UserUtils.generateRefreshTokenRaw()
+            const newHash = UserUtils.hashRefreshToken(newRaw)
+            const fechaExpiracion = new Date(
+                now.getTime() + REFRESH_TOKEN_TTL_MS
+            )
+            await tx.refreshToken.create({
+                data: {
+                    token: newHash,
+                    userId: user.id,
+                    ip,
+                    userAgent,
+                    fechaExpiracion,
+                },
+            })
+
+            const accessToken = await UserUtils.generateAccessToken(user)
+            logger.info(
+                {
+                    action: 'refresh_token_rotated',
+                    userId: user.id,
+                    email: user.email,
+                    ip,
+                    userAgent,
+                },
+                'Refresh token rotado correctamente'
+            )
+            return { accessToken, refreshToken: newRaw }
+        })
+    }
+
+    public static revokeRefreshToken = async (
+        raw: string,
+        motivo: RefreshTokenRevokeReason = 'logout'
+    ): Promise<boolean> => {
+        if (!raw || raw.length === 0) {
+            return false
+        }
+        const tokenHash = UserUtils.hashRefreshToken(raw)
+        const now = new Date()
+        const result = await prisma.refreshToken.updateMany({
+            where: {
+                token: tokenHash,
+                esValido: true,
+            },
+            data: {
+                esValido: false,
+                revocadoEn: now,
+                motivoRevocacion: motivo,
+            },
+        })
+        return result.count > 0
+    }
+
+    public static revokeAllUserRefreshTokens = async (
+        userId: string,
+        motivo: RefreshTokenRevokeReason = 'cambio_password'
+    ): Promise<number> => {
+        const now = new Date()
+        const result = await prisma.refreshToken.updateMany({
+            where: {
+                userId,
+                esValido: true,
+            },
+            data: {
+                esValido: false,
+                revocadoEn: now,
+                motivoRevocacion: motivo,
+            },
+        })
+        logger.info(
+            {
+                action: 'refresh_tokens_revoked_all',
+                userId,
+                motivo,
+                count: result.count,
+            },
+            `Se revocaron ${result.count} refresh tokens del usuario`
+        )
+        return result.count
     }
 
     public static has_permission = async (
@@ -101,38 +322,6 @@ class UserUtils {
         })
         const permissions_from_roles = roles.flatMap((role) => role.permisos)
         return [...new Set([...permissions, ...permissions_from_roles])]
-    }
-
-    public static generateNewTokensFromRefreshToken = async (
-        refreshToken: string
-    ) => {
-        const secretKey = process.env.SECRET_KEY || 'your_secret_key_here'
-        let decoded
-        try {
-            decoded = jwt.verify(refreshToken, secretKey)
-        } catch (err) {
-            return null
-        }
-        if ((decoded as JwtPayload).version !== VERSION_JWT) {
-            return null
-        }
-        const user = await prisma.user.findUnique({
-            where: {
-                id: (decoded as JwtPayload).id,
-                password: (decoded as JwtPayload).password,
-            },
-        })
-
-        if (!user) {
-            return null
-        }
-
-        const [token_generated, refresh_token_generated] =
-            await UserUtils.generateTokens(user)
-        return {
-            token: token_generated,
-            refreshToken: refresh_token_generated,
-        }
     }
 
     public static verifyToken = async (token: string) => {

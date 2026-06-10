@@ -5,6 +5,7 @@ import UserUtils from '$utils/user'
 import { sendEmail } from '$lib/email/resend'
 import { encript_string } from '$utils/encript'
 import { Permissions } from '$lib/permissions'
+import logger from '$lib/logger'
 
 const POSITION_OPTIONS = ['Punta', 'Centro', 'Armador', 'Libero', 'Opuesto']
 
@@ -426,6 +427,22 @@ export const actions = {
                 password: hashedPassword,
             },
         })
+
+        const revokedCount = await UserUtils.revokeAllUserRefreshTokens(
+            locals.user.id,
+            'cambio_password'
+        )
+
+        logger.info(
+            {
+                action: 'password_changed',
+                userId: locals.user.id,
+                email: locals.user.email,
+                source: 'profile',
+                revokedTokens: revokedCount,
+            },
+            'Contrasena actualizada desde el perfil'
+        )
 
         cookies.delete('token', { path: '/' })
         cookies.delete('refreshToken', { path: '/' })

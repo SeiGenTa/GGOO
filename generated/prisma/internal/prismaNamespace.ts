@@ -415,6 +415,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never
 
 export const ModelName = {
     User: 'User',
+    RefreshToken: 'RefreshToken',
     Rol: 'Rol',
     Pichanga: 'Pichanga',
     Inscripcion: 'Inscripcion',
@@ -444,6 +445,7 @@ export type TypeMap<
     meta: {
         modelProps:
             | 'user'
+            | 'refreshToken'
             | 'rol'
             | 'pichanga'
             | 'inscripcion'
@@ -525,6 +527,82 @@ export type TypeMap<
                     args: Prisma.UserCountArgs<ExtArgs>
                     result:
                         | runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType>
+                        | number
+                }
+            }
+        }
+        RefreshToken: {
+            payload: Prisma.$RefreshTokenPayload<ExtArgs>
+            fields: Prisma.RefreshTokenFieldRefs
+            operations: {
+                findUnique: {
+                    args: Prisma.RefreshTokenFindUniqueArgs<ExtArgs>
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload> | null
+                }
+                findUniqueOrThrow: {
+                    args: Prisma.RefreshTokenFindUniqueOrThrowArgs<ExtArgs>
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>
+                }
+                findFirst: {
+                    args: Prisma.RefreshTokenFindFirstArgs<ExtArgs>
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload> | null
+                }
+                findFirstOrThrow: {
+                    args: Prisma.RefreshTokenFindFirstOrThrowArgs<ExtArgs>
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>
+                }
+                findMany: {
+                    args: Prisma.RefreshTokenFindManyArgs<ExtArgs>
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>[]
+                }
+                create: {
+                    args: Prisma.RefreshTokenCreateArgs<ExtArgs>
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>
+                }
+                createMany: {
+                    args: Prisma.RefreshTokenCreateManyArgs<ExtArgs>
+                    result: BatchPayload
+                }
+                createManyAndReturn: {
+                    args: Prisma.RefreshTokenCreateManyAndReturnArgs<ExtArgs>
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>[]
+                }
+                delete: {
+                    args: Prisma.RefreshTokenDeleteArgs<ExtArgs>
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>
+                }
+                update: {
+                    args: Prisma.RefreshTokenUpdateArgs<ExtArgs>
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>
+                }
+                deleteMany: {
+                    args: Prisma.RefreshTokenDeleteManyArgs<ExtArgs>
+                    result: BatchPayload
+                }
+                updateMany: {
+                    args: Prisma.RefreshTokenUpdateManyArgs<ExtArgs>
+                    result: BatchPayload
+                }
+                updateManyAndReturn: {
+                    args: Prisma.RefreshTokenUpdateManyAndReturnArgs<ExtArgs>
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>[]
+                }
+                upsert: {
+                    args: Prisma.RefreshTokenUpsertArgs<ExtArgs>
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>
+                }
+                aggregate: {
+                    args: Prisma.RefreshTokenAggregateArgs<ExtArgs>
+                    result: runtime.Types.Utils.Optional<Prisma.AggregateRefreshToken>
+                }
+                groupBy: {
+                    args: Prisma.RefreshTokenGroupByArgs<ExtArgs>
+                    result: runtime.Types.Utils.Optional<Prisma.RefreshTokenGroupByOutputType>[]
+                }
+                count: {
+                    args: Prisma.RefreshTokenCountArgs<ExtArgs>
+                    result:
+                        | runtime.Types.Utils.Optional<Prisma.RefreshTokenCountAggregateOutputType>
                         | number
                 }
             }
@@ -1044,6 +1122,22 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum =
     (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
+export const RefreshTokenScalarFieldEnum = {
+    id: 'id',
+    token: 'token',
+    userId: 'userId',
+    ip: 'ip',
+    userAgent: 'userAgent',
+    fechaCreacion: 'fechaCreacion',
+    fechaExpiracion: 'fechaExpiracion',
+    esValido: 'esValido',
+    revocadoEn: 'revocadoEn',
+    motivoRevocacion: 'motivoRevocacion',
+} as const
+
+export type RefreshTokenScalarFieldEnum =
+    (typeof RefreshTokenScalarFieldEnum)[keyof typeof RefreshTokenScalarFieldEnum]
+
 export const RolScalarFieldEnum = {
     id: 'id',
     nombre: 'nombre',
@@ -1340,6 +1434,7 @@ export type PrismaClientOptions = (
 }
 export type GlobalOmitConfig = {
     user?: Prisma.UserOmit
+    refreshToken?: Prisma.RefreshTokenOmit
     rol?: Prisma.RolOmit
     pichanga?: Prisma.PichangaOmit
     inscripcion?: Prisma.InscripcionOmit

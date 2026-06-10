@@ -258,6 +258,7 @@ export type UserWhereInput = {
     castigos?: Prisma.CastigoListRelationFilter
     castigosCancelados?: Prisma.CastigoListRelationFilter
     reclamosCartas?: Prisma.ReclamosCartaListRelationFilter
+    refreshTokens?: Prisma.RefreshTokenListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -283,6 +284,7 @@ export type UserOrderByWithRelationInput = {
     castigos?: Prisma.CastigoOrderByRelationAggregateInput
     castigosCancelados?: Prisma.CastigoOrderByRelationAggregateInput
     reclamosCartas?: Prisma.ReclamosCartaOrderByRelationAggregateInput
+    refreshTokens?: Prisma.RefreshTokenOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<
@@ -316,6 +318,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<
         castigos?: Prisma.CastigoListRelationFilter
         castigosCancelados?: Prisma.CastigoListRelationFilter
         reclamosCartas?: Prisma.ReclamosCartaListRelationFilter
+        refreshTokens?: Prisma.RefreshTokenListRelationFilter
     },
     'id' | 'email'
 >
@@ -391,6 +394,7 @@ export type UserCreateInput = {
     castigos?: Prisma.CastigoCreateNestedManyWithoutUserInput
     castigosCancelados?: Prisma.CastigoCreateNestedManyWithoutQuienCanceloInput
     reclamosCartas?: Prisma.ReclamosCartaCreateNestedManyWithoutAdministradorAtendioInput
+    refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -416,6 +420,7 @@ export type UserUncheckedCreateInput = {
     castigos?: Prisma.CastigoUncheckedCreateNestedManyWithoutUserInput
     castigosCancelados?: Prisma.CastigoUncheckedCreateNestedManyWithoutQuienCanceloInput
     reclamosCartas?: Prisma.ReclamosCartaUncheckedCreateNestedManyWithoutAdministradorAtendioInput
+    refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -445,6 +450,7 @@ export type UserUpdateInput = {
     castigos?: Prisma.CastigoUpdateManyWithoutUserNestedInput
     castigosCancelados?: Prisma.CastigoUpdateManyWithoutQuienCanceloNestedInput
     reclamosCartas?: Prisma.ReclamosCartaUpdateManyWithoutAdministradorAtendioNestedInput
+    refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -474,6 +480,7 @@ export type UserUncheckedUpdateInput = {
     castigos?: Prisma.CastigoUncheckedUpdateManyWithoutUserNestedInput
     castigosCancelados?: Prisma.CastigoUncheckedUpdateManyWithoutQuienCanceloNestedInput
     reclamosCartas?: Prisma.ReclamosCartaUncheckedUpdateManyWithoutAdministradorAtendioNestedInput
+    refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -590,6 +597,11 @@ export type UserMinOrderByAggregateInput = {
     cumpleanos?: Prisma.SortOrder
 }
 
+export type UserScalarRelationFilter = {
+    is?: Prisma.UserWhereInput
+    isNot?: Prisma.UserWhereInput
+}
+
 export type UserListRelationFilter = {
     every?: Prisma.UserWhereInput
     some?: Prisma.UserWhereInput
@@ -598,11 +610,6 @@ export type UserListRelationFilter = {
 
 export type UserOrderByRelationAggregateInput = {
     _count?: Prisma.SortOrder
-}
-
-export type UserScalarRelationFilter = {
-    is?: Prisma.UserWhereInput
-    isNot?: Prisma.UserWhereInput
 }
 
 export type UserNullableScalarRelationFilter = {
@@ -646,6 +653,32 @@ export type UserUpdateposicionesInput = {
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
+}
+
+export type UserCreateNestedOneWithoutRefreshTokensInput = {
+    create?: Prisma.XOR<
+        Prisma.UserCreateWithoutRefreshTokensInput,
+        Prisma.UserUncheckedCreateWithoutRefreshTokensInput
+    >
+    connectOrCreate?: Prisma.UserCreateOrConnectWithoutRefreshTokensInput
+    connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutRefreshTokensNestedInput = {
+    create?: Prisma.XOR<
+        Prisma.UserCreateWithoutRefreshTokensInput,
+        Prisma.UserUncheckedCreateWithoutRefreshTokensInput
+    >
+    connectOrCreate?: Prisma.UserCreateOrConnectWithoutRefreshTokensInput
+    upsert?: Prisma.UserUpsertWithoutRefreshTokensInput
+    connect?: Prisma.UserWhereUniqueInput
+    update?: Prisma.XOR<
+        Prisma.XOR<
+            Prisma.UserUpdateToOneWithWhereWithoutRefreshTokensInput,
+            Prisma.UserUpdateWithoutRefreshTokensInput
+        >,
+        Prisma.UserUncheckedUpdateWithoutRefreshTokensInput
+    >
 }
 
 export type UserCreateNestedManyWithoutRolesInput = {
@@ -974,6 +1007,142 @@ export type UserUpdateOneWithoutCastigosCanceladosNestedInput = {
     >
 }
 
+export type UserCreateWithoutRefreshTokensInput = {
+    id?: string
+    nombre: string
+    email: string
+    apodo?: string | null
+    password: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    es_admin?: boolean
+    es_valido?: boolean
+    aprobado_por_admin?: boolean
+    rechazado_por_admin?: boolean
+    permisos?: Prisma.UserCreatepermisosInput | string[]
+    posiciones?: Prisma.UserCreateposicionesInput | string[]
+    cumpleanos?: Date | string | null
+    pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
+    inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
+    roles?: Prisma.RolCreateNestedManyWithoutUsersInput
+    tarjetas?: Prisma.TarjetasCreateNestedManyWithoutUserInput
+    tarjetasAsignadas?: Prisma.TarjetasCreateNestedManyWithoutQuienAsignoInput
+    castigos?: Prisma.CastigoCreateNestedManyWithoutUserInput
+    castigosCancelados?: Prisma.CastigoCreateNestedManyWithoutQuienCanceloInput
+    reclamosCartas?: Prisma.ReclamosCartaCreateNestedManyWithoutAdministradorAtendioInput
+}
+
+export type UserUncheckedCreateWithoutRefreshTokensInput = {
+    id?: string
+    nombre: string
+    email: string
+    apodo?: string | null
+    password: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    es_admin?: boolean
+    es_valido?: boolean
+    aprobado_por_admin?: boolean
+    rechazado_por_admin?: boolean
+    permisos?: Prisma.UserCreatepermisosInput | string[]
+    posiciones?: Prisma.UserCreateposicionesInput | string[]
+    cumpleanos?: Date | string | null
+    pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
+    inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
+    roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
+    tarjetas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutUserInput
+    tarjetasAsignadas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutQuienAsignoInput
+    castigos?: Prisma.CastigoUncheckedCreateNestedManyWithoutUserInput
+    castigosCancelados?: Prisma.CastigoUncheckedCreateNestedManyWithoutQuienCanceloInput
+    reclamosCartas?: Prisma.ReclamosCartaUncheckedCreateNestedManyWithoutAdministradorAtendioInput
+}
+
+export type UserCreateOrConnectWithoutRefreshTokensInput = {
+    where: Prisma.UserWhereUniqueInput
+    create: Prisma.XOR<
+        Prisma.UserCreateWithoutRefreshTokensInput,
+        Prisma.UserUncheckedCreateWithoutRefreshTokensInput
+    >
+}
+
+export type UserUpsertWithoutRefreshTokensInput = {
+    update: Prisma.XOR<
+        Prisma.UserUpdateWithoutRefreshTokensInput,
+        Prisma.UserUncheckedUpdateWithoutRefreshTokensInput
+    >
+    create: Prisma.XOR<
+        Prisma.UserCreateWithoutRefreshTokensInput,
+        Prisma.UserUncheckedCreateWithoutRefreshTokensInput
+    >
+    where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutRefreshTokensInput = {
+    where?: Prisma.UserWhereInput
+    data: Prisma.XOR<
+        Prisma.UserUpdateWithoutRefreshTokensInput,
+        Prisma.UserUncheckedUpdateWithoutRefreshTokensInput
+    >
+}
+
+export type UserUpdateWithoutRefreshTokensInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string
+    nombre?: Prisma.StringFieldUpdateOperationsInput | string
+    email?: Prisma.StringFieldUpdateOperationsInput | string
+    apodo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+    password?: Prisma.StringFieldUpdateOperationsInput | string
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+    es_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+    es_valido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+    aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+    rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+    permisos?: Prisma.UserUpdatepermisosInput | string[]
+    posiciones?: Prisma.UserUpdateposicionesInput | string[]
+    cumpleanos?:
+        | Prisma.NullableDateTimeFieldUpdateOperationsInput
+        | Date
+        | string
+        | null
+    pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
+    inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
+    roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
+    tarjetas?: Prisma.TarjetasUpdateManyWithoutUserNestedInput
+    tarjetasAsignadas?: Prisma.TarjetasUpdateManyWithoutQuienAsignoNestedInput
+    castigos?: Prisma.CastigoUpdateManyWithoutUserNestedInput
+    castigosCancelados?: Prisma.CastigoUpdateManyWithoutQuienCanceloNestedInput
+    reclamosCartas?: Prisma.ReclamosCartaUpdateManyWithoutAdministradorAtendioNestedInput
+}
+
+export type UserUncheckedUpdateWithoutRefreshTokensInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string
+    nombre?: Prisma.StringFieldUpdateOperationsInput | string
+    email?: Prisma.StringFieldUpdateOperationsInput | string
+    apodo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+    password?: Prisma.StringFieldUpdateOperationsInput | string
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+    es_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+    es_valido?: Prisma.BoolFieldUpdateOperationsInput | boolean
+    aprobado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+    rechazado_por_admin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+    permisos?: Prisma.UserUpdatepermisosInput | string[]
+    posiciones?: Prisma.UserUpdateposicionesInput | string[]
+    cumpleanos?:
+        | Prisma.NullableDateTimeFieldUpdateOperationsInput
+        | Date
+        | string
+        | null
+    pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
+    inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
+    roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
+    tarjetas?: Prisma.TarjetasUncheckedUpdateManyWithoutUserNestedInput
+    tarjetasAsignadas?: Prisma.TarjetasUncheckedUpdateManyWithoutQuienAsignoNestedInput
+    castigos?: Prisma.CastigoUncheckedUpdateManyWithoutUserNestedInput
+    castigosCancelados?: Prisma.CastigoUncheckedUpdateManyWithoutQuienCanceloNestedInput
+    reclamosCartas?: Prisma.ReclamosCartaUncheckedUpdateManyWithoutAdministradorAtendioNestedInput
+}
+
 export type UserCreateWithoutRolesInput = {
     id?: string
     nombre: string
@@ -996,6 +1165,7 @@ export type UserCreateWithoutRolesInput = {
     castigos?: Prisma.CastigoCreateNestedManyWithoutUserInput
     castigosCancelados?: Prisma.CastigoCreateNestedManyWithoutQuienCanceloInput
     reclamosCartas?: Prisma.ReclamosCartaCreateNestedManyWithoutAdministradorAtendioInput
+    refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRolesInput = {
@@ -1020,6 +1190,7 @@ export type UserUncheckedCreateWithoutRolesInput = {
     castigos?: Prisma.CastigoUncheckedCreateNestedManyWithoutUserInput
     castigosCancelados?: Prisma.CastigoUncheckedCreateNestedManyWithoutQuienCanceloInput
     reclamosCartas?: Prisma.ReclamosCartaUncheckedCreateNestedManyWithoutAdministradorAtendioInput
+    refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRolesInput = {
@@ -1100,6 +1271,7 @@ export type UserCreateWithoutPichangasInput = {
     castigos?: Prisma.CastigoCreateNestedManyWithoutUserInput
     castigosCancelados?: Prisma.CastigoCreateNestedManyWithoutQuienCanceloInput
     reclamosCartas?: Prisma.ReclamosCartaCreateNestedManyWithoutAdministradorAtendioInput
+    refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPichangasInput = {
@@ -1124,6 +1296,7 @@ export type UserUncheckedCreateWithoutPichangasInput = {
     castigos?: Prisma.CastigoUncheckedCreateNestedManyWithoutUserInput
     castigosCancelados?: Prisma.CastigoUncheckedCreateNestedManyWithoutQuienCanceloInput
     reclamosCartas?: Prisma.ReclamosCartaUncheckedCreateNestedManyWithoutAdministradorAtendioInput
+    refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPichangasInput = {
@@ -1184,6 +1357,7 @@ export type UserCreateWithoutInscripcionesInput = {
     castigos?: Prisma.CastigoCreateNestedManyWithoutUserInput
     castigosCancelados?: Prisma.CastigoCreateNestedManyWithoutQuienCanceloInput
     reclamosCartas?: Prisma.ReclamosCartaCreateNestedManyWithoutAdministradorAtendioInput
+    refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutInscripcionesInput = {
@@ -1208,6 +1382,7 @@ export type UserUncheckedCreateWithoutInscripcionesInput = {
     castigos?: Prisma.CastigoUncheckedCreateNestedManyWithoutUserInput
     castigosCancelados?: Prisma.CastigoUncheckedCreateNestedManyWithoutQuienCanceloInput
     reclamosCartas?: Prisma.ReclamosCartaUncheckedCreateNestedManyWithoutAdministradorAtendioInput
+    refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutInscripcionesInput = {
@@ -1264,6 +1439,7 @@ export type UserUpdateWithoutInscripcionesInput = {
     castigos?: Prisma.CastigoUpdateManyWithoutUserNestedInput
     castigosCancelados?: Prisma.CastigoUpdateManyWithoutQuienCanceloNestedInput
     reclamosCartas?: Prisma.ReclamosCartaUpdateManyWithoutAdministradorAtendioNestedInput
+    refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInscripcionesInput = {
@@ -1292,6 +1468,7 @@ export type UserUncheckedUpdateWithoutInscripcionesInput = {
     castigos?: Prisma.CastigoUncheckedUpdateManyWithoutUserNestedInput
     castigosCancelados?: Prisma.CastigoUncheckedUpdateManyWithoutQuienCanceloNestedInput
     reclamosCartas?: Prisma.ReclamosCartaUncheckedUpdateManyWithoutAdministradorAtendioNestedInput
+    refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTarjetasInput = {
@@ -1316,6 +1493,7 @@ export type UserCreateWithoutTarjetasInput = {
     castigos?: Prisma.CastigoCreateNestedManyWithoutUserInput
     castigosCancelados?: Prisma.CastigoCreateNestedManyWithoutQuienCanceloInput
     reclamosCartas?: Prisma.ReclamosCartaCreateNestedManyWithoutAdministradorAtendioInput
+    refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTarjetasInput = {
@@ -1340,6 +1518,7 @@ export type UserUncheckedCreateWithoutTarjetasInput = {
     castigos?: Prisma.CastigoUncheckedCreateNestedManyWithoutUserInput
     castigosCancelados?: Prisma.CastigoUncheckedCreateNestedManyWithoutQuienCanceloInput
     reclamosCartas?: Prisma.ReclamosCartaUncheckedCreateNestedManyWithoutAdministradorAtendioInput
+    refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTarjetasInput = {
@@ -1372,6 +1551,7 @@ export type UserCreateWithoutTarjetasAsignadasInput = {
     castigos?: Prisma.CastigoCreateNestedManyWithoutUserInput
     castigosCancelados?: Prisma.CastigoCreateNestedManyWithoutQuienCanceloInput
     reclamosCartas?: Prisma.ReclamosCartaCreateNestedManyWithoutAdministradorAtendioInput
+    refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTarjetasAsignadasInput = {
@@ -1396,6 +1576,7 @@ export type UserUncheckedCreateWithoutTarjetasAsignadasInput = {
     castigos?: Prisma.CastigoUncheckedCreateNestedManyWithoutUserInput
     castigosCancelados?: Prisma.CastigoUncheckedCreateNestedManyWithoutQuienCanceloInput
     reclamosCartas?: Prisma.ReclamosCartaUncheckedCreateNestedManyWithoutAdministradorAtendioInput
+    refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTarjetasAsignadasInput = {
@@ -1452,6 +1633,7 @@ export type UserUpdateWithoutTarjetasInput = {
     castigos?: Prisma.CastigoUpdateManyWithoutUserNestedInput
     castigosCancelados?: Prisma.CastigoUpdateManyWithoutQuienCanceloNestedInput
     reclamosCartas?: Prisma.ReclamosCartaUpdateManyWithoutAdministradorAtendioNestedInput
+    refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTarjetasInput = {
@@ -1480,6 +1662,7 @@ export type UserUncheckedUpdateWithoutTarjetasInput = {
     castigos?: Prisma.CastigoUncheckedUpdateManyWithoutUserNestedInput
     castigosCancelados?: Prisma.CastigoUncheckedUpdateManyWithoutQuienCanceloNestedInput
     reclamosCartas?: Prisma.ReclamosCartaUncheckedUpdateManyWithoutAdministradorAtendioNestedInput
+    refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutTarjetasAsignadasInput = {
@@ -1528,6 +1711,7 @@ export type UserUpdateWithoutTarjetasAsignadasInput = {
     castigos?: Prisma.CastigoUpdateManyWithoutUserNestedInput
     castigosCancelados?: Prisma.CastigoUpdateManyWithoutQuienCanceloNestedInput
     reclamosCartas?: Prisma.ReclamosCartaUpdateManyWithoutAdministradorAtendioNestedInput
+    refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTarjetasAsignadasInput = {
@@ -1556,6 +1740,7 @@ export type UserUncheckedUpdateWithoutTarjetasAsignadasInput = {
     castigos?: Prisma.CastigoUncheckedUpdateManyWithoutUserNestedInput
     castigosCancelados?: Prisma.CastigoUncheckedUpdateManyWithoutQuienCanceloNestedInput
     reclamosCartas?: Prisma.ReclamosCartaUncheckedUpdateManyWithoutAdministradorAtendioNestedInput
+    refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutReclamosCartasInput = {
@@ -1580,6 +1765,7 @@ export type UserCreateWithoutReclamosCartasInput = {
     tarjetasAsignadas?: Prisma.TarjetasCreateNestedManyWithoutQuienAsignoInput
     castigos?: Prisma.CastigoCreateNestedManyWithoutUserInput
     castigosCancelados?: Prisma.CastigoCreateNestedManyWithoutQuienCanceloInput
+    refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReclamosCartasInput = {
@@ -1604,6 +1790,7 @@ export type UserUncheckedCreateWithoutReclamosCartasInput = {
     tarjetasAsignadas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutQuienAsignoInput
     castigos?: Prisma.CastigoUncheckedCreateNestedManyWithoutUserInput
     castigosCancelados?: Prisma.CastigoUncheckedCreateNestedManyWithoutQuienCanceloInput
+    refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReclamosCartasInput = {
@@ -1660,6 +1847,7 @@ export type UserUpdateWithoutReclamosCartasInput = {
     tarjetasAsignadas?: Prisma.TarjetasUpdateManyWithoutQuienAsignoNestedInput
     castigos?: Prisma.CastigoUpdateManyWithoutUserNestedInput
     castigosCancelados?: Prisma.CastigoUpdateManyWithoutQuienCanceloNestedInput
+    refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReclamosCartasInput = {
@@ -1688,6 +1876,7 @@ export type UserUncheckedUpdateWithoutReclamosCartasInput = {
     tarjetasAsignadas?: Prisma.TarjetasUncheckedUpdateManyWithoutQuienAsignoNestedInput
     castigos?: Prisma.CastigoUncheckedUpdateManyWithoutUserNestedInput
     castigosCancelados?: Prisma.CastigoUncheckedUpdateManyWithoutQuienCanceloNestedInput
+    refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCastigosInput = {
@@ -1712,6 +1901,7 @@ export type UserCreateWithoutCastigosInput = {
     tarjetasAsignadas?: Prisma.TarjetasCreateNestedManyWithoutQuienAsignoInput
     castigosCancelados?: Prisma.CastigoCreateNestedManyWithoutQuienCanceloInput
     reclamosCartas?: Prisma.ReclamosCartaCreateNestedManyWithoutAdministradorAtendioInput
+    refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCastigosInput = {
@@ -1736,6 +1926,7 @@ export type UserUncheckedCreateWithoutCastigosInput = {
     tarjetasAsignadas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutQuienAsignoInput
     castigosCancelados?: Prisma.CastigoUncheckedCreateNestedManyWithoutQuienCanceloInput
     reclamosCartas?: Prisma.ReclamosCartaUncheckedCreateNestedManyWithoutAdministradorAtendioInput
+    refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCastigosInput = {
@@ -1768,6 +1959,7 @@ export type UserCreateWithoutCastigosCanceladosInput = {
     tarjetasAsignadas?: Prisma.TarjetasCreateNestedManyWithoutQuienAsignoInput
     castigos?: Prisma.CastigoCreateNestedManyWithoutUserInput
     reclamosCartas?: Prisma.ReclamosCartaCreateNestedManyWithoutAdministradorAtendioInput
+    refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCastigosCanceladosInput = {
@@ -1792,6 +1984,7 @@ export type UserUncheckedCreateWithoutCastigosCanceladosInput = {
     tarjetasAsignadas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutQuienAsignoInput
     castigos?: Prisma.CastigoUncheckedCreateNestedManyWithoutUserInput
     reclamosCartas?: Prisma.ReclamosCartaUncheckedCreateNestedManyWithoutAdministradorAtendioInput
+    refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCastigosCanceladosInput = {
@@ -1848,6 +2041,7 @@ export type UserUpdateWithoutCastigosInput = {
     tarjetasAsignadas?: Prisma.TarjetasUpdateManyWithoutQuienAsignoNestedInput
     castigosCancelados?: Prisma.CastigoUpdateManyWithoutQuienCanceloNestedInput
     reclamosCartas?: Prisma.ReclamosCartaUpdateManyWithoutAdministradorAtendioNestedInput
+    refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCastigosInput = {
@@ -1876,6 +2070,7 @@ export type UserUncheckedUpdateWithoutCastigosInput = {
     tarjetasAsignadas?: Prisma.TarjetasUncheckedUpdateManyWithoutQuienAsignoNestedInput
     castigosCancelados?: Prisma.CastigoUncheckedUpdateManyWithoutQuienCanceloNestedInput
     reclamosCartas?: Prisma.ReclamosCartaUncheckedUpdateManyWithoutAdministradorAtendioNestedInput
+    refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutCastigosCanceladosInput = {
@@ -1924,6 +2119,7 @@ export type UserUpdateWithoutCastigosCanceladosInput = {
     tarjetasAsignadas?: Prisma.TarjetasUpdateManyWithoutQuienAsignoNestedInput
     castigos?: Prisma.CastigoUpdateManyWithoutUserNestedInput
     reclamosCartas?: Prisma.ReclamosCartaUpdateManyWithoutAdministradorAtendioNestedInput
+    refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCastigosCanceladosInput = {
@@ -1952,6 +2148,7 @@ export type UserUncheckedUpdateWithoutCastigosCanceladosInput = {
     tarjetasAsignadas?: Prisma.TarjetasUncheckedUpdateManyWithoutQuienAsignoNestedInput
     castigos?: Prisma.CastigoUncheckedUpdateManyWithoutUserNestedInput
     reclamosCartas?: Prisma.ReclamosCartaUncheckedUpdateManyWithoutAdministradorAtendioNestedInput
+    refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpdateWithoutRolesInput = {
@@ -1980,6 +2177,7 @@ export type UserUpdateWithoutRolesInput = {
     castigos?: Prisma.CastigoUpdateManyWithoutUserNestedInput
     castigosCancelados?: Prisma.CastigoUpdateManyWithoutQuienCanceloNestedInput
     reclamosCartas?: Prisma.ReclamosCartaUpdateManyWithoutAdministradorAtendioNestedInput
+    refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRolesInput = {
@@ -2008,6 +2206,7 @@ export type UserUncheckedUpdateWithoutRolesInput = {
     castigos?: Prisma.CastigoUncheckedUpdateManyWithoutUserNestedInput
     castigosCancelados?: Prisma.CastigoUncheckedUpdateManyWithoutQuienCanceloNestedInput
     reclamosCartas?: Prisma.ReclamosCartaUncheckedUpdateManyWithoutAdministradorAtendioNestedInput
+    refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutRolesInput = {
@@ -2057,6 +2256,7 @@ export type UserUpdateWithoutPichangasInput = {
     castigos?: Prisma.CastigoUpdateManyWithoutUserNestedInput
     castigosCancelados?: Prisma.CastigoUpdateManyWithoutQuienCanceloNestedInput
     reclamosCartas?: Prisma.ReclamosCartaUpdateManyWithoutAdministradorAtendioNestedInput
+    refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPichangasInput = {
@@ -2085,6 +2285,7 @@ export type UserUncheckedUpdateWithoutPichangasInput = {
     castigos?: Prisma.CastigoUncheckedUpdateManyWithoutUserNestedInput
     castigosCancelados?: Prisma.CastigoUncheckedUpdateManyWithoutQuienCanceloNestedInput
     reclamosCartas?: Prisma.ReclamosCartaUncheckedUpdateManyWithoutAdministradorAtendioNestedInput
+    refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutPichangasInput = {
@@ -2121,6 +2322,7 @@ export type UserCountOutputType = {
     castigos: number
     castigosCancelados: number
     reclamosCartas: number
+    refreshTokens: number
 }
 
 export type UserCountOutputTypeSelect<
@@ -2137,6 +2339,7 @@ export type UserCountOutputTypeSelect<
         | boolean
         | UserCountOutputTypeCountCastigosCanceladosArgs
     reclamosCartas?: boolean | UserCountOutputTypeCountReclamosCartasArgs
+    refreshTokens?: boolean | UserCountOutputTypeCountRefreshTokensArgs
 }
 
 /**
@@ -2232,6 +2435,16 @@ export type UserCountOutputTypeCountReclamosCartasArgs<
     where?: Prisma.ReclamosCartaWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountRefreshTokensArgs<
+    ExtArgs extends runtime.Types.Extensions.InternalArgs =
+        runtime.Types.Extensions.DefaultArgs,
+> = {
+    where?: Prisma.RefreshTokenWhereInput
+}
+
 export type UserSelect<
     ExtArgs extends runtime.Types.Extensions.InternalArgs =
         runtime.Types.Extensions.DefaultArgs,
@@ -2261,6 +2474,7 @@ export type UserSelect<
             | boolean
             | Prisma.User$castigosCanceladosArgs<ExtArgs>
         reclamosCartas?: boolean | Prisma.User$reclamosCartasArgs<ExtArgs>
+        refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
         _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
     },
     ExtArgs['result']['user']
@@ -2361,6 +2575,7 @@ export type UserInclude<
     castigos?: boolean | Prisma.User$castigosArgs<ExtArgs>
     castigosCancelados?: boolean | Prisma.User$castigosCanceladosArgs<ExtArgs>
     reclamosCartas?: boolean | Prisma.User$reclamosCartasArgs<ExtArgs>
+    refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<
@@ -2386,6 +2601,7 @@ export type $UserPayload<
         castigos: Prisma.$CastigoPayload<ExtArgs>[]
         castigosCancelados: Prisma.$CastigoPayload<ExtArgs>[]
         reclamosCartas: Prisma.$ReclamosCartaPayload<ExtArgs>[]
+        refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
     }
     scalars: runtime.Types.Extensions.GetPayloadResult<
         {
@@ -3042,6 +3258,17 @@ export interface Prisma__UserClient<
     ): Prisma.PrismaPromise<
         | runtime.Types.Result.GetResult<
               Prisma.$ReclamosCartaPayload<ExtArgs>,
+              T,
+              'findMany',
+              GlobalOmitOptions
+          >
+        | Null
+    >
+    refreshTokens<T extends Prisma.User$refreshTokensArgs<ExtArgs> = {}>(
+        args?: Prisma.Subset<T, Prisma.User$refreshTokensArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<
+        | runtime.Types.Result.GetResult<
+              Prisma.$RefreshTokenPayload<ExtArgs>,
               T,
               'findMany',
               GlobalOmitOptions
@@ -3783,6 +4010,37 @@ export type User$reclamosCartasArgs<
     distinct?:
         | Prisma.ReclamosCartaScalarFieldEnum
         | Prisma.ReclamosCartaScalarFieldEnum[]
+}
+
+/**
+ * User.refreshTokens
+ */
+export type User$refreshTokensArgs<
+    ExtArgs extends runtime.Types.Extensions.InternalArgs =
+        runtime.Types.Extensions.DefaultArgs,
+> = {
+    /**
+     * Select specific fields to fetch from the RefreshToken
+     */
+    select?: Prisma.RefreshTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RefreshToken
+     */
+    omit?: Prisma.RefreshTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.RefreshTokenInclude<ExtArgs> | null
+    where?: Prisma.RefreshTokenWhereInput
+    orderBy?:
+        | Prisma.RefreshTokenOrderByWithRelationInput
+        | Prisma.RefreshTokenOrderByWithRelationInput[]
+    cursor?: Prisma.RefreshTokenWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?:
+        | Prisma.RefreshTokenScalarFieldEnum
+        | Prisma.RefreshTokenScalarFieldEnum[]
 }
 
 /**

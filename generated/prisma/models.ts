@@ -8,6 +8,7 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/User.ts'
+export type * from './models/RefreshToken.ts'
 export type * from './models/Rol.ts'
 export type * from './models/Pichanga.ts'
 export type * from './models/Inscripcion.ts'

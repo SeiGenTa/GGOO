@@ -55,6 +55,8 @@ services:
             - ./contributors.json:/app/contributors.json
         env_file:
             - .env
+        environment:
+            - DATABASE_URL=${DATABASE_URL}
         ports:
             - '${PORT_APP:-5173}:3000'
         restart: unless-stopped
