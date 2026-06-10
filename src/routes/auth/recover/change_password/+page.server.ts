@@ -115,11 +115,18 @@ export const actions = {
             data: { password: newPasswordHash },
         })
 
+        const revokedCount = await UserUtils.revokeAllUserRefreshTokens(
+            validated.user.id,
+            'cambio_password'
+        )
+
         logger.info(
             {
-                action: 'action_recover_password_changed',
+                action: 'password_changed',
                 userId: validated.user.id,
                 email: validated.user.email,
+                source: 'recover',
+                revokedTokens: revokedCount,
             },
             'Clave actualizada desde flujo de recuperacion'
         )

@@ -31,6 +31,25 @@ model User {
     reclamosCartas      ReclamosCarta[] @relation("ReclamosAtendidos")
     posiciones          String[]        @default([])
     cumpleanos          DateTime?
+    refreshTokens       RefreshToken[]
+}
+
+model RefreshToken {
+    id               String    @id @default(uuid())
+    token            String    @unique
+    user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId           String
+    ip               String?
+    userAgent        String?
+    fechaCreacion    DateTime  @default(now())
+    fechaExpiracion  DateTime
+    esValido         Boolean   @default(true)
+    revocadoEn       DateTime?
+    motivoRevocacion String?
+
+    @@index([userId])
+    @@index([fechaExpiracion])
+    @@index([esValido])
 }
 
 model Rol {

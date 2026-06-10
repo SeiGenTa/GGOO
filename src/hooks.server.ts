@@ -2,6 +2,8 @@ import logger from '$lib/logger'
 import UserUtils from '$utils/user'
 import type { Handle } from '@sveltejs/kit'
 
+const REFRESH_TOKEN_MAX_AGE_SECONDS = 7 * 24 * 60 * 60
+
 export const handle: Handle = async ({ event, resolve }) => {
     const cookies = event.cookies
     let token = cookies.get('token')
@@ -16,24 +18,31 @@ export const handle: Handle = async ({ event, resolve }) => {
         cookies.delete('token', { path: '/' })
         cookies.delete('refreshToken', { path: '/' })
 
-        const newTokens =
-            await UserUtils.generateNewTokensFromRefreshToken(refreshToken)
+        const ip = event.getClientAddress()
+        const userAgent = event.request.headers.get('user-agent')
+        const newTokens = await UserUtils.rotateRefreshToken(
+            refreshToken,
+            ip,
+            userAgent
+        )
 
         if (newTokens) {
-            token = newTokens.token
+            token = newTokens.accessToken
             refreshToken = newTokens.refreshToken
 
             cookies.set('token', token, {
                 path: '/',
                 httpOnly: true,
-                secure: true,
+                secure: process.env.NODE_ENV === 'production',
                 sameSite: 'strict',
+                maxAge: 60 * 60,
             })
             cookies.set('refreshToken', refreshToken, {
                 path: '/',
                 httpOnly: true,
-                secure: true,
+                secure: process.env.NODE_ENV === 'production',
                 sameSite: 'strict',
+                maxAge: REFRESH_TOKEN_MAX_AGE_SECONDS,
             })
 
             user = await UserUtils.verifyToken(token)
