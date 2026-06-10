@@ -10,6 +10,10 @@
     import { Badge } from '$lib/components/ui/badge'
     import SelectApp from '$lib/components/app/select.svelte'
     import type { PageProps } from './$types'
+    import {
+        localDateTimeInputToUTCISO,
+        utcISOToLocalDateTimeInput,
+    } from '$lib/datetime'
 
     type ComplaintRow = {
         id: string
@@ -144,17 +148,19 @@
         }
     }
 
-    const toUTCISOString = (value: FormDataEntryValue | null) => {
+    const toUTCISOString = (value: FormDataEntryValue | null): string => {
         if (typeof value !== 'string' || value.trim().length === 0) {
             return ''
         }
-
-        const parsed = new Date(value)
-        if (Number.isNaN(parsed.getTime())) {
-            return ''
+        try {
+            return localDateTimeInputToUTCISO(value)
+        } catch {
+            const parsed = new Date(value)
+            if (Number.isNaN(parsed.getTime())) {
+                return ''
+            }
+            return parsed.toISOString()
         }
-
-        return parsed.toISOString()
     }
 
     const withUTCDateFields = (
@@ -224,15 +230,7 @@
         return ''
     }
 
-    const toDateTimeLocalInput = (value: string | Date) => {
-        const date = new Date(value)
-        const y = date.getFullYear()
-        const m = String(date.getMonth() + 1).padStart(2, '0')
-        const d = String(date.getDate()).padStart(2, '0')
-        const h = String(date.getHours()).padStart(2, '0')
-        const min = String(date.getMinutes()).padStart(2, '0')
-        return `${y}-${m}-${d}T${h}:${min}`
-    }
+    const toDateTimeLocalInput = utcISOToLocalDateTimeInput
 
     const submitFilters = async (event: SubmitEvent) => {
         event.preventDefault()

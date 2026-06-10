@@ -1,9 +1,21 @@
+/**
+ * Buses en memoria para eventos SSE de pichangas.
+ *
+ * Existen dos canales separados:
+ *
+ *  - `pichanga-stream`: eventos por partido en vivo (joined, left, edited,
+ *    deleted). Consumido por la vista detalle de una pichanga.
+ *
+ *  - `pichanga-notifications`: notificaciones globales (p.ej. "una pichanga
+ *    abrió sus inscripciones"). Consumido por la lista de pichangas y,
+ *    opcionalmente, por la vista detalle filtrando por `id_pichanga`.
+ */
+
 export type PichangaStreamEventType =
     | 'edited'
     | 'joined'
     | 'left'
     | 'deleted'
-    | 'opened'
 
 export type PichangaStreamEvent = {
     pichangaId: string
@@ -11,15 +23,15 @@ export type PichangaStreamEvent = {
     at: string
 }
 
-type Listener = (event: PichangaStreamEvent) => void
+type StreamListener = (event: PichangaStreamEvent) => void
 
-const listeners = new Set<Listener>()
+const streamListeners = new Set<StreamListener>()
 
-export const subscribePichangaStream = (listener: Listener) => {
-    listeners.add(listener)
+export const subscribePichangaStream = (listener: StreamListener) => {
+    streamListeners.add(listener)
 
     return () => {
-        listeners.delete(listener)
+        streamListeners.delete(listener)
     }
 }
 
@@ -33,7 +45,44 @@ export const publishPichangaUpdate = (
         at: new Date().toISOString(),
     }
 
-    for (const listener of listeners) {
+    for (const listener of streamListeners) {
+        listener(payload)
+    }
+}
+
+export type PichangaNotificationType = 'opened'
+
+export type PichangaNotificationEvent = {
+    pichangaId: string
+    type: PichangaNotificationType
+    at: string
+}
+
+type NotificationListener = (event: PichangaNotificationEvent) => void
+
+const notificationListeners = new Set<NotificationListener>()
+
+export const subscribePichangaNotifications = (
+    listener: NotificationListener
+) => {
+    notificationListeners.add(listener)
+
+    return () => {
+        notificationListeners.delete(listener)
+    }
+}
+
+export const publishPichangaNotification = (
+    pichangaId: string,
+    type: PichangaNotificationType
+) => {
+    const payload: PichangaNotificationEvent = {
+        pichangaId,
+        type,
+        at: new Date().toISOString(),
+    }
+
+    for (const listener of notificationListeners) {
         listener(payload)
     }
 }
@@ -57,7 +106,7 @@ export const schedulePichangaOpen = (
 
     const timeout = setTimeout(() => {
         openTimers.delete(pichangaId)
-        publishPichangaUpdate(pichangaId, 'opened')
+        publishPichangaNotification(pichangaId, 'opened')
     }, delay)
 
     openTimers.set(pichangaId, timeout)

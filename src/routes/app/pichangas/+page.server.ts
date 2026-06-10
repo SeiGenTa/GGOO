@@ -5,6 +5,7 @@ import type { Pichanga } from '$generated/prisma/client.js'
 import { Permissions } from '$lib/permissions.js'
 import logger from '$lib/logger'
 import { schedulePichangaOpen } from '$lib/server/pichanga-stream'
+import { isUTCISO, parseUTCDate } from '$lib/datetime'
 
 export const load: PageServerLoad = async ({ url, depends, locals }) => {
     depends('pichangas:load')
@@ -161,12 +162,18 @@ export const actions = {
         if (habilitar) {
             date_init_register = new Date()
         } else {
-            date_init_register = form.get('date-init-register')
-                ? new Date(form.get('date-init-register') as string)
-                : null
+            const dateInitRaw = form.get('date-init-register')?.toString()
+            if (dateInitRaw) {
+                if (!isUTCISO(dateInitRaw)) {
+                    return fail(400, {
+                        error: 'La fecha de inicio de registro debe venir en formato UTC (ISO 8601 con Z u offset)',
+                    })
+                }
+                date_init_register = parseUTCDate(dateInitRaw)
+            }
         }
 
-        if (!(date_init_register instanceof Date)) {
+        if (!date_init_register) {
             return fail(400, {
                 error: 'La fecha de inicio de registro es requerida si no se habilita el registro inmediato',
             })
@@ -189,7 +196,16 @@ export const actions = {
             })
         }
 
-        const datePichanga = new Date(date as string)
+        const dateStr = date.toString()
+        if (!isUTCISO(dateStr)) {
+            return fail(400, {
+                error: 'La fecha de la pichanga debe venir en formato UTC (ISO 8601 con Z u offset)',
+            })
+        }
+        const datePichanga = parseUTCDate(dateStr)
+        if (!datePichanga) {
+            return fail(400, { error: 'La fecha de la pichanga no es válida' })
+        }
         if (datePichanga < new Date()) {
             return fail(400, {
                 error: 'La fecha de la pichanga debe ser en el futuro',
@@ -206,14 +222,14 @@ export const actions = {
                 data: {
                     nombre: (name as string) || undefined,
                     lugar: (location as string) || undefined,
-                    fecha: new Date(date as string),
+                    fecha: datePichanga,
                     admins: {
                         connect: (admins as string[]).map((admin) => ({
                             id: admin,
                         })),
                     },
                     maxJugadores: parseInt(max_players as string),
-                    fechaInicioIncripcion: date_init_register as Date,
+                    fechaInicioIncripcion: date_init_register,
                 },
             })
         } catch (error) {

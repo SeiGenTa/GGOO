@@ -8,6 +8,7 @@ import {
 import type { Actions, PageServerLoad } from './$types'
 import { Permissions } from '$lib/permissions'
 import logger from '$lib/logger'
+import { isUTCISO, parseUTCDate } from '$lib/datetime'
 
 const getPichangaWindow = async (id_pichanga: string) => {
     return prisma.pichanga.findUnique({
@@ -137,7 +138,10 @@ export const actions = {
             .map((a) => a.toString())
             .filter((a) => a.length > 0)
         const max_players = form.get('max_players')
-        const habilitar = form.get('habilitar')?.toString()
+        const habilitar = form
+            .getAll('habilitar')
+            .map((v) => v.toString())
+            .includes('on')
         const date_init_register_input = form
             .get('date-init-register')
             ?.toString()
@@ -178,8 +182,14 @@ export const actions = {
                 error: 'La fecha de la pichanga es obligatoria',
             })
         }
-        const fechaDate = new Date(date.toString())
-        if (Number.isNaN(fechaDate.getTime())) {
+        const dateStr = date.toString()
+        if (!isUTCISO(dateStr)) {
+            return fail(400, {
+                error: 'La fecha de la pichanga debe venir en formato UTC (ISO 8601 con Z u offset)',
+            })
+        }
+        const fechaDate = parseUTCDate(dateStr)
+        if (!fechaDate) {
             return fail(400, { error: 'La fecha de la pichanga no es válida' })
         }
 
@@ -201,7 +211,7 @@ export const actions = {
         // Fecha de inicio de inscripción: si el switch está activo, ahora;
         // si no, se usa la fecha del input (que es obligatoria en ese caso).
         let fechaInicioIncripcion: Date
-        if (habilitar === 'on') {
+        if (habilitar) {
             fechaInicioIncripcion = new Date()
         } else {
             if (!date_init_register_input) {
@@ -209,8 +219,13 @@ export const actions = {
                     error: 'Indica la fecha de inicio de inscripción o activa el switch',
                 })
             }
-            const parsed = new Date(date_init_register_input)
-            if (Number.isNaN(parsed.getTime())) {
+            if (!isUTCISO(date_init_register_input)) {
+                return fail(400, {
+                    error: 'La fecha de inicio de inscripción debe venir en formato UTC (ISO 8601 con Z u offset)',
+                })
+            }
+            const parsed = parseUTCDate(date_init_register_input)
+            if (!parsed) {
                 return fail(400, {
                     error: 'La fecha de inicio de inscripción no es válida',
                 })

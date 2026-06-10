@@ -47,9 +47,9 @@
     }
 
     onMount(() => {
-        const eventSource = new EventSource('/api/stream')
+        const eventSource = new EventSource('/api/notifications')
 
-        const handlePichangaUpdate = async (event: MessageEvent) => {
+        const handlePichangaNotification = async (event: MessageEvent) => {
             let payload: { type?: string; pichangaId?: string } = {}
             try {
                 payload = JSON.parse(event.data)
@@ -65,15 +65,18 @@
             }
         }
 
-        eventSource.addEventListener('pichanga-update', handlePichangaUpdate)
+        eventSource.addEventListener(
+            'pichanga-notification',
+            handlePichangaNotification
+        )
         eventSource.onerror = () => {
             eventSource.close()
         }
 
         return () => {
             eventSource.removeEventListener(
-                'pichanga-update',
-                handlePichangaUpdate
+                'pichanga-notification',
+                handlePichangaNotification
             )
             eventSource.close()
         }
