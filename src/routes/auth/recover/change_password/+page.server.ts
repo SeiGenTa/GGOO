@@ -1,35 +1,37 @@
 import { fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
-import jwt from 'jsonwebtoken'
+import { decrypt_json } from '$utils/encript'
 import { prisma } from '$utils/prisma'
 import UserUtils from '$utils/user'
 import logger from '$lib/logger'
 
-type RecoverJwtPayload = {
+type RecoverPayload = {
+    action: string
     email: string
-    reason: string
     password: string
-    iat?: number
-    exp?: number
+    max_age: number
 }
 
 const RECOVER_REASON = 'recover_password'
 
 const getValidPayload = async (token: string) => {
-    const secretKey = process.env.SECRET_KEY || 'your_secret_key_here'
-
-    let decoded: RecoverJwtPayload
+    let decoded: RecoverPayload
     try {
-        decoded = jwt.verify(token, secretKey) as RecoverJwtPayload
+        decoded = decrypt_json(token) as RecoverPayload
     } catch {
         return null
     }
 
     if (
         !decoded?.email ||
-        decoded.reason !== RECOVER_REASON ||
-        !decoded.password
+        decoded.action !== RECOVER_REASON ||
+        !decoded.password ||
+        typeof decoded.max_age !== 'number'
     ) {
+        return null
+    }
+
+    if (decoded.max_age <= Date.now()) {
         return null
     }
 

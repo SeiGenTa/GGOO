@@ -2,18 +2,20 @@ import type { Actions } from '@sveltejs/kit'
 import { prisma } from '$utils/prisma'
 import type { PageServerLoad } from './$types'
 import { fail, redirect } from '@sveltejs/kit'
-import jwt from 'jsonwebtoken'
+import { encript_json } from '$utils/encript'
 import { sendEmail } from '$lib/email/resend'
 import logger from '$lib/logger'
 
 export const load: PageServerLoad = async ({}) => {}
 
 const RECOVER_REASON = 'recover_password'
+const RECOVER_TTL_MS = 60 * 60 * 1000
 
-type RecoverJwtPayload = {
+type RecoverPayload = {
+    action: typeof RECOVER_REASON
     email: string
-    reason: string
     password: string
+    max_age: number
 }
 
 const sendRecoverPasswordEmail = async (to: string, recoverLink: string) => {
@@ -55,13 +57,13 @@ export const actions = {
             }
         }
 
-        const payload: RecoverJwtPayload = {
+        const payload: RecoverPayload = {
+            action: RECOVER_REASON,
             email: user.email,
-            reason: RECOVER_REASON,
             password: user.password,
+            max_age: Date.now() + RECOVER_TTL_MS,
         }
-        const secretKey = process.env.SECRET_KEY || 'your_secret_key_here'
-        const token = jwt.sign(payload, secretKey, { expiresIn: '1h' })
+        const token = encript_json(payload)
         const origin = process.env.ORIGIN ?? 'http://localhost:5173/'
         const normalizedOrigin = origin.endsWith('/')
             ? origin.slice(0, -1)
