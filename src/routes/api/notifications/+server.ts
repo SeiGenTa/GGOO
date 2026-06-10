@@ -1,4 +1,7 @@
-import { subscribePichangaStream } from '$lib/server/pichanga-stream'
+import {
+    subscribePichangaNotifications,
+    type PichangaNotificationEvent,
+} from '$lib/server/pichanga-stream'
 import { attachPing } from '$lib/server/sse'
 import { produce } from 'sveltekit-sse'
 import type { RequestHandler } from './$types'
@@ -17,20 +20,22 @@ export const GET: RequestHandler = ({ url }) => {
 
         const stopPing = attachPing(emit)
 
-        const unsubscribe = subscribePichangaStream((event) => {
+        const handleNotification = (event: PichangaNotificationEvent) => {
             if (pichangaId && event.pichangaId !== pichangaId) {
                 return
             }
 
             const { error: emitError } = emit(
-                'pichanga-update',
+                'pichanga-notification',
                 JSON.stringify(event)
             )
             if (emitError) {
                 stopPing()
                 unsubscribe()
             }
-        })
+        }
+
+        const unsubscribe = subscribePichangaNotifications(handleNotification)
 
         return () => {
             stopPing()

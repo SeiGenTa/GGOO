@@ -1,6 +1,7 @@
 import { fail, redirect, type Actions } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { prisma } from '$utils/prisma'
+import { parseUTCDate } from '$lib/datetime'
 
 const PAGE_SIZE = 10
 
@@ -15,19 +16,6 @@ const parsePage = (value: string | null): number => {
 
 const parseRequiredText = (value: FormDataEntryValue | null): string => {
     return typeof value === 'string' ? value.trim() : ''
-}
-
-const parseUTCDate = (value: string | null): Date | null => {
-    if (!value) {
-        return null
-    }
-
-    const parsed = new Date(value)
-    if (Number.isNaN(parsed.getTime())) {
-        return null
-    }
-
-    return parsed
 }
 
 const isExpired = (venceEn: Date, usado: boolean): boolean => {

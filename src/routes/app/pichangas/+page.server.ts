@@ -4,6 +4,8 @@ import { prisma } from '$utils/prisma.js'
 import type { Pichanga } from '$generated/prisma/client.js'
 import { Permissions } from '$lib/permissions.js'
 import logger from '$lib/logger'
+import { schedulePichangaOpen } from '$lib/server/pichanga-stream'
+import { isUTCISO, parseUTCDate } from '$lib/datetime'
 
 export const load: PageServerLoad = async ({ url, depends, locals }) => {
     depends('pichangas:load')
@@ -14,6 +16,12 @@ export const load: PageServerLoad = async ({ url, depends, locals }) => {
     if (!page) {
         redirect(302, `/app/pichangas?page=1`)
     }
+
+    const userPerms = locals.user!.permisos
+    const canManagePartidos =
+        locals.user!.es_admin ||
+        userPerms.includes(Permissions.CrearPartidos) ||
+        userPerms.includes(Permissions.EditarPartidos)
 
     const gestores = await prisma.user.findMany({
         where: {
@@ -46,18 +54,28 @@ export const load: PageServerLoad = async ({ url, depends, locals }) => {
 
     return {
         name_page: 'Pichangas',
+        canManagePartidos,
         gestores: gestores.map((g) => ({
             value: g.id,
             label: `${g.nombre} ${g.apodo ? `(${g.apodo})` : ''}`,
         })),
         future: {
-            pichangas: load_pichangas_promise(page),
+            pichangas: load_pichangas_promise(page, canManagePartidos),
         },
     }
 }
 
-const load_pichangas_promise = async (page: string) => {
+const load_pichangas_promise = async (
+    page: string,
+    canManagePartidos: boolean
+) => {
+    const now = new Date()
+    const where = canManagePartidos
+        ? undefined
+        : { fechaInicioIncripcion: { lte: now } }
+
     const data_pichangas = await prisma.pichanga.findMany({
+        where,
         include: {
             admins: true,
             inscripciones: {
@@ -83,6 +101,12 @@ const load_pichangas_promise = async (page: string) => {
         skip: (parseInt(page) - 1) * 10,
         take: 10,
     })
+
+    for (const p of data_pichangas) {
+        if (p.fechaInicioIncripcion && p.fechaInicioIncripcion > now) {
+            schedulePichangaOpen(p.id, p.fechaInicioIncripcion)
+        }
+    }
 
     const pichangas: Pichanga_struct[] = [
         ...data_pichangas.map((pichanga) => ({
@@ -138,12 +162,18 @@ export const actions = {
         if (habilitar) {
             date_init_register = new Date()
         } else {
-            date_init_register = form.get('date-init-register')
-                ? new Date(form.get('date-init-register') as string)
-                : null
+            const dateInitRaw = form.get('date-init-register')?.toString()
+            if (dateInitRaw) {
+                if (!isUTCISO(dateInitRaw)) {
+                    return fail(400, {
+                        error: 'La fecha de inicio de registro debe venir en formato UTC (ISO 8601 con Z u offset)',
+                    })
+                }
+                date_init_register = parseUTCDate(dateInitRaw)
+            }
         }
 
-        if (!(date_init_register instanceof Date)) {
+        if (!date_init_register) {
             return fail(400, {
                 error: 'La fecha de inicio de registro es requerida si no se habilita el registro inmediato',
             })
@@ -166,7 +196,16 @@ export const actions = {
             })
         }
 
-        const datePichanga = new Date(date as string)
+        const dateStr = date.toString()
+        if (!isUTCISO(dateStr)) {
+            return fail(400, {
+                error: 'La fecha de la pichanga debe venir en formato UTC (ISO 8601 con Z u offset)',
+            })
+        }
+        const datePichanga = parseUTCDate(dateStr)
+        if (!datePichanga) {
+            return fail(400, { error: 'La fecha de la pichanga no es válida' })
+        }
         if (datePichanga < new Date()) {
             return fail(400, {
                 error: 'La fecha de la pichanga debe ser en el futuro',
@@ -183,14 +222,14 @@ export const actions = {
                 data: {
                     nombre: (name as string) || undefined,
                     lugar: (location as string) || undefined,
-                    fecha: new Date(date as string),
+                    fecha: datePichanga,
                     admins: {
                         connect: (admins as string[]).map((admin) => ({
                             id: admin,
                         })),
                     },
                     maxJugadores: parseInt(max_players as string),
-                    fechaInicioIncripcion: date_init_register as Date,
+                    fechaInicioIncripcion: date_init_register,
                 },
             })
         } catch (error) {

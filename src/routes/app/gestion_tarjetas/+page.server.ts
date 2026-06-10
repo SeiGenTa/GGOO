@@ -4,6 +4,7 @@ import { Permissions } from '../../../lib/permissions'
 import { prisma } from '$utils/prisma'
 import type { Prisma } from '$generated/prisma/client'
 import logger from '$lib/logger'
+import { parseUTCDate } from '$lib/datetime'
 
 const PAGE_SIZE = 10
 const CARD_TYPES = ['roja', 'amarilla'] as const
@@ -73,19 +74,6 @@ const parseComplaintDecision = (
     }
 
     return null
-}
-
-const parseUTCDate = (value: string | null): Date | null => {
-    if (!value) {
-        return null
-    }
-
-    const parsed = new Date(value)
-    if (Number.isNaN(parsed.getTime())) {
-        return null
-    }
-
-    return parsed
 }
 
 const plusOneMonthUTC = (base: Date): Date => {

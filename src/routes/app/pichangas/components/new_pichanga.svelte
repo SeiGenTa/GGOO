@@ -8,6 +8,7 @@
     import Switch from '$lib/components/ui/switch/switch.svelte'
     import { onMount } from 'svelte'
     import { toast } from 'svelte-sonner'
+    import { localDateTimeInputToUTCISO } from '$lib/datetime'
 
     let open = $state(false)
     let loading = $state(false)
@@ -34,22 +35,36 @@
             id="form-add"
             action="?/add_pichanga"
             class="space-y-4"
-            use:enhance={({ formData }) => {
+            use:enhance={({ formData, cancel }) => {
                 loading = true
-                const date_pichanga = formData.get('date-pichanga') as string
-                const date_init_register = formData.get(
-                    'date-init-register'
-                ) as string
-                formData.set(
-                    'date-pichanga',
-                    new Date(date_pichanga).toISOString()
-                )
-
-                if (date_init_register) {
+                try {
+                    const date_pichanga = formData.get(
+                        'date-pichanga'
+                    ) as string
                     formData.set(
-                        'date-init-register',
-                        new Date(date_init_register).toISOString()
+                        'date-pichanga',
+                        localDateTimeInputToUTCISO(date_pichanga)
                     )
+
+                    const date_init_register = formData.get(
+                        'date-init-register'
+                    ) as string
+                    if (date_init_register) {
+                        formData.set(
+                            'date-init-register',
+                            localDateTimeInputToUTCISO(date_init_register)
+                        )
+                    }
+                } catch (err) {
+                    loading = false
+                    toast('Fecha inválida', {
+                        description:
+                            err instanceof Error
+                                ? err.message
+                                : 'Revisa las fechas ingresadas.',
+                    })
+                    cancel()
+                    return
                 }
 
                 return ({ result, update }) => {

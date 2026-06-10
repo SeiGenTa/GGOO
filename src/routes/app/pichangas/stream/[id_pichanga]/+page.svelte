@@ -15,6 +15,10 @@
     import { onMount } from 'svelte'
     import { toast } from 'svelte-sonner'
     import Skeleton from './components/skeleton.svelte'
+    import {
+        localDateTimeInputToUTCISO,
+        utcISOToLocalDateTimeInput,
+    } from '$lib/datetime'
 
     let { data } = $props()
 
@@ -127,17 +131,13 @@
         return minutosNow >= 8 * 60
     })
 
-    const toDateTimeLocal = (date: string | Date) => {
-        const d = new Date(date)
-        if (Number.isNaN(d.getTime())) return ''
-        const pad = (value: number) => value.toString().padStart(2, '0')
-
-        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
-    }
+    const toDateTimeLocal = utcISOToLocalDateTimeInput
 
     onMount(() => {
-        const eventSource = new EventSource(
-            `/api/stream?id_pichanga=${encodeURIComponent(page.params.id_pichanga!)}`
+        const idPichanga = encodeURIComponent(page.params.id_pichanga!)
+
+        const streamSource = new EventSource(
+            `/api/stream?id_pichanga=${idPichanga}`
         )
 
         const handlePichangaUpdate = async (event: any) => {
@@ -150,6 +150,20 @@
                 return
             }
             await invalidateAll()
+        }
+
+        const notificationSource = new EventSource(
+            `/api/notifications?id_pichanga=${idPichanga}`
+        )
+
+        const handlePichangaNotification = async (event: any) => {
+            const eventData = JSON.parse(event.data)
+            if (eventData.type === 'opened') {
+                toast.info('Inscripciones abiertas', {
+                    description: 'Ya puedes unirte a esta pichanga.',
+                })
+                await invalidateAll()
+            }
         }
 
         const init = async () => {
@@ -167,19 +181,32 @@
             }))
         }
 
-        eventSource.addEventListener('pichanga-update', handlePichangaUpdate)
-        eventSource.onerror = () => {
-            eventSource.close()
+        streamSource.addEventListener('pichanga-update', handlePichangaUpdate)
+        streamSource.onerror = () => {
+            streamSource.close()
+        }
+
+        notificationSource.addEventListener(
+            'pichanga-notification',
+            handlePichangaNotification
+        )
+        notificationSource.onerror = () => {
+            notificationSource.close()
         }
 
         void init()
 
         return () => {
-            eventSource.removeEventListener(
+            streamSource.removeEventListener(
                 'pichanga-update',
                 handlePichangaUpdate
             )
-            eventSource.close()
+            streamSource.close()
+            notificationSource.removeEventListener(
+                'pichanga-notification',
+                handlePichangaNotification
+            )
+            notificationSource.close()
         }
     })
 </script>
@@ -317,35 +344,45 @@
                                         method="POST"
                                         action="?/editar"
                                         class="space-y-4"
-                                        use:enhance={({ formData }) => {
+                                        use:enhance={({ formData, cancel }) => {
                                             loading_edit = true
 
-                                            const date_pichanga = formData.get(
-                                                'date-pichanga'
-                                            ) as string
-                                            if (date_pichanga) {
-                                                formData.set(
-                                                    'date-pichanga',
-                                                    new Date(
-                                                        date_pichanga
-                                                    ).toISOString()
-                                                )
-                                            }
+                                            try {
+                                                const date_pichanga =
+                                                    formData.get(
+                                                        'date-pichanga'
+                                                    ) as string
+                                                if (date_pichanga) {
+                                                    formData.set(
+                                                        'date-pichanga',
+                                                        localDateTimeInputToUTCISO(
+                                                            date_pichanga
+                                                        )
+                                                    )
+                                                }
 
-                                            const date_init_register =
-                                                formData.get(
-                                                    'date-init-register'
-                                                ) as string
-                                            if (
-                                                date_init_register &&
-                                                !formData.get('habilitar')
-                                            ) {
-                                                formData.set(
-                                                    'date-init-register',
-                                                    new Date(
-                                                        date_init_register
-                                                    ).toISOString()
-                                                )
+                                                const date_init_register =
+                                                    formData.get(
+                                                        'date-init-register'
+                                                    ) as string
+                                                if (date_init_register) {
+                                                    formData.set(
+                                                        'date-init-register',
+                                                        localDateTimeInputToUTCISO(
+                                                            date_init_register
+                                                        )
+                                                    )
+                                                }
+                                            } catch (err) {
+                                                loading_edit = false
+                                                toast('Fecha inválida', {
+                                                    description:
+                                                        err instanceof Error
+                                                            ? err.message
+                                                            : 'Revisa las fechas ingresadas.',
+                                                })
+                                                cancel()
+                                                return
                                             }
 
                                             return async ({
