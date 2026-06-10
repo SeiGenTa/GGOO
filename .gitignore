@@ -30,3 +30,10 @@ app.logs
 contributors.json
 
 app-production.tar
+
+.pi
+node_modules
+.pnpm-store
+.pnpm-debug.log
+dist
+build
