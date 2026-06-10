@@ -38,7 +38,9 @@
             use:enhance={({ formData, cancel }) => {
                 loading = true
                 try {
-                    const date_pichanga = formData.get('date-pichanga') as string
+                    const date_pichanga = formData.get(
+                        'date-pichanga'
+                    ) as string
                     formData.set(
                         'date-pichanga',
                         localDateTimeInputToUTCISO(date_pichanga)
