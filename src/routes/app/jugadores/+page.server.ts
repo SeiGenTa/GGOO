@@ -29,7 +29,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
     const canEdit = locals.user.permisos.includes(Permissions.EditarEstadisticas)
 
-    return { jugadores, canEdit }
+    return { jugadores, canEdit, name_page: 'Jugadores' }
 }
 
 function parseStat(raw: FormDataEntryValue | null): number | null | 'invalid' {
