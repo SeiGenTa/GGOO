@@ -20,7 +20,17 @@
         dialogOpen = true
     }
 
-    const STAT_LABELS: Record<keyof Pick<JugadorRow, 'statAtaque' | 'statRecepcion' | 'statBloqueo' | 'statSaque' | 'statArmada'>, string> = {
+    const STAT_LABELS: Record<
+        keyof Pick<
+            JugadorRow,
+            | 'statAtaque'
+            | 'statRecepcion'
+            | 'statBloqueo'
+            | 'statSaque'
+            | 'statArmada'
+        >,
+        string
+    > = {
         statAtaque: 'Ataque',
         statRecepcion: 'Recepción',
         statBloqueo: 'Bloqueo',
@@ -28,10 +38,15 @@
         statArmada: 'Armada',
     }
 
-    const STAT_KEYS = ['statAtaque', 'statRecepcion', 'statBloqueo', 'statSaque', 'statArmada'] as const
+    const STAT_KEYS = [
+        'statAtaque',
+        'statRecepcion',
+        'statBloqueo',
+        'statSaque',
+        'statArmada',
+    ] as const
 
-    const hasAnyStats = (j: JugadorRow) =>
-        STAT_KEYS.some((k) => j[k] !== null)
+    const hasAnyStats = (j: JugadorRow) => STAT_KEYS.some((k) => j[k] !== null)
 
     const withFeedback: SubmitFunction = () => {
         return async ({ result, update }) => {
@@ -64,7 +79,8 @@
         <Card.Header>
             <Card.Title>Jugadores</Card.Title>
             <Card.Description>
-                Estadísticas de rendimiento por jugador. Haz clic en "Ver stats" para editar.
+                Estadísticas de rendimiento por jugador. Haz clic en "Ver stats"
+                para editar.
             </Card.Description>
         </Card.Header>
         <Card.Content class="p-0">
@@ -73,8 +89,12 @@
                     <thead>
                         <tr class="border-b bg-muted/30 text-left">
                             <th class="px-4 py-3 font-semibold">Jugador</th>
-                            <th class="px-4 py-3 font-semibold">Pos. Principal</th>
-                            <th class="px-4 py-3 font-semibold">Pos. Secundaria</th>
+                            <th class="px-4 py-3 font-semibold"
+                                >Pos. Principal</th
+                            >
+                            <th class="px-4 py-3 font-semibold"
+                                >Pos. Secundaria</th
+                            >
                             <th class="px-4 py-3 font-semibold">Stats</th>
                             <th class="px-4 py-3 font-semibold">Acciones</th>
                         </tr>
@@ -82,7 +102,10 @@
                     <tbody>
                         {#if data.jugadores.length === 0}
                             <tr>
-                                <td colspan="5" class="px-4 py-10 text-center text-muted-foreground">
+                                <td
+                                    colspan="5"
+                                    class="px-4 py-10 text-center text-muted-foreground"
+                                >
                                     No hay jugadores registrados.
                                 </td>
                             </tr>
@@ -90,23 +113,37 @@
                             {#each data.jugadores as jugador}
                                 <tr class="border-b align-middle">
                                     <td class="px-4 py-3">
-                                        <p class="font-medium">{jugador.nombre}</p>
+                                        <p class="font-medium">
+                                            {jugador.nombre}
+                                        </p>
                                         {#if jugador.apodo}
-                                            <p class="text-xs text-muted-foreground">{jugador.apodo}</p>
+                                            <p
+                                                class="text-xs text-muted-foreground"
+                                            >
+                                                {jugador.apodo}
+                                            </p>
                                         {/if}
                                     </td>
                                     <td class="px-4 py-3">
                                         {#if jugador.posiciones[0]}
-                                            <Badge>{jugador.posiciones[0]}</Badge>
+                                            <Badge
+                                                >{jugador.posiciones[0]}</Badge
+                                            >
                                         {:else}
-                                            <span class="text-muted-foreground">—</span>
+                                            <span class="text-muted-foreground"
+                                                >—</span
+                                            >
                                         {/if}
                                     </td>
                                     <td class="px-4 py-3">
                                         {#if jugador.posiciones[1]}
-                                            <Badge variant="outline">{jugador.posiciones[1]}</Badge>
+                                            <Badge variant="outline"
+                                                >{jugador.posiciones[1]}</Badge
+                                            >
                                         {:else}
-                                            <span class="text-muted-foreground">—</span>
+                                            <span class="text-muted-foreground"
+                                                >—</span
+                                            >
                                         {/if}
                                     </td>
                                     <td class="px-4 py-3">
@@ -114,14 +151,25 @@
                                             <div class="flex flex-wrap gap-1">
                                                 {#each STAT_KEYS as key}
                                                     {#if jugador[key] !== null}
-                                                        <Badge variant="secondary" class="text-xs">
-                                                            {STAT_LABELS[key].slice(0, 2)}:{jugador[key]}
+                                                        <Badge
+                                                            variant="secondary"
+                                                            class="text-xs"
+                                                        >
+                                                            {STAT_LABELS[
+                                                                key
+                                                            ].slice(
+                                                                0,
+                                                                2
+                                                            )}:{jugador[key]}
                                                         </Badge>
                                                     {/if}
                                                 {/each}
                                             </div>
                                         {:else}
-                                            <span class="text-xs text-muted-foreground">Sin stats</span>
+                                            <span
+                                                class="text-xs text-muted-foreground"
+                                                >Sin stats</span
+                                            >
                                         {/if}
                                     </td>
                                     <td class="px-4 py-3">
@@ -149,7 +197,10 @@
             <Dialog.Title>
                 {selectedJugador?.nombre ?? ''}
                 {#if selectedJugador?.apodo}
-                    <span class="text-muted-foreground font-normal text-base ml-1">({selectedJugador.apodo})</span>
+                    <span
+                        class="text-muted-foreground font-normal text-base ml-1"
+                        >({selectedJugador.apodo})</span
+                    >
                 {/if}
             </Dialog.Title>
             <Dialog.Description class="flex gap-2 flex-wrap pt-1">
@@ -157,10 +208,14 @@
                     <Badge>{selectedJugador.posiciones[0]}</Badge>
                 {/if}
                 {#if selectedJugador?.posiciones[1]}
-                    <Badge variant="outline">{selectedJugador.posiciones[1]}</Badge>
+                    <Badge variant="outline"
+                        >{selectedJugador.posiciones[1]}</Badge
+                    >
                 {/if}
                 {#if !selectedJugador?.posiciones[0] && !selectedJugador?.posiciones[1]}
-                    <span class="text-muted-foreground text-xs">Sin posiciones definidas</span>
+                    <span class="text-muted-foreground text-xs"
+                        >Sin posiciones definidas</span
+                    >
                 {/if}
             </Dialog.Description>
         </Dialog.Header>
@@ -170,12 +225,18 @@
             <div class="space-y-3 py-2">
                 {#each STAT_KEYS as key}
                     {@const val = selectedJugador[key]}
-                    <div class="grid grid-cols-[100px_1fr_28px] items-center gap-3">
-                        <span class="text-sm font-medium">{STAT_LABELS[key]}</span>
+                    <div
+                        class="grid grid-cols-[100px_1fr_28px] items-center gap-3"
+                    >
+                        <span class="text-sm font-medium"
+                            >{STAT_LABELS[key]}</span
+                        >
                         <div class="h-2 bg-muted rounded-full overflow-hidden">
                             <div
                                 class="h-2 bg-primary rounded-full transition-all"
-                                style="width: {val !== null ? (val / 10) * 100 : 0}%"
+                                style="width: {val !== null
+                                    ? (val / 10) * 100
+                                    : 0}%"
                             ></div>
                         </div>
                         <span class="text-sm font-semibold text-right">
@@ -188,7 +249,9 @@
             <!-- Formulario de edición (solo si canEdit) -->
             {#if data.canEdit}
                 <div class="border-t pt-4">
-                    <p class="text-xs text-muted-foreground mb-3">Editar estadísticas (1–10, vacío para borrar)</p>
+                    <p class="text-xs text-muted-foreground mb-3">
+                        Editar estadísticas (1–10, vacío para borrar)
+                    </p>
                     <form
                         method="POST"
                         action="?/update_stats"
@@ -196,10 +259,18 @@
                         use:enhance={withFeedback}
                         class="space-y-2"
                     >
-                        <input type="hidden" name="userId" value={selectedJugador.id} />
+                        <input
+                            type="hidden"
+                            name="userId"
+                            value={selectedJugador.id}
+                        />
                         {#each STAT_KEYS as key}
-                            <div class="grid grid-cols-[100px_1fr] items-center gap-3">
-                                <label class="text-sm" for="input-{key}">{STAT_LABELS[key]}</label>
+                            <div
+                                class="grid grid-cols-[100px_1fr] items-center gap-3"
+                            >
+                                <label class="text-sm" for="input-{key}"
+                                    >{STAT_LABELS[key]}</label
+                                >
                                 <Input
                                     id="input-{key}"
                                     name={key}
@@ -222,9 +293,7 @@
                 <Button variant="outline">Cerrar</Button>
             </Dialog.Close>
             {#if data.canEdit}
-                <Button type="submit" form="update-stats-form">
-                    Guardar
-                </Button>
+                <Button type="submit" form="update-stats-form">Guardar</Button>
             {/if}
         </Dialog.Footer>
     </Dialog.Content>

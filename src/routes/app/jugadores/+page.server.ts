@@ -9,7 +9,10 @@ export const load: PageServerLoad = async ({ locals }) => {
     }
 
     if (!locals.user.permisos.includes(Permissions.VerEstadisticas)) {
-        redirect(302, '/app?error=No tienes permisos para acceder a esta página.')
+        redirect(
+            302,
+            '/app?error=No tienes permisos para acceder a esta página.'
+        )
     }
 
     const jugadores = await prisma.user.findMany({
@@ -27,7 +30,9 @@ export const load: PageServerLoad = async ({ locals }) => {
         orderBy: { nombre: 'asc' },
     })
 
-    const canEdit = locals.user.permisos.includes(Permissions.EditarEstadisticas)
+    const canEdit = locals.user.permisos.includes(
+        Permissions.EditarEstadisticas
+    )
 
     return { jugadores, canEdit, name_page: 'Jugadores' }
 }
@@ -46,7 +51,9 @@ export const actions: Actions = {
         }
 
         if (!locals.user.permisos.includes(Permissions.EditarEstadisticas)) {
-            return fail(403, { message: 'No tienes permisos para editar estadísticas.' })
+            return fail(403, {
+                message: 'No tienes permisos para editar estadísticas.',
+            })
         }
 
         const form = await request.formData()
@@ -69,7 +76,10 @@ export const actions: Actions = {
             statSaque === 'invalid' ||
             statArmada === 'invalid'
         ) {
-            return fail(400, { message: 'Los valores de estadísticas deben ser enteros entre 1 y 10.' })
+            return fail(400, {
+                message:
+                    'Los valores de estadísticas deben ser enteros entre 1 y 10.',
+            })
         }
 
         const user = await prisma.user.findUnique({
@@ -92,6 +102,9 @@ export const actions: Actions = {
             },
         })
 
-        return { success: true, message: 'Estadísticas actualizadas correctamente.' }
+        return {
+            success: true,
+            message: 'Estadísticas actualizadas correctamente.',
+        }
     },
 }
