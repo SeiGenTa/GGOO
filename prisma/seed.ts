@@ -193,7 +193,11 @@ async function main() {
             es_admin: false,
             es_valido: true,
             aprobado_por_admin: true,
-            permisos: ['ver_estadisticas', 'ver_partidos', 'inscribirse_pichanga'],
+            permisos: [
+                'ver_estadisticas',
+                'ver_partidos',
+                'inscribirse_pichanga',
+            ],
             posiciones: ['Punta', 'Centro'],
             statAtaque: 6,
             statRecepcion: 5,
