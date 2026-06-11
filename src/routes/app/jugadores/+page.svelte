@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { SubmitFunction } from '@sveltejs/kit'
+    import type { PageData, SubmitFunction } from './$types'
     import { enhance } from '$app/forms'
     import { toast } from 'svelte-sonner'
     import * as Card from '$lib/components/ui/card'
@@ -8,22 +8,7 @@
     import { Button } from '$lib/components/ui/button'
     import { Input } from '$lib/components/ui/input'
 
-    type JugadorRow = {
-        id: string
-        nombre: string
-        apodo: string | null
-        posiciones: string[]
-        statAtaque: number | null
-        statRecepcion: number | null
-        statBloqueo: number | null
-        statSaque: number | null
-        statArmada: number | null
-    }
-
-    type PageData = {
-        jugadores: JugadorRow[]
-        canEdit: boolean
-    }
+    type JugadorRow = PageData['jugadores'][number]
 
     let { data }: { data: PageData } = $props()
 
@@ -44,7 +29,6 @@
     }
 
     const STAT_KEYS = ['statAtaque', 'statRecepcion', 'statBloqueo', 'statSaque', 'statArmada'] as const
-    type StatKey = typeof STAT_KEYS[number]
 
     const hasAnyStats = (j: JugadorRow) =>
         STAT_KEYS.some((k) => j[k] !== null)
