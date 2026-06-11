@@ -14,19 +14,20 @@
 
 ## File Map
 
-| Acción | Archivo | Responsabilidad |
-|---|---|---|
-| Modify | `prisma/schema.prisma` | Agregar 5 campos stat al modelo User |
-| Modify | `src/lib/permissions.ts` | Agregar VerEstadisticas y EditarEstadisticas |
-| Create | `src/routes/app/jugadores/+page.server.ts` | Load de jugadores + acción update_stats |
-| Create | `src/routes/app/jugadores/+page.svelte` | Tabla de jugadores + Dialog de stats |
-| Modify | `src/lib/components/app/sidebar.svelte` | Agregar entrada "Jugadores" en Administración |
+| Acción | Archivo                                    | Responsabilidad                               |
+| ------ | ------------------------------------------ | --------------------------------------------- |
+| Modify | `prisma/schema.prisma`                     | Agregar 5 campos stat al modelo User          |
+| Modify | `src/lib/permissions.ts`                   | Agregar VerEstadisticas y EditarEstadisticas  |
+| Create | `src/routes/app/jugadores/+page.server.ts` | Load de jugadores + acción update_stats       |
+| Create | `src/routes/app/jugadores/+page.svelte`    | Tabla de jugadores + Dialog de stats          |
+| Modify | `src/lib/components/app/sidebar.svelte`    | Agregar entrada "Jugadores" en Administración |
 
 ---
 
 ## Task 1: Migración de schema — campos de estadísticas
 
 **Files:**
+
 - Modify: `prisma/schema.prisma`
 
 - [ ] **Step 1: Agregar los 5 campos stat al modelo `User`**
@@ -36,13 +37,13 @@ En `prisma/schema.prisma`, dentro del modelo `User`, agregar después del campo 
 ```prisma
 model User {
     // ... campos existentes ...
-    cumpleanos          DateTime?
-    refreshTokens       RefreshToken[]
-    statAtaque          Int?
-    statRecepcion       Int?
-    statBloqueo         Int?
-    statSaque           Int?
-    statArmada          Int?
+    cumpleanos    DateTime?
+    refreshTokens RefreshToken[]
+    statAtaque    Int?
+    statRecepcion Int?
+    statBloqueo   Int?
+    statSaque     Int?
+    statArmada    Int?
 }
 ```
 
@@ -53,6 +54,7 @@ npx prisma migrate dev --name add-stats-jugador
 ```
 
 Salida esperada:
+
 ```
 The following migration(s) have been created and applied from new schema changes:
 
@@ -83,6 +85,7 @@ git commit -m "feat: add stat fields to User model (ataque, recepcion, bloqueo, 
 ## Task 2: Nuevos permisos
 
 **Files:**
+
 - Modify: `src/lib/permissions.ts`
 
 - [ ] **Step 1: Agregar dos permisos al enum**
@@ -136,6 +139,7 @@ git commit -m "feat: add VerEstadisticas and EditarEstadisticas permissions"
 ## Task 3: Page server — load y acción update_stats
 
 **Files:**
+
 - Create: `src/routes/app/jugadores/+page.server.ts`
 
 - [ ] **Step 1: Crear el archivo con la función load**
@@ -154,7 +158,10 @@ export const load: PageServerLoad = async ({ locals }) => {
     }
 
     if (!locals.user.permisos.includes(Permissions.VerEstadisticas)) {
-        redirect(302, '/app?error=No tienes permisos para acceder a esta página.')
+        redirect(
+            302,
+            '/app?error=No tienes permisos para acceder a esta página.'
+        )
     }
 
     const jugadores = await prisma.user.findMany({
@@ -172,7 +179,9 @@ export const load: PageServerLoad = async ({ locals }) => {
         orderBy: { nombre: 'asc' },
     })
 
-    const canEdit = locals.user.permisos.includes(Permissions.EditarEstadisticas)
+    const canEdit = locals.user.permisos.includes(
+        Permissions.EditarEstadisticas
+    )
 
     return { jugadores, canEdit }
 }
@@ -197,7 +206,9 @@ export const actions: Actions = {
         }
 
         if (!locals.user.permisos.includes(Permissions.EditarEstadisticas)) {
-            return fail(403, { message: 'No tienes permisos para editar estadísticas.' })
+            return fail(403, {
+                message: 'No tienes permisos para editar estadísticas.',
+            })
         }
 
         const form = await request.formData()
@@ -220,7 +231,10 @@ export const actions: Actions = {
             statSaque === 'invalid' ||
             statArmada === 'invalid'
         ) {
-            return fail(400, { message: 'Los valores de estadísticas deben ser enteros entre 1 y 10.' })
+            return fail(400, {
+                message:
+                    'Los valores de estadísticas deben ser enteros entre 1 y 10.',
+            })
         }
 
         const user = await prisma.user.findUnique({
@@ -243,7 +257,10 @@ export const actions: Actions = {
             },
         })
 
-        return { success: true, message: 'Estadísticas actualizadas correctamente.' }
+        return {
+            success: true,
+            message: 'Estadísticas actualizadas correctamente.',
+        }
     },
 }
 ```
@@ -268,6 +285,7 @@ git commit -m "feat: add jugadores page server with load and update_stats action
 ## Task 4: Page Svelte — tabla y dialog
 
 **Files:**
+
 - Create: `src/routes/app/jugadores/+page.svelte`
 
 - [ ] **Step 1: Crear el componente con imports, tipos y estado**
@@ -312,7 +330,17 @@ Crear `src/routes/app/jugadores/+page.svelte`:
         dialogOpen = true
     }
 
-    const STAT_LABELS: Record<keyof Pick<JugadorRow, 'statAtaque' | 'statRecepcion' | 'statBloqueo' | 'statSaque' | 'statArmada'>, string> = {
+    const STAT_LABELS: Record<
+        keyof Pick<
+            JugadorRow,
+            | 'statAtaque'
+            | 'statRecepcion'
+            | 'statBloqueo'
+            | 'statSaque'
+            | 'statArmada'
+        >,
+        string
+    > = {
         statAtaque: 'Ataque',
         statRecepcion: 'Recepción',
         statBloqueo: 'Bloqueo',
@@ -320,11 +348,16 @@ Crear `src/routes/app/jugadores/+page.svelte`:
         statArmada: 'Armada',
     }
 
-    const STAT_KEYS = ['statAtaque', 'statRecepcion', 'statBloqueo', 'statSaque', 'statArmada'] as const
-    type StatKey = typeof STAT_KEYS[number]
+    const STAT_KEYS = [
+        'statAtaque',
+        'statRecepcion',
+        'statBloqueo',
+        'statSaque',
+        'statArmada',
+    ] as const
+    type StatKey = (typeof STAT_KEYS)[number]
 
-    const hasAnyStats = (j: JugadorRow) =>
-        STAT_KEYS.some((k) => j[k] !== null)
+    const hasAnyStats = (j: JugadorRow) => STAT_KEYS.some((k) => j[k] !== null)
 
     const withFeedback: SubmitFunction = () => {
         return async ({ result, update }) => {
@@ -363,7 +396,8 @@ Agregar a continuación del bloque `<script>`:
         <Card.Header>
             <Card.Title>Jugadores</Card.Title>
             <Card.Description>
-                Estadísticas de rendimiento por jugador. Haz clic en "Ver stats" para editar.
+                Estadísticas de rendimiento por jugador. Haz clic en "Ver stats"
+                para editar.
             </Card.Description>
         </Card.Header>
         <Card.Content class="p-0">
@@ -372,8 +406,12 @@ Agregar a continuación del bloque `<script>`:
                     <thead>
                         <tr class="border-b bg-muted/30 text-left">
                             <th class="px-4 py-3 font-semibold">Jugador</th>
-                            <th class="px-4 py-3 font-semibold">Pos. Principal</th>
-                            <th class="px-4 py-3 font-semibold">Pos. Secundaria</th>
+                            <th class="px-4 py-3 font-semibold"
+                                >Pos. Principal</th
+                            >
+                            <th class="px-4 py-3 font-semibold"
+                                >Pos. Secundaria</th
+                            >
                             <th class="px-4 py-3 font-semibold">Stats</th>
                             <th class="px-4 py-3 font-semibold">Acciones</th>
                         </tr>
@@ -381,7 +419,10 @@ Agregar a continuación del bloque `<script>`:
                     <tbody>
                         {#if data.jugadores.length === 0}
                             <tr>
-                                <td colspan="5" class="px-4 py-10 text-center text-muted-foreground">
+                                <td
+                                    colspan="5"
+                                    class="px-4 py-10 text-center text-muted-foreground"
+                                >
                                     No hay jugadores registrados.
                                 </td>
                             </tr>
@@ -389,23 +430,37 @@ Agregar a continuación del bloque `<script>`:
                             {#each data.jugadores as jugador}
                                 <tr class="border-b align-middle">
                                     <td class="px-4 py-3">
-                                        <p class="font-medium">{jugador.nombre}</p>
+                                        <p class="font-medium">
+                                            {jugador.nombre}
+                                        </p>
                                         {#if jugador.apodo}
-                                            <p class="text-xs text-muted-foreground">{jugador.apodo}</p>
+                                            <p
+                                                class="text-xs text-muted-foreground"
+                                            >
+                                                {jugador.apodo}
+                                            </p>
                                         {/if}
                                     </td>
                                     <td class="px-4 py-3">
                                         {#if jugador.posiciones[0]}
-                                            <Badge>{jugador.posiciones[0]}</Badge>
+                                            <Badge
+                                                >{jugador.posiciones[0]}</Badge
+                                            >
                                         {:else}
-                                            <span class="text-muted-foreground">—</span>
+                                            <span class="text-muted-foreground"
+                                                >—</span
+                                            >
                                         {/if}
                                     </td>
                                     <td class="px-4 py-3">
                                         {#if jugador.posiciones[1]}
-                                            <Badge variant="outline">{jugador.posiciones[1]}</Badge>
+                                            <Badge variant="outline"
+                                                >{jugador.posiciones[1]}</Badge
+                                            >
                                         {:else}
-                                            <span class="text-muted-foreground">—</span>
+                                            <span class="text-muted-foreground"
+                                                >—</span
+                                            >
                                         {/if}
                                     </td>
                                     <td class="px-4 py-3">
@@ -413,14 +468,25 @@ Agregar a continuación del bloque `<script>`:
                                             <div class="flex flex-wrap gap-1">
                                                 {#each STAT_KEYS as key}
                                                     {#if jugador[key] !== null}
-                                                        <Badge variant="secondary" class="text-xs">
-                                                            {STAT_LABELS[key].slice(0, 2)}:{jugador[key]}
+                                                        <Badge
+                                                            variant="secondary"
+                                                            class="text-xs"
+                                                        >
+                                                            {STAT_LABELS[
+                                                                key
+                                                            ].slice(
+                                                                0,
+                                                                2
+                                                            )}:{jugador[key]}
                                                         </Badge>
                                                     {/if}
                                                 {/each}
                                             </div>
                                         {:else}
-                                            <span class="text-xs text-muted-foreground">Sin stats</span>
+                                            <span
+                                                class="text-xs text-muted-foreground"
+                                                >Sin stats</span
+                                            >
                                         {/if}
                                     </td>
                                     <td class="px-4 py-3">
@@ -454,7 +520,10 @@ Agregar a continuación del `</section>`:
             <Dialog.Title>
                 {selectedJugador?.nombre ?? ''}
                 {#if selectedJugador?.apodo}
-                    <span class="text-muted-foreground font-normal text-base ml-1">({selectedJugador.apodo})</span>
+                    <span
+                        class="text-muted-foreground font-normal text-base ml-1"
+                        >({selectedJugador.apodo})</span
+                    >
                 {/if}
             </Dialog.Title>
             <Dialog.Description class="flex gap-2 flex-wrap pt-1">
@@ -462,10 +531,14 @@ Agregar a continuación del `</section>`:
                     <Badge>{selectedJugador.posiciones[0]}</Badge>
                 {/if}
                 {#if selectedJugador?.posiciones[1]}
-                    <Badge variant="outline">{selectedJugador.posiciones[1]}</Badge>
+                    <Badge variant="outline"
+                        >{selectedJugador.posiciones[1]}</Badge
+                    >
                 {/if}
                 {#if !selectedJugador?.posiciones[0] && !selectedJugador?.posiciones[1]}
-                    <span class="text-muted-foreground text-xs">Sin posiciones definidas</span>
+                    <span class="text-muted-foreground text-xs"
+                        >Sin posiciones definidas</span
+                    >
                 {/if}
             </Dialog.Description>
         </Dialog.Header>
@@ -475,12 +548,18 @@ Agregar a continuación del `</section>`:
             <div class="space-y-3 py-2">
                 {#each STAT_KEYS as key}
                     {@const val = selectedJugador[key]}
-                    <div class="grid grid-cols-[100px_1fr_28px] items-center gap-3">
-                        <span class="text-sm font-medium">{STAT_LABELS[key]}</span>
+                    <div
+                        class="grid grid-cols-[100px_1fr_28px] items-center gap-3"
+                    >
+                        <span class="text-sm font-medium"
+                            >{STAT_LABELS[key]}</span
+                        >
                         <div class="h-2 bg-muted rounded-full overflow-hidden">
                             <div
                                 class="h-2 bg-primary rounded-full transition-all"
-                                style="width: {val !== null ? (val / 10) * 100 : 0}%"
+                                style="width: {val !== null
+                                    ? (val / 10) * 100
+                                    : 0}%"
                             ></div>
                         </div>
                         <span class="text-sm font-semibold text-right">
@@ -493,7 +572,9 @@ Agregar a continuación del `</section>`:
             <!-- Formulario de edición (solo si canEdit) -->
             {#if data.canEdit}
                 <div class="border-t pt-4">
-                    <p class="text-xs text-muted-foreground mb-3">Editar estadísticas (1–10, vacío para borrar)</p>
+                    <p class="text-xs text-muted-foreground mb-3">
+                        Editar estadísticas (1–10, vacío para borrar)
+                    </p>
                     <form
                         method="POST"
                         action="?/update_stats"
@@ -501,10 +582,18 @@ Agregar a continuación del `</section>`:
                         use:enhance={withFeedback}
                         class="space-y-2"
                     >
-                        <input type="hidden" name="userId" value={selectedJugador.id} />
+                        <input
+                            type="hidden"
+                            name="userId"
+                            value={selectedJugador.id}
+                        />
                         {#each STAT_KEYS as key}
-                            <div class="grid grid-cols-[100px_1fr] items-center gap-3">
-                                <label class="text-sm" for="input-{key}">{STAT_LABELS[key]}</label>
+                            <div
+                                class="grid grid-cols-[100px_1fr] items-center gap-3"
+                            >
+                                <label class="text-sm" for="input-{key}"
+                                    >{STAT_LABELS[key]}</label
+                                >
                                 <Input
                                     id="input-{key}"
                                     name={key}
@@ -527,9 +616,7 @@ Agregar a continuación del `</section>`:
                 <Button variant="outline">Cerrar</Button>
             </Dialog.Close>
             {#if data.canEdit}
-                <Button type="submit" form="update-stats-form">
-                    Guardar
-                </Button>
+                <Button type="submit" form="update-stats-form">Guardar</Button>
             {/if}
         </Dialog.Footer>
     </Dialog.Content>
@@ -556,6 +643,7 @@ git commit -m "feat: add jugadores page with stats table and dialog"
 ## Task 5: Agregar entrada al sidebar
 
 **Files:**
+
 - Modify: `src/lib/components/app/sidebar.svelte`
 
 - [ ] **Step 1: Agregar el import del icono**
@@ -583,7 +671,11 @@ const sections = [
         title: 'General',
         items: [
             { icon: Volleyball, label: 'Pichangas', href: '/app/pichangas' },
-            { icon: BadgeAlertIcon, label: 'Mis tarjetas', href: '/app/tarjetas' },
+            {
+                icon: BadgeAlertIcon,
+                label: 'Mis tarjetas',
+                href: '/app/tarjetas',
+            },
         ],
     },
     {
@@ -592,8 +684,16 @@ const sections = [
             { icon: User, label: 'Usuarios', href: '/app/users' },
             { icon: Key, label: 'Roles', href: '/app/roles' },
             { icon: Users, label: 'Permisos', href: '/app/permissions' },
-            { icon: BadgeAlertIcon, label: 'Gestion de tarjetas', href: '/app/gestion_tarjetas' },
-            { icon: ChartNoAxesColumn, label: 'Jugadores', href: '/app/jugadores' },
+            {
+                icon: BadgeAlertIcon,
+                label: 'Gestion de tarjetas',
+                href: '/app/gestion_tarjetas',
+            },
+            {
+                icon: ChartNoAxesColumn,
+                label: 'Jugadores',
+                href: '/app/jugadores',
+            },
         ],
     },
 ]
@@ -633,6 +733,7 @@ Ir a `/app/roles` con un usuario admin. Editar el rol administrador y agregar lo
 - [ ] **Step 3: Verificar acceso a la ruta**
 
 Navegar a `/app/jugadores`. Debe:
+
 - Mostrar la tabla con todos los usuarios ordenados por nombre
 - Cada fila con posición principal/secundaria (o "—" si no las tienen definidas)
 - Columna Stats vacía en "Sin stats" para usuarios sin estadísticas
@@ -641,6 +742,7 @@ Navegar a `/app/jugadores`. Debe:
 - [ ] **Step 4: Verificar el dialog de edición**
 
 Hacer clic en "Ver stats" de cualquier jugador. Debe:
+
 - Abrir el Dialog con nombre y apodo
 - Mostrar las barras de stats (en cero si no hay stats)
 - Mostrar el formulario de edición con inputs vacíos
@@ -650,6 +752,7 @@ Hacer clic en "Ver stats" de cualquier jugador. Debe:
 - [ ] **Step 5: Verificar validaciones**
 
 En el formulario del dialog:
+
 - Ingresar `0` o `11` en cualquier campo y guardar → debe mostrar toast "Error" con mensaje de validación
 - Dejar un campo vacío y guardar → ese stat debe guardarse como `null` (barra en 0, muestra "—")
 

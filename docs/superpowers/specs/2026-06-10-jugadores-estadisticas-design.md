@@ -31,7 +31,7 @@ statArmada     Int?
 Agregar al enum `Permissions` en `src/lib/permissions.ts`:
 
 ```ts
-VerEstadisticas    = 'ver_estadisticas'
+VerEstadisticas = 'ver_estadisticas'
 EditarEstadisticas = 'editar_estadisticas'
 ```
 
@@ -41,24 +41,31 @@ Los admins deben tener ambos permisos asignados a través del sistema de roles e
 
 ## Ruta
 
-`src/routes/app/jugadores/`  
-- `+page.server.ts` — load + action  
+`src/routes/app/jugadores/`
+
+- `+page.server.ts` — load + action
 - `+page.svelte` — tabla + dialog
 
 ### Load
 
 - Requiere `Permissions.VerEstadisticas`; si no cumple → `redirect(302, '/app?error=...')`.
 - Query:
-  ```ts
-  prisma.user.findMany({
-    select: {
-      id: true, nombre: true, apodo: true, posiciones: true,
-      statAtaque: true, statRecepcion: true, statBloqueo: true,
-      statSaque: true, statArmada: true,
-    },
-    orderBy: { nombre: 'asc' },
-  })
-  ```
+    ```ts
+    prisma.user.findMany({
+        select: {
+            id: true,
+            nombre: true,
+            apodo: true,
+            posiciones: true,
+            statAtaque: true,
+            statRecepcion: true,
+            statBloqueo: true,
+            statSaque: true,
+            statArmada: true,
+        },
+        orderBy: { nombre: 'asc' },
+    })
+    ```
 - Sin paginación en esta versión.
 - Retorna además `canEdit: boolean` (si tiene `Permissions.EditarEstadisticas`).
 
@@ -89,8 +96,8 @@ Importar `ChartNoAxesColumn` desde `@lucide/svelte/icons`.
 
 Columnas:
 
-| Nombre / Apodo | Pos. Principal | Pos. Secundaria | Stats | Acciones |
-|---|---|---|---|---|
+| Nombre / Apodo                | Pos. Principal               | Pos. Secundaria               | Stats                                   | Acciones          |
+| ----------------------------- | ---------------------------- | ----------------------------- | --------------------------------------- | ----------------- |
 | nombre + apodo en gris debajo | `posiciones[0]` badge accent | `posiciones[1]` badge outline | badges compactos `A:n R:n B:n S:n Ar:n` | botón "Ver stats" |
 
 - `posiciones[0]` = posición principal, `posiciones[1]` = secundaria.
@@ -104,10 +111,12 @@ Se abre al hacer clic en "Ver stats".
 **Header:** nombre del jugador, apodo (si existe), badges de posición principal y secundaria.
 
 **Sección visualización:** para cada stat con valor asignado:
+
 - Etiqueta + barra de progreso (ancho = `valor/10 * 100%`) + valor numérico.
 - Stats con valor `null` no se muestran en esta sección (o se indica "—").
 
 **Sección edición** (visible solo si `canEdit`):
+
 - 5 inputs `type="number" min="1" max="10"` pre-cargados con valores actuales (vacíos si son `null`).
 - Formulario POST a `?/update_stats` con `use:enhance`.
 - Al éxito: cierra dialog, muestra toast de confirmación, recarga página (`await update()`).
