@@ -95,6 +95,11 @@ export const UserScalarFieldEnum = {
     permisos: 'permisos',
     posiciones: 'posiciones',
     cumpleanos: 'cumpleanos',
+    statAtaque: 'statAtaque',
+    statRecepcion: 'statRecepcion',
+    statBloqueo: 'statBloqueo',
+    statSaque: 'statSaque',
+    statArmada: 'statArmada',
 } as const
 
 export type UserScalarFieldEnum =

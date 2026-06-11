@@ -706,14 +706,6 @@ export type InscripcionUncheckedUpdateManyWithoutPichangaNestedInput = {
         | Prisma.InscripcionScalarWhereInput[]
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-}
-
 export type InscripcionCreateWithoutUserInput = {
     id?: string
     createdAt?: Date | string
