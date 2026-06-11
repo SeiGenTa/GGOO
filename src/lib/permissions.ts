@@ -17,4 +17,8 @@ export enum Permissions {
     CrearTarjetas = 'crear_tarjetas',
     EditarTarjetas = 'editar_tarjetas',
     EliminarTarjetas = 'eliminar_tarjetas',
+
+    // Permisos relacionados con estadísticas de jugadores
+    VerEstadisticas = 'ver_estadisticas',
+    EditarEstadisticas = 'editar_estadisticas',
 }
