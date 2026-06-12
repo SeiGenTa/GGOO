@@ -653,17 +653,6 @@
                 <Separator />
 
                 <Card.Content class="space-y-3">
-                    <Item.Root variant="default" class="rounded-xl border">
-                        <Item.Header>
-                            <Item.Title>Admins</Item.Title>
-                        </Item.Header>
-                        <Item.Content class="flex flex-wrap gap-2">
-                            {#each pichanga.admins as admin}
-                                <Badge variant="outline">{admin.nombre}</Badge>
-                            {/each}
-                        </Item.Content>
-                    </Item.Root>
-
                     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         <Item.Root variant="default" class="rounded-xl border ">
                             <Item.Header>
@@ -718,6 +707,68 @@
                 <Card.Content class="space-y-5">
                     <section>
                         <div class="mb-2 flex items-center justify-between">
+                            <h2 class="text-base font-semibold">Admins</h2>
+                            <Badge variant="secondary"
+                                >{pichanga.admins.length}</Badge
+                            >
+                        </div>
+
+                        {#if pichanga.admins.length > 0}
+                            <ul class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                                {#each pichanga.admins as admin, index}
+                                    <li
+                                        class="rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 text-sm"
+                                    >
+                                        <div class="font-medium">
+                                            <span class="text-muted-foreground"
+                                                >{index + 1}.</span
+                                            >
+                                            {admin.apodo
+                                                ? admin.apodo
+                                                : admin.nombre}
+                                            {#if admin.apodo}
+                                                <Badge variant="secondary"
+                                                    >{admin.nombre}</Badge
+                                                >
+                                            {/if}
+                                        </div>
+                                        {#if admin.posiciones[0] || admin.posiciones[1]}
+                                            <div
+                                                class="mt-1 flex flex-wrap items-center gap-1 text-xs text-muted-foreground"
+                                            >
+                                                <span>Posiciones:</span>
+                                                {#if admin.posiciones[0]}
+                                                    <Badge
+                                                        variant="outline"
+                                                        class="text-xs"
+                                                        >{admin
+                                                            .posiciones[0]}</Badge
+                                                    >
+                                                {/if}
+                                                {#if admin.posiciones[1]}
+                                                    <Badge
+                                                        variant="outline"
+                                                        class="text-xs"
+                                                        >{admin
+                                                            .posiciones[1]}</Badge
+                                                    >
+                                                {/if}
+                                            </div>
+                                        {/if}
+                                    </li>
+                                {/each}
+                            </ul>
+                        {:else}
+                            <p
+                                class="rounded-lg border border-dashed p-4 text-sm text-muted-foreground"
+                            >
+                                Esta pichanga no tiene admins asignados.
+                            </p>
+                        {/if}
+                    </section>
+
+                    <section>
+                        <div class="mb-2 flex items-center justify-between">
                             <h2 class="text-base font-semibold">Lista</h2>
                             <Badge variant="secondary">{inscritos.length}</Badge
                             >
@@ -727,19 +778,44 @@
                             <ul class="grid grid-cols-1 gap-2 sm:grid-cols-2">
                                 {#each inscritos as inscripcion, index}
                                     <li
-                                        class="rounded-lg border bg-background/80 px-3 py-2 text-sm space-x-1 font-medium"
+                                        class="rounded-lg border bg-background/80 px-3 py-2 text-sm"
                                     >
-                                        <span class="text-muted-foreground"
-                                            >{index + 1}.</span
-                                        >
-                                        {inscripcion.user.apodo
-                                            ? inscripcion.user.apodo
-                                            : inscripcion.user.nombre}
-                                        {#if inscripcion.user.apodo}
-                                            <Badge variant="secondary"
-                                                >{inscripcion.user
-                                                    .nombre}</Badge
+                                        <div class="font-medium">
+                                            <span class="text-muted-foreground"
+                                                >{index + 1}.</span
                                             >
+                                            {inscripcion.user.apodo
+                                                ? inscripcion.user.apodo
+                                                : inscripcion.user.nombre}
+                                            {#if inscripcion.user.apodo}
+                                                <Badge variant="secondary"
+                                                    >{inscripcion.user
+                                                        .nombre}</Badge
+                                                >
+                                            {/if}
+                                        </div>
+                                        {#if inscripcion.user.posiciones[0] || inscripcion.user.posiciones[1]}
+                                            <div
+                                                class="mt-1 flex flex-wrap items-center gap-1 text-xs text-muted-foreground"
+                                            >
+                                                <span>Posiciones:</span>
+                                                {#if inscripcion.user.posiciones[0]}
+                                                    <Badge
+                                                        variant="outline"
+                                                        class="text-xs"
+                                                        >{inscripcion.user
+                                                            .posiciones[0]}</Badge
+                                                    >
+                                                {/if}
+                                                {#if inscripcion.user.posiciones[1]}
+                                                    <Badge
+                                                        variant="outline"
+                                                        class="text-xs"
+                                                        >{inscripcion.user
+                                                            .posiciones[1]}</Badge
+                                                    >
+                                                {/if}
+                                            </div>
                                         {/if}
                                     </li>
                                 {/each}
@@ -767,16 +843,41 @@
                             <ul class="grid grid-cols-1 gap-2 sm:grid-cols-2">
                                 {#each lista_espera as inscripcion, index}
                                     <li
-                                        class="rounded-lg border border-amber-200 px-3 py-2 text-sm font-medium dark:border-amber-900/50 dark:bg-amber-950/20"
+                                        class="rounded-lg border border-amber-200 px-3 py-2 text-sm dark:border-amber-900/50 dark:bg-amber-950/20"
                                     >
-                                        <span class="text-muted-foreground"
-                                            >{index +
-                                                pichanga.maxJugadores +
-                                                1}.</span
-                                        >
-                                        {inscripcion.user.apodo
-                                            ? `${inscripcion.user.apodo} (${inscripcion.user.nombre})`
-                                            : inscripcion.user.nombre}
+                                        <div class="font-medium">
+                                            <span class="text-muted-foreground"
+                                                >{index +
+                                                    pichanga.maxJugadores +
+                                                    1}.</span
+                                            >
+                                            {inscripcion.user.apodo
+                                                ? `${inscripcion.user.apodo} (${inscripcion.user.nombre})`
+                                                : inscripcion.user.nombre}
+                                        </div>
+                                        {#if inscripcion.user.posiciones[0] || inscripcion.user.posiciones[1]}
+                                            <div
+                                                class="mt-1 flex flex-wrap items-center gap-1 text-xs text-muted-foreground"
+                                            >
+                                                <span>Posiciones:</span>
+                                                {#if inscripcion.user.posiciones[0]}
+                                                    <Badge
+                                                        variant="outline"
+                                                        class="text-xs"
+                                                        >{inscripcion.user
+                                                            .posiciones[0]}</Badge
+                                                    >
+                                                {/if}
+                                                {#if inscripcion.user.posiciones[1]}
+                                                    <Badge
+                                                        variant="outline"
+                                                        class="text-xs"
+                                                        >{inscripcion.user
+                                                            .posiciones[1]}</Badge
+                                                    >
+                                                {/if}
+                                            </div>
+                                        {/if}
                                     </li>
                                 {/each}
                             </ul>
@@ -801,10 +902,10 @@
                             <ul class="grid grid-cols-1 gap-2 sm:grid-cols-2">
                                 {#each inscripciones_salieron as inscripcion}
                                     <li
-                                        class="rounded-lg border border-zinc-300 bg-zinc-50 px-3 py-2 text-sm font-medium dark:border-zinc-800 dark:bg-zinc-900/40"
+                                        class="rounded-lg border border-zinc-300 bg-zinc-50 px-3 py-2 text-sm dark:border-zinc-800 dark:bg-zinc-900/40"
                                     >
                                         <div
-                                            class="flex items-center justify-between gap-2"
+                                            class="flex items-center justify-between gap-2 font-medium"
                                         >
                                             <span>
                                                 {inscripcion.user.apodo
@@ -817,6 +918,29 @@
                                                 >
                                             {/if}
                                         </div>
+                                        {#if inscripcion.user.posiciones[0] || inscripcion.user.posiciones[1]}
+                                            <div
+                                                class="mt-1 flex flex-wrap items-center gap-1 text-xs text-muted-foreground"
+                                            >
+                                                <span>Posiciones:</span>
+                                                {#if inscripcion.user.posiciones[0]}
+                                                    <Badge
+                                                        variant="outline"
+                                                        class="text-xs"
+                                                        >{inscripcion.user
+                                                            .posiciones[0]}</Badge
+                                                    >
+                                                {/if}
+                                                {#if inscripcion.user.posiciones[1]}
+                                                    <Badge
+                                                        variant="outline"
+                                                        class="text-xs"
+                                                        >{inscripcion.user
+                                                            .posiciones[1]}</Badge
+                                                    >
+                                                {/if}
+                                            </div>
+                                        {/if}
                                         {#if inscripcion.tiempoSalidaLista}
                                             <p
                                                 class="mt-1 text-xs text-muted-foreground"

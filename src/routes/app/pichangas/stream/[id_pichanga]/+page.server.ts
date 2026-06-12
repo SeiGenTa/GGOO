@@ -92,6 +92,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
                         select: {
                             id: true,
                             nombre: true,
+                            apodo: true,
+                            posiciones: true,
                         },
                     },
                     inscripciones: {
@@ -105,6 +107,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
                                     id: true,
                                     nombre: true,
                                     apodo: true,
+                                    posiciones: true,
                                 },
                             },
                         },
