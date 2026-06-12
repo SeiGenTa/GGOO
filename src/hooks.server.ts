@@ -15,9 +15,6 @@ export const handle: Handle = async ({ event, resolve }) => {
     }
 
     if (!user && refreshToken) {
-        cookies.delete('token', { path: '/' })
-        cookies.delete('refreshToken', { path: '/' })
-
         const ip = event.getClientAddress()
         const userAgent = event.request.headers.get('user-agent')
         const newTokens = await UserUtils.rotateRefreshToken(
@@ -47,6 +44,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 
             user = await UserUtils.verifyToken(token)
         } else {
+            cookies.delete('token', { path: '/' })
+            cookies.delete('refreshToken', { path: '/' })
             token = undefined
             refreshToken = undefined
         }
