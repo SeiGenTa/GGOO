@@ -8,6 +8,7 @@ import {
 import { loadGestores } from '$lib/server/gestores'
 import type { Actions, PageServerLoad } from './$types'
 import { Permissions } from '$lib/permissions'
+import { PERMISSION_BITS, userCan } from '$lib/server/permissions'
 import logger from '$lib/logger'
 import { isUTCISO, parseUTCDate } from '$lib/datetime'
 
@@ -159,7 +160,9 @@ export const actions = {
             return fail(401, { error: 'Usuario no autenticado' })
         }
 
-        if (!locals.user.permisos.includes(Permissions.EditarPartidos)) {
+        if (
+            !userCan(locals.user, PERMISSION_BITS[Permissions.EditarPartidos])
+        ) {
             logger.info(
                 {
                     action: 'action_edit_pichanga_forbidden',
@@ -580,7 +583,7 @@ export const actions = {
             return fail(401, { error: 'Usuario no autenticado' })
         }
 
-        if (!user.permisos.includes(Permissions.EditarPartidos)) {
+        if (!userCan(user, PERMISSION_BITS[Permissions.EditarPartidos])) {
             logger.info(
                 {
                     action: 'action_delete_pichanga_forbidden',

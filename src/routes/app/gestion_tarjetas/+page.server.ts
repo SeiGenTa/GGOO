@@ -1,6 +1,7 @@
 import { fail, redirect, type Actions } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { Permissions } from '../../../lib/permissions'
+import { PERMISSION_BITS, userCan } from '$lib/server/permissions'
 import { prisma } from '$utils/prisma'
 import type { Prisma } from '$generated/prisma/client'
 import logger from '$lib/logger'
@@ -89,7 +90,7 @@ export const load: PageServerLoad = async ({ locals, depends, url }) => {
         throw redirect(302, '/auth')
     }
 
-    if (!locals.user.permisos.includes(Permissions.VerTarjetas)) {
+    if (!userCan(locals.user, PERMISSION_BITS[Permissions.VerTarjetas])) {
         throw redirect(
             302,
             '/app?error=No tienes permisos para acceder a esta página.'
@@ -247,12 +248,22 @@ export const load: PageServerLoad = async ({ locals, depends, url }) => {
                 : null,
         })),
         userOptions: users,
-        canResolveComplaints: locals.user.permisos.includes(
-            Permissions.EditarTarjetas
+        canResolveComplaints: userCan(
+            locals.user,
+            PERMISSION_BITS[Permissions.EditarTarjetas]
         ),
-        canCreate: locals.user.permisos.includes(Permissions.CrearTarjetas),
-        canEdit: locals.user.permisos.includes(Permissions.EditarTarjetas),
-        canDelete: locals.user.permisos.includes(Permissions.EliminarTarjetas),
+        canCreate: userCan(
+            locals.user,
+            PERMISSION_BITS[Permissions.CrearTarjetas]
+        ),
+        canEdit: userCan(
+            locals.user,
+            PERMISSION_BITS[Permissions.EditarTarjetas]
+        ),
+        canDelete: userCan(
+            locals.user,
+            PERMISSION_BITS[Permissions.EliminarTarjetas]
+        ),
         filters: {
             q,
             userIds,
@@ -282,7 +293,7 @@ export const actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!locals.user.permisos.includes(Permissions.CrearTarjetas)) {
+        if (!userCan(locals.user, PERMISSION_BITS[Permissions.CrearTarjetas])) {
             logger.info(
                 {
                     action: 'action_create_tarjeta_forbidden',
@@ -358,7 +369,9 @@ export const actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!locals.user.permisos.includes(Permissions.EliminarTarjetas)) {
+        if (
+            !userCan(locals.user, PERMISSION_BITS[Permissions.EliminarTarjetas])
+        ) {
             logger.info(
                 {
                     action: 'action_delete_tarjeta_forbidden',
@@ -432,7 +445,9 @@ export const actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!locals.user.permisos.includes(Permissions.EditarTarjetas)) {
+        if (
+            !userCan(locals.user, PERMISSION_BITS[Permissions.EditarTarjetas])
+        ) {
             logger.info(
                 {
                     action: 'action_update_tarjeta_forbidden',
@@ -526,7 +541,9 @@ export const actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!locals.user.permisos.includes(Permissions.EditarTarjetas)) {
+        if (
+            !userCan(locals.user, PERMISSION_BITS[Permissions.EditarTarjetas])
+        ) {
             logger.info(
                 {
                     action: 'action_resolve_complaint_forbidden',

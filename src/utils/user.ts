@@ -3,14 +3,35 @@ import jwt, { type JwtPayload } from 'jsonwebtoken'
 import { type RefreshToken, type User } from '$generated/prisma/client'
 import { prisma } from './prisma'
 import { Permissions } from '$lib/permissions'
+import {
+    PERMISSION_BITS,
+    permisosToBitmask,
+    tienePermiso,
+} from '$lib/server/permissions'
 import logger from '$lib/logger'
 
-const VERSION_JWT = 2
+/**
+ * Versión del esquema del payload JWT.
+ *
+ * v3: el campo `permisos` pasa de `string[]` a `number` (bitmask).
+ *     Bump de v2 -> v3 para forzar la re-emisión de tokens en vuelo
+ *     durante el deploy y prevenir inconsistencias con el chequeo de
+ *     versión añadido en `verifyToken`.
+ */
+const VERSION_JWT = 3
 
 const REFRESH_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000
 const ACCESS_TOKEN_TTL = '15m'
 const CLEANUP_PROBABILITY = 0.01
 const REVOKED_RETENTION_MS = 30 * 24 * 60 * 60 * 1000
+
+/**
+ * Helper privado: traduce un nombre de permiso del enum a su bit
+ * correspondiente. Se usa en métodos legacy que reciben el enum
+ * `Permissions` en lugar del bit directo.
+ */
+const _permToBit = (permission: Permissions): number =>
+    PERMISSION_BITS[permission] ?? 0
 
 type GeneratedTokens = {
     accessToken: string
@@ -74,11 +95,16 @@ class UserUtils {
     private static generateAccessToken = async (
         user: User
     ): Promise<string> => {
+        // Empaquetamos todos los permisos del usuario (resueltos desde DB
+        // + roles) en un único entero. Esto reduce el payload del JWT de
+        // ~1.1 KB a ~200 bytes y evita el 502 Bad Gateway en producción
+        // cuando Nginx reenvía la cookie con `proxy_buffering off`.
+        const permisosArray = await UserUtils.get_user_permissions(user)
         const payload = {
             id: user.id,
             email: user.email,
             nombre: user.nombre,
-            permisos: await UserUtils.get_user_permissions(user),
+            permisos: permisosToBitmask(permisosArray),
             apodo: user.apodo,
             es_admin: user.es_admin,
             version: VERSION_JWT,
@@ -275,11 +301,12 @@ class UserUtils {
         if (user.es_admin) {
             return true
         }
-        const permissions = user.permisos
-        if (permissions.includes(permission)) {
+        // Comprobamos primero los permisos directos del usuario.
+        if (user.permisos.includes(permission)) {
             return true
         }
 
+        // Luego añadimos los permisos provenientes de sus roles.
         const roles = await prisma.rol.findMany({
             select: {
                 permisos: true,
@@ -298,6 +325,26 @@ class UserUtils {
         }
 
         return false
+    }
+
+    /**
+     * Variante síncrona que opera sobre el bitmask ya resuelto.
+     *
+     * Usar cuando el caller ya dispone del bitmask (típicamente desde
+     * `event.locals.user.permisos` o tras un `get_user_permissions`).
+     * O(1), sin acceso a DB.
+     *
+     * Si el caller solo tiene el `User` de Prisma, llamar a
+     * `get_user_permissions(user)` para obtener el array de strings
+     * y luego `permisosToBitmask` para convertirlo.
+     */
+    public static hasPermissionMask = (
+        bitmaskUsuario: number,
+        permission: Permissions,
+        esAdmin: boolean = false
+    ): boolean => {
+        if (esAdmin) return true
+        return tienePermiso(bitmaskUsuario, _permToBit(permission))
     }
 
     public static get_user_permissions = async (
@@ -332,22 +379,32 @@ class UserUtils {
         } catch (err) {
             return null
         }
+        const payload = decoded as JwtPayload & {
+            version?: number
+            permisos?: number
+        }
+        // Rechazamos tokens emitidos con versiones anteriores del esquema
+        // (v2 = string[]). Esto fuerza al cliente a refrescar y obtener
+        // un token v3 con el bitmask.
+        if (payload.version !== VERSION_JWT) {
+            return null
+        }
         return {
-            id: (decoded as JwtPayload).id,
-            email: (decoded as JwtPayload).email,
-            nombre: (decoded as JwtPayload).nombre,
-            apodo: (decoded as JwtPayload).apodo,
-            es_admin: (decoded as JwtPayload).es_admin,
-            permisos: (decoded as JwtPayload).permisos,
-            posiciones: (decoded as JwtPayload).posiciones,
-            cumpleanos: (decoded as JwtPayload).cumpleanos ?? null,
+            id: payload.id,
+            email: payload.email,
+            nombre: payload.nombre,
+            apodo: payload.apodo,
+            es_admin: payload.es_admin,
+            permisos: payload.permisos ?? 0,
+            posiciones: payload.posiciones,
+            cumpleanos: payload.cumpleanos ?? null,
         } as {
             id: string
             email: string
             nombre: string
-            apodo: string
+            apodo: string | null
             es_admin: boolean
-            permisos: string[]
+            permisos: number
             posiciones: string[]
             cumpleanos: Date | null
         }

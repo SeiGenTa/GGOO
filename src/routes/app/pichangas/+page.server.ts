@@ -3,6 +3,7 @@ import type { PageServerLoad } from './$types'
 import { prisma } from '$utils/prisma.js'
 import type { Pichanga } from '$generated/prisma/client.js'
 import { Permissions } from '$lib/permissions.js'
+import { PERMISSION_BITS, userCan } from '$lib/server/permissions'
 import logger from '$lib/logger'
 import { schedulePichangaOpen } from '$lib/server/pichanga-stream'
 import { loadGestores } from '$lib/server/gestores'
@@ -10,7 +11,7 @@ import { isUTCISO, parseUTCDate } from '$lib/datetime'
 
 export const load: PageServerLoad = async ({ url, depends, locals }) => {
     depends('pichangas:load')
-    if (!locals.user!.permisos.includes(Permissions.VerPartidos)) {
+    if (!userCan(locals.user, PERMISSION_BITS[Permissions.VerPartidos])) {
         redirect(302, '/app?error=No tienes permisos para ver esta página')
     }
     const page = url.searchParams.get('page')
@@ -18,11 +19,11 @@ export const load: PageServerLoad = async ({ url, depends, locals }) => {
         redirect(302, `/app/pichangas?page=1`)
     }
 
-    const userPerms = locals.user!.permisos
-    const canManagePartidos =
-        locals.user!.es_admin ||
-        userPerms.includes(Permissions.CrearPartidos) ||
-        userPerms.includes(Permissions.EditarPartidos)
+    const canManagePartidos = userCan(
+        locals.user,
+        PERMISSION_BITS[Permissions.CrearPartidos] |
+            PERMISSION_BITS[Permissions.EditarPartidos]
+    )
 
     const gestores = await loadGestores()
 
@@ -110,7 +111,7 @@ export const actions = {
             })
         }
 
-        if (!locals.user!.permisos.includes(Permissions.CrearPartidos)) {
+        if (!userCan(locals.user, PERMISSION_BITS[Permissions.CrearPartidos])) {
             logger.info(
                 {
                     action: 'action_add_pichanga_forbidden',

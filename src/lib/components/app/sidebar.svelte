@@ -14,7 +14,11 @@
     import { toggleMode } from 'mode-watcher'
     import { page } from '$app/state'
     import * as Item from '$lib/components/ui/item'
-    import { Permissions } from '$lib/permissions'
+    import {
+        Permissions,
+        PERMISSION_BITS,
+        tienePermiso,
+    } from '$lib/permissions'
 
     interface userInfo {
         id: string
@@ -22,7 +26,11 @@
         nombre: string
         apodo: string | null
         es_admin: boolean
-        permisos: string[]
+        /**
+         * Bitmask de permisos del usuario. Ver `$lib/server/permissions`.
+         * El servidor envía un único entero en lugar del array de strings.
+         */
+        permisos: number
     }
 
     const { user, app_name }: { user: userInfo | undefined; app_name: string } =
@@ -104,17 +112,19 @@
     ]
 
     /**
-     * `userPerms` es `Permissions[] | null`. El `Set` acelera la
-     * búsqueda de O(n) a O(1) y se re-construye sólo cuando cambia
-     * la identidad de `user?.permisos`.
+     * Chequeo de visibilidad de un item del sidebar.
+     *
+     * Si el item no requiere permiso -> siempre visible.
+     * Si el usuario es admin -> siempre visible.
+     * Si el usuario no está autenticado -> no visible.
+     * En otro caso -> verificación O(1) con AND a nivel de bits sobre
+     * el bitmask que llega del servidor.
      */
-    const userPerms = $derived<Set<Permissions> | null>(
-        user?.permisos ? new Set(user.permisos as Permissions[]) : null
-    )
-
     const canSeeItem = (item: SidebarItem): boolean => {
         if (item.permiso === null) return true
-        return userPerms?.has(item.permiso) ?? false
+        if (!user) return false
+        if (user.es_admin) return true
+        return tienePermiso(user.permisos, PERMISSION_BITS[item.permiso])
     }
 
     /**
