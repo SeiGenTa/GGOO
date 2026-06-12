@@ -4,9 +4,11 @@
     import { toast } from 'svelte-sonner'
     import * as Card from '$lib/components/ui/card'
     import * as Dialog from '$lib/components/ui/dialog'
+    import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
     import { Input } from '$lib/components/ui/input'
     import { Button } from '$lib/components/ui/button'
     import { Badge } from '$lib/components/ui/badge'
+    import { MoreVertical } from '@lucide/svelte/icons'
 
     type UserRow = {
         id: string
@@ -43,9 +45,20 @@
 
     let userToAccept = $state<UserRow | null>(null)
     let userToReject = $state<UserRow | null>(null)
+    let userToBlock = $state<UserRow | null>(null)
+    let userToDelete = $state<UserRow | null>(null)
+    let userToRejectName = $state<UserRow | null>(null)
+
     let acceptDialogOpen = $state(false)
     let rejectDialogOpen = $state(false)
+    let blockDialogOpen = $state(false)
+    let deleteDialogOpen = $state(false)
+    let rejectNameDialogOpen = $state(false)
+
     let rejectComment = $state('')
+    let blockComment = $state('')
+    let rejectNameComment = $state('')
+    let deleteConfirmation = $state('')
 
     const openAcceptDialog = (user: UserRow) => {
         userToAccept = user
@@ -58,6 +71,41 @@
         rejectDialogOpen = true
     }
 
+    const openBlockDialog = (user: UserRow) => {
+        userToBlock = user
+        blockComment = ''
+        blockDialogOpen = true
+    }
+
+    const openDeleteDialog = (user: UserRow) => {
+        userToDelete = user
+        deleteConfirmation = ''
+        deleteDialogOpen = true
+    }
+
+    const openRejectNameDialog = (user: UserRow) => {
+        userToRejectName = user
+        rejectNameComment = ''
+        rejectNameDialogOpen = true
+    }
+
+    const closeAllDialogs = () => {
+        acceptDialogOpen = false
+        rejectDialogOpen = false
+        blockDialogOpen = false
+        deleteDialogOpen = false
+        rejectNameDialogOpen = false
+        userToAccept = null
+        userToReject = null
+        userToBlock = null
+        userToDelete = null
+        userToRejectName = null
+        rejectComment = ''
+        blockComment = ''
+        rejectNameComment = ''
+        deleteConfirmation = ''
+    }
+
     const withFeedback = (successTitle: string): SubmitFunction => {
         return () => {
             return async ({ result, update }) => {
@@ -66,11 +114,7 @@
                         (result.data as { message?: string } | null)?.message ??
                         'Operación completada correctamente.'
                     toast(successTitle, { description: message })
-                    acceptDialogOpen = false
-                    rejectDialogOpen = false
-                    userToAccept = null
-                    userToReject = null
-                    rejectComment = ''
+                    closeAllDialogs()
                     await update()
                     return
                 }
@@ -91,7 +135,10 @@
 
     const getStatus = (user: UserRow) => {
         if (user.rechazado_por_admin) {
-            return { label: 'Rechazado', variant: 'destructive' as const }
+            return {
+                label: 'Bloqueado/Rechazado',
+                variant: 'destructive' as const,
+            }
         }
 
         if (user.aprobado_por_admin || user.es_valido) {
@@ -264,25 +311,186 @@
                                             </div>
                                         </td>
                                         <td class="px-4 py-3">
-                                            {#if data.canModerate && isPending}
+                                            {#if data.canModerate}
                                                 <div
-                                                    class="flex flex-wrap gap-2"
+                                                    class="flex items-center gap-2"
                                                 >
-                                                    <Button
-                                                        size="sm"
-                                                        onclick={() =>
-                                                            openAcceptDialog(
-                                                                user
-                                                            )}>Aceptar</Button
-                                                    >
-                                                    <Button
-                                                        size="sm"
-                                                        variant="destructive"
-                                                        onclick={() =>
-                                                            openRejectDialog(
-                                                                user
-                                                            )}>Rechazar</Button
-                                                    >
+                                                    {#if isPending}
+                                                        <Button
+                                                            size="sm"
+                                                            onclick={() =>
+                                                                openAcceptDialog(
+                                                                    user
+                                                                )}
+                                                            >Aceptar</Button
+                                                        >
+                                                    {/if}
+
+                                                    <DropdownMenu.Root>
+                                                        <DropdownMenu.Trigger>
+                                                            {#snippet child({
+                                                                props,
+                                                            })}
+                                                                <Button
+                                                                    {...props}
+                                                                    size="icon-sm"
+                                                                    variant="outline"
+                                                                    aria-label="Más acciones"
+                                                                >
+                                                                    <MoreVertical
+                                                                        class="size-4"
+                                                                    />
+                                                                </Button>
+                                                            {/snippet}
+                                                        </DropdownMenu.Trigger>
+                                                        <DropdownMenu.Content
+                                                            align="end"
+                                                            class="w-56"
+                                                        >
+                                                            {#if isPending}
+                                                                <DropdownMenu.Item
+                                                                    onclick={() =>
+                                                                        openRejectDialog(
+                                                                            user
+                                                                        )}
+                                                                >
+                                                                    Rechazar
+                                                                </DropdownMenu.Item>
+                                                            {/if}
+
+                                                            {#if !user.es_valido}
+                                                                <DropdownMenu.Item
+                                                                    onclick={(
+                                                                        e
+                                                                    ) => {
+                                                                        e.preventDefault()
+                                                                        const form =
+                                                                            e.currentTarget.parentElement?.querySelector<HTMLFormElement>(
+                                                                                'form[data-action="send_email_confirmation"]'
+                                                                            )
+                                                                        form?.requestSubmit()
+                                                                    }}
+                                                                >
+                                                                    Reenviar
+                                                                    correo de
+                                                                    confirmación
+                                                                </DropdownMenu.Item>
+                                                                <form
+                                                                    method="POST"
+                                                                    action="?/send_email_confirmation"
+                                                                    data-action="send_email_confirmation"
+                                                                    use:enhance={withFeedback(
+                                                                        'Correo de confirmación enviado'
+                                                                    )}
+                                                                    hidden
+                                                                >
+                                                                    <input
+                                                                        type="hidden"
+                                                                        name="userId"
+                                                                        value={user.id}
+                                                                    />
+                                                                </form>
+                                                            {/if}
+
+                                                            <DropdownMenu.Item
+                                                                onclick={() =>
+                                                                    openRejectNameDialog(
+                                                                        user
+                                                                    )}
+                                                            >
+                                                                Rechazar nombre
+                                                            </DropdownMenu.Item>
+
+                                                            <DropdownMenu.Item
+                                                                onclick={(
+                                                                    e
+                                                                ) => {
+                                                                    e.preventDefault()
+                                                                    const form =
+                                                                        e.currentTarget.parentElement?.querySelector<HTMLFormElement>(
+                                                                            'form[data-action="send_password_change"]'
+                                                                        )
+                                                                    form?.requestSubmit()
+                                                                }}
+                                                            >
+                                                                Enviar correo de
+                                                                cambio de
+                                                                contraseña
+                                                            </DropdownMenu.Item>
+                                                            <form
+                                                                method="POST"
+                                                                action="?/send_password_change"
+                                                                data-action="send_password_change"
+                                                                use:enhance={withFeedback(
+                                                                    'Correo de cambio de contraseña enviado'
+                                                                )}
+                                                                hidden
+                                                            >
+                                                                <input
+                                                                    type="hidden"
+                                                                    name="userId"
+                                                                    value={user.id}
+                                                                />
+                                                            </form>
+
+                                                            <DropdownMenu.Separator
+                                                            />
+
+                                                            {#if user.rechazado_por_admin}
+                                                                <DropdownMenu.Item
+                                                                    onclick={(
+                                                                        e
+                                                                    ) => {
+                                                                        e.preventDefault()
+                                                                        const form =
+                                                                            e.currentTarget.parentElement?.querySelector<HTMLFormElement>(
+                                                                                'form[data-action="activate_account"]'
+                                                                            )
+                                                                        form?.requestSubmit()
+                                                                    }}
+                                                                >
+                                                                    Activar
+                                                                    cuenta
+                                                                </DropdownMenu.Item>
+                                                                <form
+                                                                    method="POST"
+                                                                    action="?/activate_account"
+                                                                    data-action="activate_account"
+                                                                    use:enhance={withFeedback(
+                                                                        'Cuenta activada'
+                                                                    )}
+                                                                    hidden
+                                                                >
+                                                                    <input
+                                                                        type="hidden"
+                                                                        name="userId"
+                                                                        value={user.id}
+                                                                    />
+                                                                </form>
+                                                            {:else}
+                                                                <DropdownMenu.Item
+                                                                    variant="destructive"
+                                                                    onclick={() =>
+                                                                        openBlockDialog(
+                                                                            user
+                                                                        )}
+                                                                >
+                                                                    Bloquear
+                                                                    cuenta
+                                                                </DropdownMenu.Item>
+                                                            {/if}
+
+                                                            <DropdownMenu.Item
+                                                                variant="destructive"
+                                                                onclick={() =>
+                                                                    openDeleteDialog(
+                                                                        user
+                                                                    )}
+                                                            >
+                                                                Borrar cuenta
+                                                            </DropdownMenu.Item>
+                                                        </DropdownMenu.Content>
+                                                    </DropdownMenu.Root>
                                                 </div>
                                             {:else}
                                                 <span
@@ -422,6 +630,175 @@
                 form="reject-member-form"
                 variant="destructive"
                 disabled={!userToReject}>Confirmar rechazo</Button
+            >
+        </Dialog.Footer>
+    </Dialog.Content>
+</Dialog.Root>
+
+<Dialog.Root bind:open={blockDialogOpen}>
+    <Dialog.Content>
+        <Dialog.Header>
+            <Dialog.Title>Bloquear cuenta</Dialog.Title>
+            <Dialog.Description>
+                {#if userToBlock}
+                    Vas a bloquear la cuenta de {userToBlock.nombre}. Se le
+                    enviará un correo notificándole y no podrá usar la
+                    plataforma hasta que sea reactivada.
+                {:else}
+                    Selecciona un usuario para continuar.
+                {/if}
+            </Dialog.Description>
+        </Dialog.Header>
+
+        {#if userToBlock}
+            <form
+                method="POST"
+                action="?/block_account"
+                id="block-account-form"
+                class="space-y-3"
+                use:enhance={withFeedback('Cuenta bloqueada')}
+            >
+                <input type="hidden" name="userId" value={userToBlock.id} />
+                <div class="space-y-1">
+                    <label class="block text-sm font-medium" for="block-comment"
+                        >Comentario (opcional)</label
+                    >
+                    <textarea
+                        id="block-comment"
+                        name="comment"
+                        bind:value={blockComment}
+                        class="min-h-24 w-full rounded-md border bg-background px-3 py-2 text-sm"
+                        placeholder="Motivo del bloqueo que se incluirá en el correo"
+                    ></textarea>
+                </div>
+            </form>
+        {/if}
+
+        <Dialog.Footer>
+            <Dialog.Close>
+                <Button variant="outline">Cancelar</Button>
+            </Dialog.Close>
+            <Button
+                type="submit"
+                form="block-account-form"
+                variant="destructive"
+                disabled={!userToBlock}>Confirmar bloqueo</Button
+            >
+        </Dialog.Footer>
+    </Dialog.Content>
+</Dialog.Root>
+
+<Dialog.Root bind:open={deleteDialogOpen}>
+    <Dialog.Content>
+        <Dialog.Header>
+            <Dialog.Title>Eliminar cuenta permanentemente</Dialog.Title>
+            <Dialog.Description>
+                {#if userToDelete}
+                    Esta acción no se puede deshacer. Se eliminarán todos los
+                    datos asociados a la cuenta de {userToDelete.nombre}.
+                {:else}
+                    Selecciona un usuario para continuar.
+                {/if}
+            </Dialog.Description>
+        </Dialog.Header>
+
+        {#if userToDelete}
+            <form
+                method="POST"
+                action="?/delete_account"
+                id="delete-account-form"
+                class="space-y-3"
+                use:enhance={withFeedback('Cuenta eliminada')}
+            >
+                <input type="hidden" name="userId" value={userToDelete.id} />
+                <div class="space-y-1">
+                    <label
+                        class="block text-sm font-medium"
+                        for="delete-confirmation"
+                        >Escribe el id del usuario para confirmar</label
+                    >
+                    <Input
+                        id="delete-confirmation"
+                        name="confirmation"
+                        bind:value={deleteConfirmation}
+                        placeholder={userToDelete.id}
+                    />
+                    <p class="text-xs text-muted-foreground">
+                        Esto es una medida de seguridad para evitar
+                        eliminaciones accidentales.
+                    </p>
+                </div>
+            </form>
+        {/if}
+
+        <Dialog.Footer>
+            <Dialog.Close>
+                <Button variant="outline">Cancelar</Button>
+            </Dialog.Close>
+            <Button
+                type="submit"
+                form="delete-account-form"
+                variant="destructive"
+                disabled={!userToDelete ||
+                    deleteConfirmation.trim() !== userToDelete.id}
+                >Eliminar permanentemente</Button
+            >
+        </Dialog.Footer>
+    </Dialog.Content>
+</Dialog.Root>
+
+<Dialog.Root bind:open={rejectNameDialogOpen}>
+    <Dialog.Content>
+        <Dialog.Header>
+            <Dialog.Title>Rechazar nombre</Dialog.Title>
+            <Dialog.Description>
+                {#if userToRejectName}
+                    Se rechazará el nombre de {userToRejectName.nombre} y se le enviará
+                    un correo para que ingrese uno válido (Nombre Apellido).
+                {:else}
+                    Selecciona un usuario para continuar.
+                {/if}
+            </Dialog.Description>
+        </Dialog.Header>
+
+        {#if userToRejectName}
+            <form
+                method="POST"
+                action="?/reject_name"
+                id="reject-name-form"
+                class="space-y-3"
+                use:enhance={withFeedback('Nombre rechazado y correo enviado')}
+            >
+                <input
+                    type="hidden"
+                    name="userId"
+                    value={userToRejectName.id}
+                />
+                <div class="space-y-1">
+                    <label
+                        class="block text-sm font-medium"
+                        for="reject-name-comment">Comentario (opcional)</label
+                    >
+                    <textarea
+                        id="reject-name-comment"
+                        name="comment"
+                        bind:value={rejectNameComment}
+                        class="min-h-24 w-full rounded-md border bg-background px-3 py-2 text-sm"
+                        placeholder="Motivo del rechazo que verá el usuario en el correo"
+                    ></textarea>
+                </div>
+            </form>
+        {/if}
+
+        <Dialog.Footer>
+            <Dialog.Close>
+                <Button variant="outline">Cancelar</Button>
+            </Dialog.Close>
+            <Button
+                type="submit"
+                form="reject-name-form"
+                variant="destructive"
+                disabled={!userToRejectName}>Confirmar rechazo de nombre</Button
             >
         </Dialog.Footer>
     </Dialog.Content>
