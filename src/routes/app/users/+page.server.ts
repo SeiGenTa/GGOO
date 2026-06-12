@@ -2,6 +2,7 @@ import { fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import { prisma } from '$utils/prisma'
 import { Permissions } from '../../../lib/permissions'
+import { PERMISSION_BITS, userCan } from '$lib/server/permissions'
 import type { Prisma } from '$generated/prisma/client'
 import { sendEmail } from '$lib/email/resend'
 import { encript_json, encript_string } from '$utils/encript'
@@ -41,7 +42,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
         redirect(302, '/auth')
     }
 
-    if (!locals.user.permisos.includes(Permissions.VerMiembros)) {
+    if (!userCan(locals.user, PERMISSION_BITS[Permissions.VerMiembros])) {
         redirect(
             302,
             '/app?error=No tienes permisos para acceder a esta página.'
@@ -110,8 +111,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
         take: PAGE_SIZE,
     })
 
-    const canModerate = locals.user!.permisos.includes(
-        Permissions.AceptarMiembros
+    const canModerate = userCan(
+        locals.user,
+        PERMISSION_BITS[Permissions.AceptarMiembros]
     )
 
     return {
@@ -144,7 +146,7 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!locals.user.permisos.includes(Permissions.AceptarMiembros)) {
+        if (!userCan(locals.user, PERMISSION_BITS[Permissions.AceptarMiembros])) {
             logger.info(
                 {
                     action: 'action_accept_member_forbidden',
@@ -238,7 +240,7 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!locals.user.permisos.includes(Permissions.AceptarMiembros)) {
+        if (!userCan(locals.user, PERMISSION_BITS[Permissions.AceptarMiembros])) {
             logger.info(
                 {
                     action: 'action_reject_member_forbidden',
@@ -301,7 +303,7 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!locals.user.permisos.includes(Permissions.AceptarMiembros)) {
+        if (!userCan(locals.user, PERMISSION_BITS[Permissions.AceptarMiembros])) {
             logger.info(
                 {
                     action: 'action_send_email_confirmation_forbidden',
@@ -368,7 +370,7 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!locals.user.permisos.includes(Permissions.AceptarMiembros)) {
+        if (!userCan(locals.user, PERMISSION_BITS[Permissions.AceptarMiembros])) {
             logger.info(
                 {
                     action: 'action_send_password_change_forbidden',
@@ -429,7 +431,7 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!locals.user.permisos.includes(Permissions.AceptarMiembros)) {
+        if (!userCan(locals.user, PERMISSION_BITS[Permissions.AceptarMiembros])) {
             logger.info(
                 {
                     action: 'action_block_account_forbidden',
@@ -531,7 +533,7 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!locals.user.permisos.includes(Permissions.AceptarMiembros)) {
+        if (!userCan(locals.user, PERMISSION_BITS[Permissions.AceptarMiembros])) {
             logger.info(
                 {
                     action: 'action_activate_account_forbidden',
@@ -620,7 +622,7 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!locals.user.permisos.includes(Permissions.BorrarMiembros)) {
+        if (!userCan(locals.user, PERMISSION_BITS[Permissions.BorrarMiembros])) {
             logger.info(
                 {
                     action: 'action_delete_account_forbidden',
@@ -705,7 +707,7 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!locals.user.permisos.includes(Permissions.AceptarMiembros)) {
+        if (!userCan(locals.user, PERMISSION_BITS[Permissions.AceptarMiembros])) {
             logger.info(
                 {
                     action: 'action_reject_name_forbidden',
