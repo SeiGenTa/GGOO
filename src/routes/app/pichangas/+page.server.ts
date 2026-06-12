@@ -5,6 +5,7 @@ import type { Pichanga } from '$generated/prisma/client.js'
 import { Permissions } from '$lib/permissions.js'
 import logger from '$lib/logger'
 import { schedulePichangaOpen } from '$lib/server/pichanga-stream'
+import { loadGestores } from '$lib/server/gestores'
 import { isUTCISO, parseUTCDate } from '$lib/datetime'
 
 export const load: PageServerLoad = async ({ url, depends, locals }) => {
@@ -23,42 +24,12 @@ export const load: PageServerLoad = async ({ url, depends, locals }) => {
         userPerms.includes(Permissions.CrearPartidos) ||
         userPerms.includes(Permissions.EditarPartidos)
 
-    const gestores = await prisma.user.findMany({
-        where: {
-            OR: [
-                {
-                    roles: {
-                        some: {
-                            permisos: {
-                                has: Permissions.AdministrarPichanga.toString(),
-                            },
-                        },
-                    },
-                },
-                {
-                    permisos: {
-                        has: Permissions.AdministrarPichanga.toString(),
-                    },
-                },
-                {
-                    es_admin: true,
-                },
-            ],
-        },
-        select: {
-            id: true,
-            nombre: true,
-            apodo: true,
-        },
-    })
+    const gestores = await loadGestores()
 
     return {
         name_page: 'Pichangas',
         canManagePartidos,
-        gestores: gestores.map((g) => ({
-            value: g.id,
-            label: `${g.nombre} ${g.apodo ? `(${g.apodo})` : ''}`,
-        })),
+        gestores,
         future: {
             pichangas: load_pichangas_promise(page, canManagePartidos),
         },

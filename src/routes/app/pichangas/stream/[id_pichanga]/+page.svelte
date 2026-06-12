@@ -26,6 +26,7 @@
     let pichanga: any = $state(null)
     let pichangaLoading = $state(true)
     let pichangaError: string | null = $state(null)
+    let options_admins: { value: string; label: string }[] = $state([])
 
     $effect(() => {
         data.pichanga
@@ -40,12 +41,19 @@
             .finally(() => {
                 pichangaLoading = false
             })
+
+        data.gestores
+            .then((result) => {
+                options_admins = result
+            })
+            .catch(() => {
+                options_admins = []
+            })
     })
     // ─────────────────────────────────────────
 
     let open_edit = $state(false)
     let loading_edit = $state(false)
-    let options_admins: { value: string; label: string }[] = $state([])
     let selected_admins: string[] = $state([])
     let switch_init_now = $state(false)
     let loading_join = $state(false)
@@ -166,21 +174,6 @@
             }
         }
 
-        const init = async () => {
-            const data_users: {
-                user: { id: string; nombre: string }[]
-            } = await fetch('/api/user?select=id&select=nombre', {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            }).then((res) => res.json())
-
-            options_admins = data_users.user.map((u) => ({
-                value: u.id,
-                label: u.nombre,
-            }))
-        }
-
         streamSource.addEventListener('pichanga-update', handlePichangaUpdate)
         streamSource.onerror = () => {
             streamSource.close()
@@ -193,8 +186,6 @@
         notificationSource.onerror = () => {
             notificationSource.close()
         }
-
-        void init()
 
         return () => {
             streamSource.removeEventListener(

@@ -5,6 +5,7 @@ import {
     publishPichangaUpdate,
     schedulePichangaOpen,
 } from '$lib/server/pichanga-stream'
+import { loadGestores } from '$lib/server/gestores'
 import type { Actions, PageServerLoad } from './$types'
 import { Permissions } from '$lib/permissions'
 import logger from '$lib/logger'
@@ -75,6 +76,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
     return {
         name_page: 'Lista en tiempo real',
+        gestores: loadGestores(),
         pichanga: prisma.pichanga
             .findUnique({
                 where: {

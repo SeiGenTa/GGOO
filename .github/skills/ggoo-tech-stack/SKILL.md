@@ -1,6 +1,6 @@
 ---
 name: ggoo-tech-stack
-description: "Use when: working on the GGOO Volley Beauchef codebase — explains the core tech stack (SvelteKit + Prisma + PostgreSQL + shadcn-svelte/TailwindCSS v4) and the project-specific conventions: Prisma client generation in `generated/prisma`, custom path aliases (`$utils`, `$generated`), docker-based dev workflow via Makefile, and the permission/role system. Load before editing routes, schema, components, or DB queries in this repo."
+description: 'Use when: working on the GGOO Volley Beauchef codebase — explains the core tech stack (SvelteKit + Prisma + PostgreSQL + shadcn-svelte/TailwindCSS v4) and the project-specific conventions: Prisma client generation in `generated/prisma`, custom path aliases (`$utils`, `$generated`), docker-based dev workflow via Makefile, and the permission/role system. Load before editing routes, schema, components, or DB queries in this repo.'
 ---
 
 # GGOO Tech Stack & Conventions
@@ -9,30 +9,30 @@ A condensed reference for the core technologies and project conventions used in 
 
 ## Core Technologies
 
-| Layer            | Technology                                           |
-| ---------------- | ---------------------------------------------------- |
-| Framework        | **SvelteKit 2** (Svelte 5, runes) with adapter-node  |
-| ORM / DB         | **Prisma 7** + **PostgreSQL 17** (via `pg` adapter)  |
-| UI components    | **shadcn-svelte** (style: `vega`, baseColor: neutral) |
+| Layer            | Technology                                                      |
+| ---------------- | --------------------------------------------------------------- |
+| Framework        | **SvelteKit 2** (Svelte 5, runes) with adapter-node             |
+| ORM / DB         | **Prisma 7** + **PostgreSQL 17** (via `pg` adapter)             |
+| UI components    | **shadcn-svelte** (style: `vega`, baseColor: neutral)           |
 | Styling          | **TailwindCSS v4** (via `@tailwindcss/vite`) + `tw-animate-css` |
-| Icons            | **lucide-svelte**                                    |
-| Headless UI      | **bits-ui**                                          |
-| Validation/forms | **sveltekit-sse**, **svelte-sonner** (toasts)        |
-| Auth             | **jsonwebtoken** + custom refresh token table        |
-| Email            | **resend**                                           |
-| Logging          | **pino**                                             |
-| Package manager  | **pnpm** (with workspace file)                       |
-| Containerization | **Docker** + **docker compose** (multi-stage)        |
+| Icons            | **lucide-svelte**                                               |
+| Headless UI      | **bits-ui**                                                     |
+| Validation/forms | **sveltekit-sse**, **svelte-sonner** (toasts)                   |
+| Auth             | **jsonwebtoken** + custom refresh token table                   |
+| Email            | **resend**                                                      |
+| Logging          | **pino**                                                        |
+| Package manager  | **pnpm** (with workspace file)                                  |
+| Containerization | **Docker** + **docker compose** (multi-stage)                   |
 
 ## Path Aliases (from `svelte.config.js`)
 
-| Alias       | Maps to           | Use for                                    |
-| ----------- | ----------------- | ------------------------------------------ |
-| `$lib`      | `./src/lib`       | Shared components, utils, hooks, permissions |
-| `$generated`| `./generated`     | Generated Prisma client                    |
-| `$utils`    | `./src/utils`     | Server-side utilities (`prisma.ts`, `user.ts`, `encript.ts`) |
-| `$src`      | `./src`           | General source access                      |
-| `$lib/components/ui` | (shadcn) | shadcn-svelte generated components         |
+| Alias                | Maps to       | Use for                                                      |
+| -------------------- | ------------- | ------------------------------------------------------------ |
+| `$lib`               | `./src/lib`   | Shared components, utils, hooks, permissions                 |
+| `$generated`         | `./generated` | Generated Prisma client                                      |
+| `$utils`             | `./src/utils` | Server-side utilities (`prisma.ts`, `user.ts`, `encript.ts`) |
+| `$src`               | `./src`       | General source access                                        |
+| `$lib/components/ui` | (shadcn)      | shadcn-svelte generated components                           |
 
 Always import the Prisma client as `import { prisma } from '$utils/prisma.js'` (note the `.js` suffix — required by the bundler).
 
