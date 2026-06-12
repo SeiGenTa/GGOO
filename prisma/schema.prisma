@@ -32,6 +32,11 @@ model User {
     posiciones          String[]        @default([])
     cumpleanos          DateTime?
     refreshTokens       RefreshToken[]
+    statAtaque          Int?
+    statRecepcion       Int?
+    statBloqueo         Int?
+    statSaque           Int?
+    statArmada          Int?
 }
 
 model RefreshToken {

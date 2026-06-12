@@ -20,8 +20,26 @@ export type UserModel =
 
 export type AggregateUser = {
     _count: UserCountAggregateOutputType | null
+    _avg: UserAvgAggregateOutputType | null
+    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
+}
+
+export type UserAvgAggregateOutputType = {
+    statAtaque: number | null
+    statRecepcion: number | null
+    statBloqueo: number | null
+    statSaque: number | null
+    statArmada: number | null
+}
+
+export type UserSumAggregateOutputType = {
+    statAtaque: number | null
+    statRecepcion: number | null
+    statBloqueo: number | null
+    statSaque: number | null
+    statArmada: number | null
 }
 
 export type UserMinAggregateOutputType = {
@@ -37,6 +55,11 @@ export type UserMinAggregateOutputType = {
     aprobado_por_admin: boolean | null
     rechazado_por_admin: boolean | null
     cumpleanos: Date | null
+    statAtaque: number | null
+    statRecepcion: number | null
+    statBloqueo: number | null
+    statSaque: number | null
+    statArmada: number | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -52,6 +75,11 @@ export type UserMaxAggregateOutputType = {
     aprobado_por_admin: boolean | null
     rechazado_por_admin: boolean | null
     cumpleanos: Date | null
+    statAtaque: number | null
+    statRecepcion: number | null
+    statBloqueo: number | null
+    statSaque: number | null
+    statArmada: number | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -69,7 +97,28 @@ export type UserCountAggregateOutputType = {
     permisos: number
     posiciones: number
     cumpleanos: number
+    statAtaque: number
+    statRecepcion: number
+    statBloqueo: number
+    statSaque: number
+    statArmada: number
     _all: number
+}
+
+export type UserAvgAggregateInputType = {
+    statAtaque?: true
+    statRecepcion?: true
+    statBloqueo?: true
+    statSaque?: true
+    statArmada?: true
+}
+
+export type UserSumAggregateInputType = {
+    statAtaque?: true
+    statRecepcion?: true
+    statBloqueo?: true
+    statSaque?: true
+    statArmada?: true
 }
 
 export type UserMinAggregateInputType = {
@@ -85,6 +134,11 @@ export type UserMinAggregateInputType = {
     aprobado_por_admin?: true
     rechazado_por_admin?: true
     cumpleanos?: true
+    statAtaque?: true
+    statRecepcion?: true
+    statBloqueo?: true
+    statSaque?: true
+    statArmada?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -100,6 +154,11 @@ export type UserMaxAggregateInputType = {
     aprobado_por_admin?: true
     rechazado_por_admin?: true
     cumpleanos?: true
+    statAtaque?: true
+    statRecepcion?: true
+    statBloqueo?: true
+    statSaque?: true
+    statArmada?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -117,6 +176,11 @@ export type UserCountAggregateInputType = {
     permisos?: true
     posiciones?: true
     cumpleanos?: true
+    statAtaque?: true
+    statRecepcion?: true
+    statBloqueo?: true
+    statSaque?: true
+    statArmada?: true
     _all?: true
 }
 
@@ -163,6 +227,18 @@ export type UserAggregateArgs<
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      *
+     * Select which fields to average
+     **/
+    _avg?: UserAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+     **/
+    _sum?: UserSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
      * Select which fields to find the minimum value
      **/
     _min?: UserMinAggregateInputType
@@ -195,6 +271,8 @@ export type UserGroupByArgs<
     take?: number
     skip?: number
     _count?: UserCountAggregateInputType | true
+    _avg?: UserAvgAggregateInputType
+    _sum?: UserSumAggregateInputType
     _min?: UserMinAggregateInputType
     _max?: UserMaxAggregateInputType
 }
@@ -214,7 +292,14 @@ export type UserGroupByOutputType = {
     permisos: string[]
     posiciones: string[]
     cumpleanos: Date | null
+    statAtaque: number | null
+    statRecepcion: number | null
+    statBloqueo: number | null
+    statSaque: number | null
+    statArmada: number | null
     _count: UserCountAggregateOutputType | null
+    _avg: UserAvgAggregateOutputType | null
+    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
 }
@@ -250,6 +335,11 @@ export type UserWhereInput = {
     permisos?: Prisma.StringNullableListFilter<'User'>
     posiciones?: Prisma.StringNullableListFilter<'User'>
     cumpleanos?: Prisma.DateTimeNullableFilter<'User'> | Date | string | null
+    statAtaque?: Prisma.IntNullableFilter<'User'> | number | null
+    statRecepcion?: Prisma.IntNullableFilter<'User'> | number | null
+    statBloqueo?: Prisma.IntNullableFilter<'User'> | number | null
+    statSaque?: Prisma.IntNullableFilter<'User'> | number | null
+    statArmada?: Prisma.IntNullableFilter<'User'> | number | null
     pichangas?: Prisma.PichangaListRelationFilter
     inscripciones?: Prisma.InscripcionListRelationFilter
     roles?: Prisma.RolListRelationFilter
@@ -276,6 +366,11 @@ export type UserOrderByWithRelationInput = {
     permisos?: Prisma.SortOrder
     posiciones?: Prisma.SortOrder
     cumpleanos?: Prisma.SortOrderInput | Prisma.SortOrder
+    statAtaque?: Prisma.SortOrderInput | Prisma.SortOrder
+    statRecepcion?: Prisma.SortOrderInput | Prisma.SortOrder
+    statBloqueo?: Prisma.SortOrderInput | Prisma.SortOrder
+    statSaque?: Prisma.SortOrderInput | Prisma.SortOrder
+    statArmada?: Prisma.SortOrderInput | Prisma.SortOrder
     pichangas?: Prisma.PichangaOrderByRelationAggregateInput
     inscripciones?: Prisma.InscripcionOrderByRelationAggregateInput
     roles?: Prisma.RolOrderByRelationAggregateInput
@@ -310,6 +405,11 @@ export type UserWhereUniqueInput = Prisma.AtLeast<
             | Date
             | string
             | null
+        statAtaque?: Prisma.IntNullableFilter<'User'> | number | null
+        statRecepcion?: Prisma.IntNullableFilter<'User'> | number | null
+        statBloqueo?: Prisma.IntNullableFilter<'User'> | number | null
+        statSaque?: Prisma.IntNullableFilter<'User'> | number | null
+        statArmada?: Prisma.IntNullableFilter<'User'> | number | null
         pichangas?: Prisma.PichangaListRelationFilter
         inscripciones?: Prisma.InscripcionListRelationFilter
         roles?: Prisma.RolListRelationFilter
@@ -338,9 +438,16 @@ export type UserOrderByWithAggregationInput = {
     permisos?: Prisma.SortOrder
     posiciones?: Prisma.SortOrder
     cumpleanos?: Prisma.SortOrderInput | Prisma.SortOrder
+    statAtaque?: Prisma.SortOrderInput | Prisma.SortOrder
+    statRecepcion?: Prisma.SortOrderInput | Prisma.SortOrder
+    statBloqueo?: Prisma.SortOrderInput | Prisma.SortOrder
+    statSaque?: Prisma.SortOrderInput | Prisma.SortOrder
+    statArmada?: Prisma.SortOrderInput | Prisma.SortOrder
     _count?: Prisma.UserCountOrderByAggregateInput
+    _avg?: Prisma.UserAvgOrderByAggregateInput
     _max?: Prisma.UserMaxOrderByAggregateInput
     _min?: Prisma.UserMinOrderByAggregateInput
+    _sum?: Prisma.UserSumOrderByAggregateInput
 }
 
 export type UserScalarWhereWithAggregatesInput = {
@@ -369,6 +476,14 @@ export type UserScalarWhereWithAggregatesInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.IntNullableWithAggregatesFilter<'User'> | number | null
+    statRecepcion?:
+        | Prisma.IntNullableWithAggregatesFilter<'User'>
+        | number
+        | null
+    statBloqueo?: Prisma.IntNullableWithAggregatesFilter<'User'> | number | null
+    statSaque?: Prisma.IntNullableWithAggregatesFilter<'User'> | number | null
+    statArmada?: Prisma.IntNullableWithAggregatesFilter<'User'> | number | null
 }
 
 export type UserCreateInput = {
@@ -386,6 +501,11 @@ export type UserCreateInput = {
     permisos?: Prisma.UserCreatepermisosInput | string[]
     posiciones?: Prisma.UserCreateposicionesInput | string[]
     cumpleanos?: Date | string | null
+    statAtaque?: number | null
+    statRecepcion?: number | null
+    statBloqueo?: number | null
+    statSaque?: number | null
+    statArmada?: number | null
     pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
     inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
     roles?: Prisma.RolCreateNestedManyWithoutUsersInput
@@ -412,6 +532,11 @@ export type UserUncheckedCreateInput = {
     permisos?: Prisma.UserCreatepermisosInput | string[]
     posiciones?: Prisma.UserCreateposicionesInput | string[]
     cumpleanos?: Date | string | null
+    statAtaque?: number | null
+    statRecepcion?: number | null
+    statBloqueo?: number | null
+    statSaque?: number | null
+    statArmada?: number | null
     pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
     inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
     roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
@@ -442,6 +567,11 @@ export type UserUpdateInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
     pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
     inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
     roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
@@ -472,6 +602,11 @@ export type UserUncheckedUpdateInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
     pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
     inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
     roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
@@ -498,6 +633,11 @@ export type UserCreateManyInput = {
     permisos?: Prisma.UserCreatepermisosInput | string[]
     posiciones?: Prisma.UserCreateposicionesInput | string[]
     cumpleanos?: Date | string | null
+    statAtaque?: number | null
+    statRecepcion?: number | null
+    statBloqueo?: number | null
+    statSaque?: number | null
+    statArmada?: number | null
 }
 
 export type UserUpdateManyMutationInput = {
@@ -519,6 +659,11 @@ export type UserUpdateManyMutationInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -540,6 +685,11 @@ export type UserUncheckedUpdateManyInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type StringNullableListFilter<$PrismaModel = never> = {
@@ -565,6 +715,19 @@ export type UserCountOrderByAggregateInput = {
     permisos?: Prisma.SortOrder
     posiciones?: Prisma.SortOrder
     cumpleanos?: Prisma.SortOrder
+    statAtaque?: Prisma.SortOrder
+    statRecepcion?: Prisma.SortOrder
+    statBloqueo?: Prisma.SortOrder
+    statSaque?: Prisma.SortOrder
+    statArmada?: Prisma.SortOrder
+}
+
+export type UserAvgOrderByAggregateInput = {
+    statAtaque?: Prisma.SortOrder
+    statRecepcion?: Prisma.SortOrder
+    statBloqueo?: Prisma.SortOrder
+    statSaque?: Prisma.SortOrder
+    statArmada?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -580,6 +743,11 @@ export type UserMaxOrderByAggregateInput = {
     aprobado_por_admin?: Prisma.SortOrder
     rechazado_por_admin?: Prisma.SortOrder
     cumpleanos?: Prisma.SortOrder
+    statAtaque?: Prisma.SortOrder
+    statRecepcion?: Prisma.SortOrder
+    statBloqueo?: Prisma.SortOrder
+    statSaque?: Prisma.SortOrder
+    statArmada?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -595,6 +763,19 @@ export type UserMinOrderByAggregateInput = {
     aprobado_por_admin?: Prisma.SortOrder
     rechazado_por_admin?: Prisma.SortOrder
     cumpleanos?: Prisma.SortOrder
+    statAtaque?: Prisma.SortOrder
+    statRecepcion?: Prisma.SortOrder
+    statBloqueo?: Prisma.SortOrder
+    statSaque?: Prisma.SortOrder
+    statArmada?: Prisma.SortOrder
+}
+
+export type UserSumOrderByAggregateInput = {
+    statAtaque?: Prisma.SortOrder
+    statRecepcion?: Prisma.SortOrder
+    statBloqueo?: Prisma.SortOrder
+    statSaque?: Prisma.SortOrder
+    statArmada?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -653,6 +834,14 @@ export type UserUpdateposicionesInput = {
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
+}
+
+export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
 }
 
 export type UserCreateNestedOneWithoutRefreshTokensInput = {
@@ -1022,6 +1211,11 @@ export type UserCreateWithoutRefreshTokensInput = {
     permisos?: Prisma.UserCreatepermisosInput | string[]
     posiciones?: Prisma.UserCreateposicionesInput | string[]
     cumpleanos?: Date | string | null
+    statAtaque?: number | null
+    statRecepcion?: number | null
+    statBloqueo?: number | null
+    statSaque?: number | null
+    statArmada?: number | null
     pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
     inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
     roles?: Prisma.RolCreateNestedManyWithoutUsersInput
@@ -1047,6 +1241,11 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
     permisos?: Prisma.UserCreatepermisosInput | string[]
     posiciones?: Prisma.UserCreateposicionesInput | string[]
     cumpleanos?: Date | string | null
+    statAtaque?: number | null
+    statRecepcion?: number | null
+    statBloqueo?: number | null
+    statSaque?: number | null
+    statArmada?: number | null
     pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
     inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
     roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
@@ -1104,6 +1303,11 @@ export type UserUpdateWithoutRefreshTokensInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
     pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
     inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
     roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
@@ -1133,6 +1337,11 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
     pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
     inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
     roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
@@ -1158,6 +1367,11 @@ export type UserCreateWithoutRolesInput = {
     permisos?: Prisma.UserCreatepermisosInput | string[]
     posiciones?: Prisma.UserCreateposicionesInput | string[]
     cumpleanos?: Date | string | null
+    statAtaque?: number | null
+    statRecepcion?: number | null
+    statBloqueo?: number | null
+    statSaque?: number | null
+    statArmada?: number | null
     pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
     inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
     tarjetas?: Prisma.TarjetasCreateNestedManyWithoutUserInput
@@ -1183,6 +1397,11 @@ export type UserUncheckedCreateWithoutRolesInput = {
     permisos?: Prisma.UserCreatepermisosInput | string[]
     posiciones?: Prisma.UserCreateposicionesInput | string[]
     cumpleanos?: Date | string | null
+    statAtaque?: number | null
+    statRecepcion?: number | null
+    statBloqueo?: number | null
+    statSaque?: number | null
+    statArmada?: number | null
     pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
     inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
     tarjetas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutUserInput
@@ -1247,6 +1466,11 @@ export type UserScalarWhereInput = {
     permisos?: Prisma.StringNullableListFilter<'User'>
     posiciones?: Prisma.StringNullableListFilter<'User'>
     cumpleanos?: Prisma.DateTimeNullableFilter<'User'> | Date | string | null
+    statAtaque?: Prisma.IntNullableFilter<'User'> | number | null
+    statRecepcion?: Prisma.IntNullableFilter<'User'> | number | null
+    statBloqueo?: Prisma.IntNullableFilter<'User'> | number | null
+    statSaque?: Prisma.IntNullableFilter<'User'> | number | null
+    statArmada?: Prisma.IntNullableFilter<'User'> | number | null
 }
 
 export type UserCreateWithoutPichangasInput = {
@@ -1264,6 +1488,11 @@ export type UserCreateWithoutPichangasInput = {
     permisos?: Prisma.UserCreatepermisosInput | string[]
     posiciones?: Prisma.UserCreateposicionesInput | string[]
     cumpleanos?: Date | string | null
+    statAtaque?: number | null
+    statRecepcion?: number | null
+    statBloqueo?: number | null
+    statSaque?: number | null
+    statArmada?: number | null
     inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
     roles?: Prisma.RolCreateNestedManyWithoutUsersInput
     tarjetas?: Prisma.TarjetasCreateNestedManyWithoutUserInput
@@ -1289,6 +1518,11 @@ export type UserUncheckedCreateWithoutPichangasInput = {
     permisos?: Prisma.UserCreatepermisosInput | string[]
     posiciones?: Prisma.UserCreateposicionesInput | string[]
     cumpleanos?: Date | string | null
+    statAtaque?: number | null
+    statRecepcion?: number | null
+    statBloqueo?: number | null
+    statSaque?: number | null
+    statArmada?: number | null
     inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
     roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
     tarjetas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutUserInput
@@ -1350,6 +1584,11 @@ export type UserCreateWithoutInscripcionesInput = {
     permisos?: Prisma.UserCreatepermisosInput | string[]
     posiciones?: Prisma.UserCreateposicionesInput | string[]
     cumpleanos?: Date | string | null
+    statAtaque?: number | null
+    statRecepcion?: number | null
+    statBloqueo?: number | null
+    statSaque?: number | null
+    statArmada?: number | null
     pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
     roles?: Prisma.RolCreateNestedManyWithoutUsersInput
     tarjetas?: Prisma.TarjetasCreateNestedManyWithoutUserInput
@@ -1375,6 +1614,11 @@ export type UserUncheckedCreateWithoutInscripcionesInput = {
     permisos?: Prisma.UserCreatepermisosInput | string[]
     posiciones?: Prisma.UserCreateposicionesInput | string[]
     cumpleanos?: Date | string | null
+    statAtaque?: number | null
+    statRecepcion?: number | null
+    statBloqueo?: number | null
+    statSaque?: number | null
+    statArmada?: number | null
     pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
     roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
     tarjetas?: Prisma.TarjetasUncheckedCreateNestedManyWithoutUserInput
@@ -1432,6 +1676,11 @@ export type UserUpdateWithoutInscripcionesInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
     pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
     roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
     tarjetas?: Prisma.TarjetasUpdateManyWithoutUserNestedInput
@@ -1461,6 +1710,11 @@ export type UserUncheckedUpdateWithoutInscripcionesInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
     pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
     roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
     tarjetas?: Prisma.TarjetasUncheckedUpdateManyWithoutUserNestedInput
@@ -1486,6 +1740,11 @@ export type UserCreateWithoutTarjetasInput = {
     permisos?: Prisma.UserCreatepermisosInput | string[]
     posiciones?: Prisma.UserCreateposicionesInput | string[]
     cumpleanos?: Date | string | null
+    statAtaque?: number | null
+    statRecepcion?: number | null
+    statBloqueo?: number | null
+    statSaque?: number | null
+    statArmada?: number | null
     pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
     inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
     roles?: Prisma.RolCreateNestedManyWithoutUsersInput
@@ -1511,6 +1770,11 @@ export type UserUncheckedCreateWithoutTarjetasInput = {
     permisos?: Prisma.UserCreatepermisosInput | string[]
     posiciones?: Prisma.UserCreateposicionesInput | string[]
     cumpleanos?: Date | string | null
+    statAtaque?: number | null
+    statRecepcion?: number | null
+    statBloqueo?: number | null
+    statSaque?: number | null
+    statArmada?: number | null
     pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
     inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
     roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
@@ -1544,6 +1808,11 @@ export type UserCreateWithoutTarjetasAsignadasInput = {
     permisos?: Prisma.UserCreatepermisosInput | string[]
     posiciones?: Prisma.UserCreateposicionesInput | string[]
     cumpleanos?: Date | string | null
+    statAtaque?: number | null
+    statRecepcion?: number | null
+    statBloqueo?: number | null
+    statSaque?: number | null
+    statArmada?: number | null
     pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
     inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
     roles?: Prisma.RolCreateNestedManyWithoutUsersInput
@@ -1569,6 +1838,11 @@ export type UserUncheckedCreateWithoutTarjetasAsignadasInput = {
     permisos?: Prisma.UserCreatepermisosInput | string[]
     posiciones?: Prisma.UserCreateposicionesInput | string[]
     cumpleanos?: Date | string | null
+    statAtaque?: number | null
+    statRecepcion?: number | null
+    statBloqueo?: number | null
+    statSaque?: number | null
+    statArmada?: number | null
     pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
     inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
     roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
@@ -1626,6 +1900,11 @@ export type UserUpdateWithoutTarjetasInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
     pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
     inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
     roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
@@ -1655,6 +1934,11 @@ export type UserUncheckedUpdateWithoutTarjetasInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
     pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
     inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
     roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
@@ -1704,6 +1988,11 @@ export type UserUpdateWithoutTarjetasAsignadasInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
     pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
     inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
     roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
@@ -1733,6 +2022,11 @@ export type UserUncheckedUpdateWithoutTarjetasAsignadasInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
     pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
     inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
     roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
@@ -1758,6 +2052,11 @@ export type UserCreateWithoutReclamosCartasInput = {
     permisos?: Prisma.UserCreatepermisosInput | string[]
     posiciones?: Prisma.UserCreateposicionesInput | string[]
     cumpleanos?: Date | string | null
+    statAtaque?: number | null
+    statRecepcion?: number | null
+    statBloqueo?: number | null
+    statSaque?: number | null
+    statArmada?: number | null
     pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
     inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
     roles?: Prisma.RolCreateNestedManyWithoutUsersInput
@@ -1783,6 +2082,11 @@ export type UserUncheckedCreateWithoutReclamosCartasInput = {
     permisos?: Prisma.UserCreatepermisosInput | string[]
     posiciones?: Prisma.UserCreateposicionesInput | string[]
     cumpleanos?: Date | string | null
+    statAtaque?: number | null
+    statRecepcion?: number | null
+    statBloqueo?: number | null
+    statSaque?: number | null
+    statArmada?: number | null
     pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
     inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
     roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
@@ -1840,6 +2144,11 @@ export type UserUpdateWithoutReclamosCartasInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
     pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
     inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
     roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
@@ -1869,6 +2178,11 @@ export type UserUncheckedUpdateWithoutReclamosCartasInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
     pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
     inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
     roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
@@ -1894,6 +2208,11 @@ export type UserCreateWithoutCastigosInput = {
     permisos?: Prisma.UserCreatepermisosInput | string[]
     posiciones?: Prisma.UserCreateposicionesInput | string[]
     cumpleanos?: Date | string | null
+    statAtaque?: number | null
+    statRecepcion?: number | null
+    statBloqueo?: number | null
+    statSaque?: number | null
+    statArmada?: number | null
     pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
     inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
     roles?: Prisma.RolCreateNestedManyWithoutUsersInput
@@ -1919,6 +2238,11 @@ export type UserUncheckedCreateWithoutCastigosInput = {
     permisos?: Prisma.UserCreatepermisosInput | string[]
     posiciones?: Prisma.UserCreateposicionesInput | string[]
     cumpleanos?: Date | string | null
+    statAtaque?: number | null
+    statRecepcion?: number | null
+    statBloqueo?: number | null
+    statSaque?: number | null
+    statArmada?: number | null
     pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
     inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
     roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
@@ -1952,6 +2276,11 @@ export type UserCreateWithoutCastigosCanceladosInput = {
     permisos?: Prisma.UserCreatepermisosInput | string[]
     posiciones?: Prisma.UserCreateposicionesInput | string[]
     cumpleanos?: Date | string | null
+    statAtaque?: number | null
+    statRecepcion?: number | null
+    statBloqueo?: number | null
+    statSaque?: number | null
+    statArmada?: number | null
     pichangas?: Prisma.PichangaCreateNestedManyWithoutAdminsInput
     inscripciones?: Prisma.InscripcionCreateNestedManyWithoutUserInput
     roles?: Prisma.RolCreateNestedManyWithoutUsersInput
@@ -1977,6 +2306,11 @@ export type UserUncheckedCreateWithoutCastigosCanceladosInput = {
     permisos?: Prisma.UserCreatepermisosInput | string[]
     posiciones?: Prisma.UserCreateposicionesInput | string[]
     cumpleanos?: Date | string | null
+    statAtaque?: number | null
+    statRecepcion?: number | null
+    statBloqueo?: number | null
+    statSaque?: number | null
+    statArmada?: number | null
     pichangas?: Prisma.PichangaUncheckedCreateNestedManyWithoutAdminsInput
     inscripciones?: Prisma.InscripcionUncheckedCreateNestedManyWithoutUserInput
     roles?: Prisma.RolUncheckedCreateNestedManyWithoutUsersInput
@@ -2034,6 +2368,11 @@ export type UserUpdateWithoutCastigosInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
     pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
     inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
     roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
@@ -2063,6 +2402,11 @@ export type UserUncheckedUpdateWithoutCastigosInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
     pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
     inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
     roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
@@ -2112,6 +2456,11 @@ export type UserUpdateWithoutCastigosCanceladosInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
     pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
     inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
     roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
@@ -2141,6 +2490,11 @@ export type UserUncheckedUpdateWithoutCastigosCanceladosInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
     pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
     inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
     roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
@@ -2170,6 +2524,11 @@ export type UserUpdateWithoutRolesInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
     pichangas?: Prisma.PichangaUpdateManyWithoutAdminsNestedInput
     inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
     tarjetas?: Prisma.TarjetasUpdateManyWithoutUserNestedInput
@@ -2199,6 +2558,11 @@ export type UserUncheckedUpdateWithoutRolesInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
     pichangas?: Prisma.PichangaUncheckedUpdateManyWithoutAdminsNestedInput
     inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
     tarjetas?: Prisma.TarjetasUncheckedUpdateManyWithoutUserNestedInput
@@ -2228,6 +2592,11 @@ export type UserUncheckedUpdateManyWithoutRolesInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type UserUpdateWithoutPichangasInput = {
@@ -2249,6 +2618,11 @@ export type UserUpdateWithoutPichangasInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
     inscripciones?: Prisma.InscripcionUpdateManyWithoutUserNestedInput
     roles?: Prisma.RolUpdateManyWithoutUsersNestedInput
     tarjetas?: Prisma.TarjetasUpdateManyWithoutUserNestedInput
@@ -2278,6 +2652,11 @@ export type UserUncheckedUpdateWithoutPichangasInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
     inscripciones?: Prisma.InscripcionUncheckedUpdateManyWithoutUserNestedInput
     roles?: Prisma.RolUncheckedUpdateManyWithoutUsersNestedInput
     tarjetas?: Prisma.TarjetasUncheckedUpdateManyWithoutUserNestedInput
@@ -2307,6 +2686,11 @@ export type UserUncheckedUpdateManyWithoutPichangasInput = {
         | Date
         | string
         | null
+    statAtaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statRecepcion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statBloqueo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statSaque?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+    statArmada?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 /**
@@ -2464,6 +2848,11 @@ export type UserSelect<
         permisos?: boolean
         posiciones?: boolean
         cumpleanos?: boolean
+        statAtaque?: boolean
+        statRecepcion?: boolean
+        statBloqueo?: boolean
+        statSaque?: boolean
+        statArmada?: boolean
         pichangas?: boolean | Prisma.User$pichangasArgs<ExtArgs>
         inscripciones?: boolean | Prisma.User$inscripcionesArgs<ExtArgs>
         roles?: boolean | Prisma.User$rolesArgs<ExtArgs>
@@ -2499,6 +2888,11 @@ export type UserSelectCreateManyAndReturn<
         permisos?: boolean
         posiciones?: boolean
         cumpleanos?: boolean
+        statAtaque?: boolean
+        statRecepcion?: boolean
+        statBloqueo?: boolean
+        statSaque?: boolean
+        statArmada?: boolean
     },
     ExtArgs['result']['user']
 >
@@ -2522,6 +2916,11 @@ export type UserSelectUpdateManyAndReturn<
         permisos?: boolean
         posiciones?: boolean
         cumpleanos?: boolean
+        statAtaque?: boolean
+        statRecepcion?: boolean
+        statBloqueo?: boolean
+        statSaque?: boolean
+        statArmada?: boolean
     },
     ExtArgs['result']['user']
 >
@@ -2541,6 +2940,11 @@ export type UserSelectScalar = {
     permisos?: boolean
     posiciones?: boolean
     cumpleanos?: boolean
+    statAtaque?: boolean
+    statRecepcion?: boolean
+    statBloqueo?: boolean
+    statSaque?: boolean
+    statArmada?: boolean
 }
 
 export type UserOmit<
@@ -2560,7 +2964,12 @@ export type UserOmit<
     | 'rechazado_por_admin'
     | 'permisos'
     | 'posiciones'
-    | 'cumpleanos',
+    | 'cumpleanos'
+    | 'statAtaque'
+    | 'statRecepcion'
+    | 'statBloqueo'
+    | 'statSaque'
+    | 'statArmada',
     ExtArgs['result']['user']
 >
 export type UserInclude<
@@ -2619,6 +3028,11 @@ export type $UserPayload<
             permisos: string[]
             posiciones: string[]
             cumpleanos: Date | null
+            statAtaque: number | null
+            statRecepcion: number | null
+            statBloqueo: number | null
+            statSaque: number | null
+            statArmada: number | null
         },
         ExtArgs['result']['user']
     >
@@ -3331,6 +3745,11 @@ export interface UserFieldRefs {
     readonly permisos: Prisma.FieldRef<'User', 'String[]'>
     readonly posiciones: Prisma.FieldRef<'User', 'String[]'>
     readonly cumpleanos: Prisma.FieldRef<'User', 'DateTime'>
+    readonly statAtaque: Prisma.FieldRef<'User', 'Int'>
+    readonly statRecepcion: Prisma.FieldRef<'User', 'Int'>
+    readonly statBloqueo: Prisma.FieldRef<'User', 'Int'>
+    readonly statSaque: Prisma.FieldRef<'User', 'Int'>
+    readonly statArmada: Prisma.FieldRef<'User', 'Int'>
 }
 
 // Custom InputTypes
