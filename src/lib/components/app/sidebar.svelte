@@ -14,8 +14,41 @@
     import { toggleMode } from 'mode-watcher'
     import { page } from '$app/state'
     import * as Item from '$lib/components/ui/item'
+    import { Permissions } from '$lib/permissions'
 
-    const sections = [
+    interface userInfo {
+        id: string
+        email: string
+        nombre: string
+        apodo: string | null
+        es_admin: boolean
+        permisos: string[]
+    }
+
+    const { user, app_name }: { user: userInfo | undefined; app_name: string } =
+        $props()
+
+    /**
+     * Items del sidebar.
+     *
+     * `permiso: null` significa "ruta siempre visible para cualquier
+     * usuario autenticado" (p. ej. la vista personal de tarjetas, que
+     * no requiere un permiso del enum). Cualquier otro valor debe
+     * pertenecer al enum `Permissions`.
+     */
+    type SidebarItem = {
+        icon: typeof Volleyball
+        label: string
+        href: string
+        permiso: Permissions | null
+    }
+
+    type SidebarSection = {
+        title: string
+        items: SidebarItem[]
+    }
+
+    const allSections: SidebarSection[] = [
         {
             title: 'General',
             items: [
@@ -23,11 +56,13 @@
                     icon: Volleyball,
                     label: 'Pichangas',
                     href: '/app/pichangas',
+                    permiso: Permissions.VerPartidos,
                 },
                 {
                     icon: BadgeAlertIcon,
                     label: 'Mis tarjetas',
                     href: '/app/tarjetas',
+                    permiso: null,
                 },
             ],
         },
@@ -38,40 +73,68 @@
                     icon: User,
                     label: 'Usuarios',
                     href: '/app/users',
+                    permiso: Permissions.VerMiembros,
                 },
                 {
                     icon: Key,
                     label: 'Roles',
                     href: '/app/roles',
+                    permiso: Permissions.VerRolesUsuarios,
                 },
                 {
                     icon: Users,
                     label: 'Permisos',
                     href: '/app/permissions',
+                    permiso: Permissions.EditarRoles,
                 },
                 {
                     icon: BadgeAlertIcon,
                     label: 'Gestion de tarjetas',
                     href: '/app/gestion_tarjetas',
+                    permiso: Permissions.VerTarjetas,
                 },
                 {
                     icon: ChartNoAxesColumn,
                     label: 'Jugadores',
                     href: '/app/jugadores',
+                    permiso: Permissions.VerEstadisticas,
                 },
             ],
         },
     ]
-    interface userInfo {
-        id: string
-        email: string
-        nombre: string
-        apodo: string | null
-        es_admin: boolean
+
+    /**
+     * `userPerms` es `Permissions[] | null`. El `Set` acelera la
+     * búsqueda de O(n) a O(1) y se re-construye sólo cuando cambia
+     * la identidad de `user?.permisos`.
+     */
+    const userPerms = $derived<Set<Permissions> | null>(
+        user?.permisos ? new Set(user.permisos as Permissions[]) : null
+    )
+
+    const canSeeItem = (item: SidebarItem): boolean => {
+        if (item.permiso === null) return true
+        return userPerms?.has(item.permiso) ?? false
     }
 
-    const { user, app_name }: { user: userInfo | undefined; app_name: string } =
-        $props()
+    /**
+     * Derivamos en dos pasos para mantener la lógica clara:
+     *   1. `sectionsWithItems`: descartamos los items individuales que
+     *      el usuario no puede ver.
+     *   2. `sections`: descartamos los grupos cuyo `Sidebar.Menu` ha
+     *      quedado sin hijos. Así un usuario sin permisos de admin
+     *      nunca ve el header "Administración".
+     */
+    const sectionsWithItems = $derived(
+        allSections.map((section) => ({
+            ...section,
+            items: section.items.filter(canSeeItem),
+        }))
+    )
+
+    const sections = $derived(
+        sectionsWithItems.filter((section) => section.items.length > 0)
+    )
 
     let showCloseSessionDialog = $state(false)
 
@@ -88,8 +151,6 @@
 
     import { useSidebar } from '$lib/components/ui/sidebar/index.js'
     const sidebar = useSidebar()
-
-    let isSidebarOpen = $state(sidebar.open)
 
     import logo from '/src/public/logo.jpg'
 </script>
@@ -126,20 +187,22 @@
                 <Sidebar.GroupContent>
                     <Sidebar.Menu>
                         {#each section.items as item}
-                            <Sidebar.MenuItem>
-                                <Sidebar.MenuButton
-                                    isActive={isRouteActive(item.href)}
-                                >
-                                    {#snippet child({ props })}
-                                        <a href={item.href} {...props}>
-                                            {#if item.icon}
-                                                <item.icon />
-                                            {/if}
-                                            {item.label}
-                                        </a>
-                                    {/snippet}
-                                </Sidebar.MenuButton>
-                            </Sidebar.MenuItem>
+                            {#if canSeeItem(item)}
+                                <Sidebar.MenuItem>
+                                    <Sidebar.MenuButton
+                                        isActive={isRouteActive(item.href)}
+                                    >
+                                        {#snippet child({ props })}
+                                            <a href={item.href} {...props}>
+                                                {#if item.icon}
+                                                    <item.icon />
+                                                {/if}
+                                                {item.label}
+                                            </a>
+                                        {/snippet}
+                                    </Sidebar.MenuButton>
+                                </Sidebar.MenuItem>
+                            {/if}
                         {/each}
                     </Sidebar.Menu>
                 </Sidebar.GroupContent>
