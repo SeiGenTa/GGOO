@@ -6,7 +6,11 @@
     import Badge from '$lib/components/ui/badge/badge.svelte'
     import { ChevronDown } from '@lucide/svelte'
     import ModalAddPichanga from './components/new_pichanga.svelte'
-    import { Permissions, PERMISSION_BITS, tienePermiso } from '$lib/permissions'
+    import {
+        Permissions,
+        PERMISSION_BITS,
+        tienePermiso,
+    } from '$lib/permissions'
     import SkeletonPichanga from './components/skeleton_pichanga.svelte'
     import { onMount } from 'svelte'
     import { invalidateAll } from '$app/navigation'

@@ -14,7 +14,11 @@
     import { toggleMode } from 'mode-watcher'
     import { page } from '$app/state'
     import * as Item from '$lib/components/ui/item'
-    import { Permissions, PERMISSION_BITS, tienePermiso } from '$lib/permissions'
+    import {
+        Permissions,
+        PERMISSION_BITS,
+        tienePermiso,
+    } from '$lib/permissions'
 
     interface userInfo {
         id: string

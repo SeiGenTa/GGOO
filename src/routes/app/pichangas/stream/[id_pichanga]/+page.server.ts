@@ -160,7 +160,9 @@ export const actions = {
             return fail(401, { error: 'Usuario no autenticado' })
         }
 
-        if (!userCan(locals.user, PERMISSION_BITS[Permissions.EditarPartidos])) {
+        if (
+            !userCan(locals.user, PERMISSION_BITS[Permissions.EditarPartidos])
+        ) {
             logger.info(
                 {
                     action: 'action_edit_pichanga_forbidden',

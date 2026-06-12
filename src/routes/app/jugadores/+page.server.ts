@@ -52,7 +52,12 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!userCan(locals.user, PERMISSION_BITS[Permissions.EditarEstadisticas])) {
+        if (
+            !userCan(
+                locals.user,
+                PERMISSION_BITS[Permissions.EditarEstadisticas]
+            )
+        ) {
             return fail(403, {
                 message: 'No tienes permisos para editar estadísticas.',
             })

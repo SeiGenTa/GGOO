@@ -146,7 +146,9 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!userCan(locals.user, PERMISSION_BITS[Permissions.AceptarMiembros])) {
+        if (
+            !userCan(locals.user, PERMISSION_BITS[Permissions.AceptarMiembros])
+        ) {
             logger.info(
                 {
                     action: 'action_accept_member_forbidden',
@@ -240,7 +242,9 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!userCan(locals.user, PERMISSION_BITS[Permissions.AceptarMiembros])) {
+        if (
+            !userCan(locals.user, PERMISSION_BITS[Permissions.AceptarMiembros])
+        ) {
             logger.info(
                 {
                     action: 'action_reject_member_forbidden',
@@ -303,7 +307,9 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!userCan(locals.user, PERMISSION_BITS[Permissions.AceptarMiembros])) {
+        if (
+            !userCan(locals.user, PERMISSION_BITS[Permissions.AceptarMiembros])
+        ) {
             logger.info(
                 {
                     action: 'action_send_email_confirmation_forbidden',
@@ -370,7 +376,9 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!userCan(locals.user, PERMISSION_BITS[Permissions.AceptarMiembros])) {
+        if (
+            !userCan(locals.user, PERMISSION_BITS[Permissions.AceptarMiembros])
+        ) {
             logger.info(
                 {
                     action: 'action_send_password_change_forbidden',
@@ -431,7 +439,9 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!userCan(locals.user, PERMISSION_BITS[Permissions.AceptarMiembros])) {
+        if (
+            !userCan(locals.user, PERMISSION_BITS[Permissions.AceptarMiembros])
+        ) {
             logger.info(
                 {
                     action: 'action_block_account_forbidden',
@@ -533,7 +543,9 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!userCan(locals.user, PERMISSION_BITS[Permissions.AceptarMiembros])) {
+        if (
+            !userCan(locals.user, PERMISSION_BITS[Permissions.AceptarMiembros])
+        ) {
             logger.info(
                 {
                     action: 'action_activate_account_forbidden',
@@ -622,7 +634,9 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!userCan(locals.user, PERMISSION_BITS[Permissions.BorrarMiembros])) {
+        if (
+            !userCan(locals.user, PERMISSION_BITS[Permissions.BorrarMiembros])
+        ) {
             logger.info(
                 {
                     action: 'action_delete_account_forbidden',
@@ -707,7 +721,9 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!userCan(locals.user, PERMISSION_BITS[Permissions.AceptarMiembros])) {
+        if (
+            !userCan(locals.user, PERMISSION_BITS[Permissions.AceptarMiembros])
+        ) {
             logger.info(
                 {
                     action: 'action_reject_name_forbidden',

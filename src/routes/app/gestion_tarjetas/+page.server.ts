@@ -369,7 +369,9 @@ export const actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!userCan(locals.user, PERMISSION_BITS[Permissions.EliminarTarjetas])) {
+        if (
+            !userCan(locals.user, PERMISSION_BITS[Permissions.EliminarTarjetas])
+        ) {
             logger.info(
                 {
                     action: 'action_delete_tarjeta_forbidden',
@@ -443,7 +445,9 @@ export const actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!userCan(locals.user, PERMISSION_BITS[Permissions.EditarTarjetas])) {
+        if (
+            !userCan(locals.user, PERMISSION_BITS[Permissions.EditarTarjetas])
+        ) {
             logger.info(
                 {
                     action: 'action_update_tarjeta_forbidden',
@@ -537,7 +541,9 @@ export const actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!userCan(locals.user, PERMISSION_BITS[Permissions.EditarTarjetas])) {
+        if (
+            !userCan(locals.user, PERMISSION_BITS[Permissions.EditarTarjetas])
+        ) {
             logger.info(
                 {
                     action: 'action_resolve_complaint_forbidden',
