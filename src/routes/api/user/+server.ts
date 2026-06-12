@@ -1,4 +1,5 @@
 import { Permissions } from '$lib/permissions.js'
+import { PERMISSION_BITS, userCan } from '$lib/server/permissions'
 import { prisma } from '$utils/prisma.js'
 import type { RequestHandler } from './$types'
 import logger from '$lib/logger'
@@ -18,7 +19,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
             },
         })
     }
-    if (!locals.user.permisos.includes(Permissions.CrearPartidos)) {
+    if (!userCan(locals.user, PERMISSION_BITS[Permissions.CrearPartidos])) {
         logger.info(
             { action: 'api_user_get_forbidden', userId: locals.user.id },
             'Intento de listar usuarios sin permisos'

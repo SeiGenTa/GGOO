@@ -2,13 +2,14 @@ import { fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import { prisma } from '$utils/prisma.js'
 import { Permissions } from '$lib/permissions.js'
+import { PERMISSION_BITS, userCan } from '$lib/server/permissions'
 
 export const load: PageServerLoad = async ({ locals }) => {
     if (!locals.user) {
         redirect(302, '/auth')
     }
 
-    if (!locals.user.permisos.includes(Permissions.VerEstadisticas)) {
+    if (!userCan(locals.user, PERMISSION_BITS[Permissions.VerEstadisticas])) {
         redirect(
             302,
             '/app?error=No tienes permisos para acceder a esta página.'
@@ -30,8 +31,9 @@ export const load: PageServerLoad = async ({ locals }) => {
         orderBy: { nombre: 'asc' },
     })
 
-    const canEdit = locals.user.permisos.includes(
-        Permissions.EditarEstadisticas
+    const canEdit = userCan(
+        locals.user,
+        PERMISSION_BITS[Permissions.EditarEstadisticas]
     )
 
     return { jugadores, canEdit, name_page: 'Jugadores' }
@@ -50,7 +52,12 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!locals.user.permisos.includes(Permissions.EditarEstadisticas)) {
+        if (
+            !userCan(
+                locals.user,
+                PERMISSION_BITS[Permissions.EditarEstadisticas]
+            )
+        ) {
             return fail(403, {
                 message: 'No tienes permisos para editar estadísticas.',
             })

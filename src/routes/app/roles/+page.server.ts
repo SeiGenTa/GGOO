@@ -3,6 +3,7 @@ import type { Actions, PageServerLoad } from './$types'
 import { prisma } from '$utils/prisma'
 import type { Prisma } from '$generated/prisma/client'
 import { Permissions } from '../../../lib/permissions'
+import { PERMISSION_BITS, userCan } from '$lib/server/permissions'
 import logger from '$lib/logger'
 
 type SortBy = 'nombre' | 'id'
@@ -59,7 +60,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
         redirect(302, '/auth')
     }
 
-    if (!locals.user.permisos.includes(Permissions.VerRolesUsuarios)) {
+    if (!userCan(locals.user, PERMISSION_BITS[Permissions.VerRolesUsuarios])) {
         redirect(
             302,
             '/app?error=No tienes permisos para acceder a esta página.'
@@ -197,7 +198,7 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!locals.user.permisos.includes(Permissions.AsignarRoles)) {
+        if (!userCan(locals.user, PERMISSION_BITS[Permissions.AsignarRoles])) {
             logger.info(
                 {
                     action: 'action_assign_roles_forbidden',

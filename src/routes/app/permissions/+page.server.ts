@@ -2,6 +2,7 @@ import { fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import { prisma } from '$utils/prisma'
 import { Permissions } from '../../../lib/permissions'
+import { PERMISSION_BITS, userCan } from '$lib/server/permissions'
 import logger from '$lib/logger'
 
 const ALL_PERMISSIONS = Object.values(Permissions)
@@ -22,7 +23,7 @@ export const load: PageServerLoad = async ({ locals, depends }) => {
         redirect(302, '/auth')
     }
 
-    if (!locals.user.permisos.includes(Permissions.VerRolesUsuarios)) {
+    if (!userCan(locals.user, PERMISSION_BITS[Permissions.VerRolesUsuarios])) {
         redirect(
             302,
             '/app?error=No tienes permisos para acceder a esta página.'
@@ -74,7 +75,7 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!locals.user.permisos.includes(Permissions.CrearRoles)) {
+        if (!userCan(locals.user, PERMISSION_BITS[Permissions.CrearRoles])) {
             logger.info(
                 {
                     action: 'action_create_role_forbidden',
@@ -135,7 +136,7 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!locals.user.permisos.includes(Permissions.EditarRoles)) {
+        if (!userCan(locals.user, PERMISSION_BITS[Permissions.EditarRoles])) {
             logger.info(
                 {
                     action: 'action_update_role_forbidden',
@@ -220,7 +221,7 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!locals.user.permisos.includes(Permissions.EliminarRoles)) {
+        if (!userCan(locals.user, PERMISSION_BITS[Permissions.EliminarRoles])) {
             logger.info(
                 {
                     action: 'action_delete_role_forbidden',
@@ -275,7 +276,7 @@ export const actions: Actions = {
             return fail(401, { message: 'No autorizado.' })
         }
 
-        if (!locals.user.permisos.includes(Permissions.EditarRoles)) {
+        if (!userCan(locals.user, PERMISSION_BITS[Permissions.EditarRoles])) {
             logger.info(
                 {
                     action: 'action_set_default_role_forbidden',

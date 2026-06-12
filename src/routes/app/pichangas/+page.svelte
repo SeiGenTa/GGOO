@@ -6,7 +6,11 @@
     import Badge from '$lib/components/ui/badge/badge.svelte'
     import { ChevronDown } from '@lucide/svelte'
     import ModalAddPichanga from './components/new_pichanga.svelte'
-    import { Permissions } from '$lib/permissions'
+    import {
+        Permissions,
+        PERMISSION_BITS,
+        tienePermiso,
+    } from '$lib/permissions'
     import SkeletonPichanga from './components/skeleton_pichanga.svelte'
     import { onMount } from 'svelte'
     import { invalidateAll } from '$app/navigation'
@@ -84,7 +88,7 @@
 </script>
 
 <section class="pichangas-view">
-    {#if data.user!.permisos.includes(Permissions.CrearPartidos)}
+    {#if tienePermiso(data.user!.permisos, PERMISSION_BITS[Permissions.CrearPartidos])}
         {#await data.gestores then gestores}
             <ModalAddPichanga {gestores} />
         {/await}

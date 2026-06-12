@@ -10,7 +10,14 @@ declare global {
                 nombre: string
                 apodo: string | null
                 es_admin: boolean
-                permisos: string[]
+                /**
+                 * Permisos del usuario empaquetados como bitmask.
+                 *
+                 * Cada permiso del enum `Permissions` se asocia a un bit
+                 * (ver `$lib/server/permissions.ts`). El JWT solo viaja
+                 * con este entero, no con el array de strings.
+                 */
+                permisos: number
                 posiciones: string[]
                 cumpleanos: Date | null
             } | null
