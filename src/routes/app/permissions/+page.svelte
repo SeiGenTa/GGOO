@@ -10,6 +10,7 @@
     import { Label } from '$lib/components/ui/label'
     import Switch from '$lib/components/ui/switch/switch.svelte'
     import type { PageProps } from './$types'
+    import { getNameForPermission } from '$lib/permissions'
 
     let { data }: PageProps = $props()
 
@@ -24,19 +25,20 @@
     let editRoleName = $state('')
 
     const labels: Record<string, string> = {
-        ver_partidos: 'Ver partidos',
-        crear_partidos: 'Crear partidos',
-        editar_partidos: 'Editar partidos',
-        inscribirse_pichanga: 'Inscribirse en pichanga',
-        crear_roles: 'Crear roles',
-        editar_roles: 'Editar roles',
-        eliminar_roles: 'Eliminar roles',
-        ver_roles_usuarios: 'Ver roles de usuarios',
-        asignar_roles: 'Asignar roles',
+        //ver_partidos: 'Ver partidos',
+        //crear_partidos: 'Crear partidos',
+        //editar_partidos: 'Editar partidos',
+        //administrar_pichanga: 'Administrar pichanga',
+        //inscribirse_pichanga: 'Inscribirse en pichanga',
+        //
+        //crear_roles: 'Crear roles',
+        //editar_roles: 'Editar roles',
+        //eliminar_roles: 'Eliminar roles',
+        //ver_roles_usuarios: 'Ver roles de usuarios',
+        //asignar_roles: 'Asignar roles',
     }
 
-    const getPermissionLabel = (permission: string) =>
-        labels[permission] ?? permission
+    const getPermissionLabel = getNameForPermission
 
     const withFeedback = (successTitle: string): SubmitFunction => {
         return () => {
@@ -200,7 +202,9 @@
                                 <Badge variant="outline">Sin permisos</Badge>
                             {:else}
                                 {#each role.permisos as permission}
-                                    <Badge variant="secondary"
+                                    <Badge
+                                        variant="secondary"
+                                        //@ts-ignore
                                         >{getPermissionLabel(permission)}</Badge
                                     >
                                 {/each}

@@ -34,14 +34,14 @@ export const handle: Handle = async ({ event, resolve }) => {
                 path: '/',
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
+                sameSite: 'lax',
                 maxAge: 60 * 60,
             })
             cookies.set('refreshToken', refreshToken, {
                 path: '/',
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
+                sameSite: 'lax',
                 maxAge: REFRESH_TOKEN_MAX_AGE_SECONDS,
             })
 
