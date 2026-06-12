@@ -72,14 +72,14 @@ export const actions = {
             path: '/',
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            sameSite: 'lax',
             maxAge: 60 * 60, // 1 hour
         })
         cookies.set('refreshToken', refreshToken, {
             path: '/',
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            sameSite: 'lax',
             maxAge: REFRESH_TOKEN_MAX_AGE_SECONDS, // 7 days
         })
 
