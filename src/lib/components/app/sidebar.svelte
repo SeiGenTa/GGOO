@@ -9,6 +9,7 @@
         Users,
         Volleyball,
         BadgeAlertIcon,
+        ChartNoAxesColumn,
     } from '@lucide/svelte/icons'
     import { toggleMode } from 'mode-watcher'
     import { page } from '$app/state'
@@ -52,6 +53,11 @@
                     icon: BadgeAlertIcon,
                     label: 'Gestion de tarjetas',
                     href: '/app/gestion_tarjetas',
+                },
+                {
+                    icon: ChartNoAxesColumn,
+                    label: 'Jugadores',
+                    href: '/app/jugadores',
                 },
             ],
         },
