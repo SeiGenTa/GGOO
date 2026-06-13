@@ -1,4 +1,5 @@
 import { prisma } from '$utils/prisma'
+import { Prisma } from '$generated/prisma/client'
 import logger from '$lib/logger'
 import type { RequestHandler } from './$types'
 
@@ -12,15 +13,6 @@ const MODELS = [
     { delegate: 'castigo', table: 'Castigo' },
     { delegate: 'refreshToken', table: 'RefreshToken' },
 ] as const
-
-type DelegateName = (typeof MODELS)[number]['delegate']
-
-type FindFirstDelegate = {
-    findFirst: (args: {
-        select: { id: true }
-        take: number
-    }) => Promise<unknown>
-}
 
 type TableStatus = {
     table: string
@@ -54,6 +46,31 @@ const buildResponse = (
     }
 }
 
+/**
+ * Construye una sola raw query con `UNION ALL` que verifica accesibilidad
+ * de todas las tablas en un único round-trip a la DB.
+ *
+ * Cada rama es `(SELECT '<tabla>' AS table_name, EXISTS(...) AS
+ * has_rows FROM ...)` envuelta en paréntesis (requerido por la
+ * sintaxis de PostgreSQL al usar `LIMIT` dentro de una unión).
+ *
+ * `EXISTS(SELECT 1 FROM "<tabla>")` retorna un booleano (true/false)
+ * y siempre produce una fila, incluso si la tabla está vacía. Si la
+ * tabla no existe, la query completa falla. Usamos la presencia de
+ * la fila como señal de "tabla accesible" (independiente de si tiene
+ * o no registros) y conservamos `has_rows` como información
+ * adicional útil para diagnóstico.
+ */
+const buildAccessibilityQuery = (): Prisma.Sql => {
+    const branches = MODELS.map(
+        ({ table }) => Prisma.sql`
+            (SELECT ${table} AS table_name,
+                    EXISTS(SELECT 1 FROM ${Prisma.raw(`"${table}"`)}) AS has_rows)
+        `
+    )
+    return Prisma.sql`${Prisma.join(branches, ' UNION ALL ')}`
+}
+
 export const GET: RequestHandler = async () => {
     const startedAt = Date.now()
     const tables: Record<string, TableStatus> = {}
@@ -75,50 +92,34 @@ export const GET: RequestHandler = async () => {
         })
     }
 
-    let existingTables: Set<string> = new Set()
     try {
-        const rows = await prisma.$queryRaw<{ table_name: string }[]>`
-            SELECT table_name
-            FROM information_schema.tables
-            WHERE table_schema = 'public'
-        `
-        existingTables = new Set(rows.map((r) => r.table_name))
+        const rows = await prisma.$queryRaw<
+            { table_name: string; has_rows: boolean }[]
+        >(buildAccessibilityQuery())
+
+        for (const { delegate, table } of MODELS) {
+            const row = rows.find((r) => r.table_name === table)
+            tables[delegate] = {
+                table,
+                exists: !!row,
+                accessible: !!row,
+            }
+        }
     } catch (err) {
         const message = err instanceof Error ? err.message : String(err)
         logger.error(
-            { action: 'health_schema_query_failed', err: message },
-            'No se pudo consultar information_schema'
+            { action: 'health_table_check_failed', err: message },
+            'No se pudo verificar la accesibilidad de las tablas'
         )
-    }
-
-    await Promise.all(
-        MODELS.map(async ({ delegate, table }) => {
-            const exists = existingTables.has(table)
-            let accessible = false
-            let error: string | undefined
-
-            if (!exists) {
-                error = 'Tabla no existe en la base de datos'
-            } else {
-                try {
-                    await (
-                        prisma as unknown as Record<
-                            DelegateName,
-                            FindFirstDelegate
-                        >
-                    )[delegate].findFirst({
-                        select: { id: true },
-                        take: 1,
-                    })
-                    accessible = true
-                } catch (err) {
-                    error = err instanceof Error ? err.message : String(err)
-                }
+        for (const { delegate, table } of MODELS) {
+            tables[delegate] = {
+                table,
+                exists: false,
+                accessible: false,
+                error: message,
             }
-
-            tables[delegate] = { table, exists, accessible, error }
-        })
-    )
+        }
+    }
 
     const body = buildResponse(database, tables, startedAt)
 
