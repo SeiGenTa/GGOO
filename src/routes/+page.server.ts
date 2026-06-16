@@ -1,6 +1,8 @@
-import { redirect } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 
-export const load: PageServerLoad = async () => {
-    redirect(302, '/app')
+export const load: PageServerLoad = async ({ locals }) => {
+    return {
+        user: locals.user,
+        app_name: process.env.APP_NAME || 'GGOO',
+    }
 }

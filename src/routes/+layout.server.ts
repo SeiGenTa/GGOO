@@ -12,7 +12,8 @@ export const load: LayoutServerLoad = async ({
     if (
         !token &&
         url.pathname !== '/auth' &&
-        !url.pathname.startsWith('/auth/')
+        !url.pathname.startsWith('/auth/') &&
+        url.pathname !== '/'
     ) {
         redirect(302, '/auth?next=' + url.pathname)
     }

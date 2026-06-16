@@ -50,7 +50,7 @@
                         const dir_next =
                             new URLSearchParams(window.location.search).get(
                                 'next'
-                            ) || '/'
+                            ) || '/app'
 
                         loading = false
                         return goto(dir_next)
