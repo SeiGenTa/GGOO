@@ -16,7 +16,7 @@ import { sendEmail } from '$lib/email/resend'
 const sendWaitingListPromotionEmail = async (
     to: string,
     nombre: string,
-    pichangaUrl: string,
+    pichangaUrl: string
 ) => {
     const subject = '¡Pasaste a la lista principal!'
     const html = `
@@ -569,8 +569,9 @@ export const actions = {
             },
         })
 
-        let candidatoEspera: { user: { email: string; nombre: string } } | null =
-            null
+        let candidatoEspera: {
+            user: { email: string; nombre: string }
+        } | null = null
         if (posicionEnLista <= pichanga.maxJugadores) {
             const resultado = await prisma.inscripcion.findMany({
                 where: {
@@ -606,7 +607,7 @@ export const actions = {
             await sendWaitingListPromotionEmail(
                 candidatoEspera.user.email,
                 candidatoEspera.user.nombre,
-                pichangaUrl,
+                pichangaUrl
             )
             logger.info(
                 {
