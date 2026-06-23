@@ -10,7 +10,7 @@
         "prepare": "svelte-kit sync || echo ''",
         "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
         "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-        "seed": "tsx prisma/seed.ts"
+        "seed": "DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/ggoo?schema=public\" ~/.nvm/versions/node/v20.20.2/bin/node node_modules/.pnpm/tsx@4.22.0/node_modules/tsx/dist/cli.cjs prisma/seed.ts"
     },
     "devDependencies": {
         "@fontsource-variable/inter": "^5.2.8",
