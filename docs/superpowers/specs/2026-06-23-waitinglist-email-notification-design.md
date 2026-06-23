@@ -9,6 +9,7 @@ Cuando un usuario se inscribe en una pichanga que ya llegó al límite de `maxJu
 El único evento que mueve a alguien de la lista de espera a la lista principal es cuando alguien en la **lista principal** ejecuta la acción `salir`. La lista de espera es puramente calculada (no se persiste en BD): son las inscripciones activas ordenadas por `createdAt asc` más allá del índice `maxJugadores`.
 
 Condición exacta para enviar el correo:
+
 - `posicionEnLista <= maxJugadores` — el que salió estaba en la lista principal
 - Existe al menos una inscripción activa en posición `maxJugadores + 1` — había lista de espera
 
@@ -54,7 +55,7 @@ if (candidatoEspera) {
     await sendWaitingListPromotionEmail(
         candidatoEspera.user.email,
         candidatoEspera.user.nombre,
-        pichangaUrl,
+        pichangaUrl
     )
 }
 ```
@@ -65,7 +66,7 @@ if (candidatoEspera) {
 const sendWaitingListPromotionEmail = async (
     to: string,
     nombre: string,
-    pichangaUrl: string,
+    pichangaUrl: string
 ) => {
     const subject = '¡Pasaste a la lista principal!'
     const html = `
