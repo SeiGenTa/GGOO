@@ -84,7 +84,7 @@ import { encript_string } from '$utils/encript'
 const sendEmailValidator = async (to: string) => {
     const validationKey = encript_string(to)
 
-    const uriDirectory = process.env.ORIGIN || 'http://localhost:5173/'
+    const uriDirectory = process.env.ORIGIN || 'http://localhost:5173'
 
     const subject = 'Bienvenido a GGOO'
     const html = `<p>Hola ${to},</p>
@@ -94,7 +94,7 @@ const sendEmailValidator = async (to: string) => {
     <p>Saludos,<br/>El equipo de GGOO</p>
 
     <h3>Para validar tu cuenta, haz clic en el siguiente enlace:</h3>
-    <a href="${uriDirectory}auth/verify?code=${validationKey}">Validar cuenta</a>
+    <a href="${uriDirectory}/auth/verify?code=${validationKey}">Validar cuenta</a>
     <h3>Una vez validada tu cuenta, podrás iniciar sesión deberas esperar a que un administrador acepte tu ingreso</h3>
     
     <h3>Si no te registraste en GGOO, puedes ignorar este correo electrónico.</h3>

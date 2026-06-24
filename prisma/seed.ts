@@ -209,6 +209,7 @@ async function main() {
     console.log(`  Viewer creado: ${viewer.email}`)
 
     // Jugadores de prueba
+    const jugadores: { id: string; nombre: string; email: string }[] = []
     for (const jugador of jugadoresData) {
         const created = await prisma.user.create({
             data: {
@@ -219,15 +220,88 @@ async function main() {
                 permisos: ['ver_partidos', 'inscribirse_pichanga'],
             },
         })
+        jugadores.push({
+            id: created.id,
+            nombre: created.nombre,
+            email: created.email,
+        })
         console.log(`  Jugador creado: ${created.nombre} (${created.email})`)
     }
 
+    // Usuario en lista de espera con correo real para testear notificación
+    const esperaUser = await prisma.user.create({
+        data: {
+            nombre: 'Andrés Arriagada',
+            apodo: 'Andres',
+            email: 'andres.arriagada@ug.uchile.cl',
+            password: PASSWORD,
+            es_valido: true,
+            aprobado_por_admin: true,
+            permisos: ['ver_partidos', 'inscribirse_pichanga'],
+            posiciones: ['Punta'],
+        },
+    })
+    console.log(`  Usuario espera creado: ${esperaUser.email}`)
+
+    // Pichanga de prueba con maxJugadores=3, lista llena + 1 en espera
+    console.log('\nCreando pichanga de prueba...')
+    const ahora = new Date()
+    const manana = new Date(ahora.getTime() + 24 * 60 * 60 * 1000)
+    const haceUnHora = new Date(ahora.getTime() - 60 * 60 * 1000)
+
+    const pichanga = await prisma.pichanga.create({
+        data: {
+            nombre: 'Pichanga Test Notificación',
+            lugar: 'Cancha Central',
+            fecha: manana,
+            fechaInicioIncripcion: haceUnHora,
+            maxJugadores: 3,
+            admins: { connect: { id: admin.id } },
+        },
+    })
+    console.log(
+        `  Pichanga creada: ${pichanga.nombre} (max: ${pichanga.maxJugadores})`
+    )
+
+    // Inscribir 3 jugadores en lista principal (Carlos, Diego, Matías)
+    const enLista = jugadores.slice(0, 3)
+    for (const jugador of enLista) {
+        await prisma.inscripcion.create({
+            data: { userId: jugador.id, pichangaId: pichanga.id },
+        })
+        console.log(`  Inscrito en lista principal: ${jugador.nombre}`)
+    }
+
+    // Inscribir a Andrés en lista de espera (4º lugar, maxJugadores=3)
+    await prisma.inscripcion.create({
+        data: { userId: esperaUser.id, pichangaId: pichanga.id },
+    })
+    console.log(
+        `  Inscrito en lista de espera: ${esperaUser.nombre} (${esperaUser.email})`
+    )
+
     console.log('\nSeed completado.')
     console.log('Credenciales de prueba (contraseña: test1234):')
-    console.log('  admin@test.com    — admin con todos los permisos')
-    console.log('  viewer@test.com   — puede ver estadísticas, no editar')
-    console.log('  carlos@test.com   — jugador regular')
-    console.log('  (y 9 jugadores más en jugadores@test.com)')
+    console.log('  admin@test.com               — admin con todos los permisos')
+    console.log(
+        '  viewer@test.com              — puede ver estadísticas, no editar'
+    )
+    console.log(
+        '  carlos@test.com              — jugador #1 en lista principal'
+    )
+    console.log(
+        '  diego@test.com               — jugador #2 en lista principal'
+    )
+    console.log(
+        '  matias@test.com              — jugador #3 en lista principal'
+    )
+    console.log(
+        '  andres.arriagada@ug.uchile.cl — jugador en lista de espera (recibirá el correo)'
+    )
+    console.log(
+        '\nPara testear: entra como carlos/diego/matias y haz clic en "Salir".'
+    )
+    console.log('Andrés Arriagada recibirá el correo de notificación.')
 }
 
 main()
