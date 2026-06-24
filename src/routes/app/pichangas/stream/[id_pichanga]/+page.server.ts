@@ -11,6 +11,25 @@ import { Permissions } from '$lib/permissions'
 import { PERMISSION_BITS, userCan } from '$lib/server/permissions'
 import logger from '$lib/logger'
 import { isUTCISO, parseUTCDate } from '$lib/datetime'
+import { sendEmail } from '$lib/email/resend'
+
+const sendWaitingListPromotionEmail = async (
+    to: string,
+    nombre: string,
+    pichangaUrl: string
+) => {
+    const subject = '¡Pasaste a la lista principal!'
+    const html = `
+        <p>Hola ${nombre},</p>
+        <p>Hay buenas noticias: se liberó un cupo y ahora estás en la <strong>lista principal</strong> de la pichanga.</p>
+        <p>Puedes ver tu lugar en la lista aquí:</p>
+        <a href="${pichangaUrl}">Ver pichanga</a>
+        <p>Si no puedes acceder al enlace, cópialo en tu navegador:</p>
+        <p>${pichangaUrl}</p>
+        <p>¡Nos vemos en la cancha!</p>
+    `
+    await sendEmail(to, subject, html)
+}
 
 const getPichangaWindow = async (id_pichanga: string) => {
     return prisma.pichanga.findUnique({
@@ -20,6 +39,7 @@ const getPichangaWindow = async (id_pichanga: string) => {
         select: {
             fecha: true,
             fechaInicioIncripcion: true,
+            maxJugadores: true,
             admins: {
                 select: {
                     id: true,
@@ -549,6 +569,25 @@ export const actions = {
             },
         })
 
+        let candidatoEspera: {
+            user: { email: string; nombre: string }
+        } | null = null
+        if (posicionEnLista <= pichanga.maxJugadores) {
+            const resultado = await prisma.inscripcion.findMany({
+                where: {
+                    pichangaId: id_pichanga,
+                    tiempoSalidaLista: null,
+                },
+                orderBy: { createdAt: 'asc' },
+                skip: pichanga.maxJugadores,
+                take: 1,
+                select: {
+                    user: { select: { email: true, nombre: true } },
+                },
+            })
+            candidatoEspera = resultado[0] ?? null
+        }
+
         await prisma.inscripcion.update({
             where: {
                 id: activeInscription.id,
@@ -558,6 +597,27 @@ export const actions = {
                 posicionEnLista,
             },
         })
+
+        if (candidatoEspera) {
+            const origin = process.env.ORIGIN ?? 'http://localhost:5173'
+            const normalizedOrigin = origin.endsWith('/')
+                ? origin.slice(0, -1)
+                : origin
+            const pichangaUrl = `${normalizedOrigin}/app/pichangas/stream/${id_pichanga}`
+            await sendWaitingListPromotionEmail(
+                candidatoEspera.user.email,
+                candidatoEspera.user.nombre,
+                pichangaUrl
+            )
+            logger.info(
+                {
+                    accion: 'notificacion_lista_espera',
+                    emailDestinatario: candidatoEspera.user.email,
+                    pichangaId: id_pichanga,
+                },
+                `Correo de lista de espera enviado a ${candidatoEspera.user.email}`
+            )
+        }
 
         logger.info(
             {
