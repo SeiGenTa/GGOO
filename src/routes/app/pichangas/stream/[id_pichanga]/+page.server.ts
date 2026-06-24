@@ -427,105 +427,6 @@ export const actions = {
             })
         }
 
-        if (isAfterHourChileOnMatchDay(pichanga.fecha, 12)) {
-            const ahora = new Date()
-            const venceEnRoja = new Date(
-                ahora.getTime() + 6 * 24 * 60 * 60 * 1000
-            )
-
-            await prisma.tarjetas.create({
-                data: {
-                    userId: user.id,
-                    tipoCarta: 'roja',
-                    razon: 'Salida tardía de la pichanga después de las 12:00 hora Chile del día del partido',
-                    usado: false,
-                    quienAsignoId: null,
-                    venceEn: venceEnRoja,
-                },
-            })
-
-            logger.info(
-                {
-                    accion: 'tarjeta_roja_salida_muy_tardia',
-                    usuarioId: user.id,
-                    pichangaId: id_pichanga,
-                    venceEn: venceEnRoja,
-                },
-                `Se asignó una tarjeta roja directa al usuario ${user.id} por salida muy tardía de la pichanga ${id_pichanga}`
-            )
-        } else if (isAfterHourChileOnMatchDay(pichanga.fecha, 8)) {
-            const ahora = new Date()
-            const venceEnAmarilla = new Date(
-                ahora.getTime() + 6 * 24 * 60 * 60 * 1000
-            )
-
-            await prisma.tarjetas.create({
-                data: {
-                    userId: user.id,
-                    tipoCarta: 'amarilla',
-                    razon: 'Salida tardía de la pichanga después de las 08:00 hora Chile del día del partido',
-                    usado: false,
-                    quienAsignoId: null,
-                    venceEn: venceEnAmarilla,
-                },
-            })
-
-            logger.info(
-                {
-                    accion: 'tarjeta_amarilla_salida_tardia',
-                    usuarioId: user.id,
-                    pichangaId: id_pichanga,
-                    venceEn: venceEnAmarilla,
-                },
-                `Se asignó una tarjeta amarilla al usuario ${user.id} por salida tardía de la pichanga ${id_pichanga}`
-            )
-
-            const amarillasPreviasSinUsar = await prisma.tarjetas.findMany({
-                where: {
-                    userId: user.id,
-                    tipoCarta: 'amarilla',
-                    usado: false,
-                    venceEn: { gt: ahora },
-                },
-                select: { id: true },
-            })
-
-            if (amarillasPreviasSinUsar.length >= 2) {
-                await prisma.tarjetas.updateMany({
-                    where: {
-                        id: { in: amarillasPreviasSinUsar.map((t) => t.id) },
-                    },
-                    data: { usado: true },
-                })
-
-                const venceEnRoja = new Date(
-                    ahora.getTime() + 6 * 24 * 60 * 60 * 1000
-                )
-
-                await prisma.tarjetas.create({
-                    data: {
-                        userId: user.id,
-                        tipoCarta: 'roja',
-                        razon: 'Acumulación de tarjetas amarillas sin usar',
-                        usado: false,
-                        quienAsignoId: null,
-                        venceEn: venceEnRoja,
-                    },
-                })
-
-                logger.info(
-                    {
-                        accion: 'tarjeta_roja_acumulacion_amarillas',
-                        usuarioId: user.id,
-                        pichangaId: id_pichanga,
-                        amarillasConsumidas: amarillasPreviasSinUsar.length,
-                        venceEn: venceEnRoja,
-                    },
-                    `Se asignó una tarjeta roja al usuario ${user.id} tras acumular amarillas sin usar`
-                )
-            }
-        }
-
         const activeInscription = await prisma.inscripcion.findFirst({
             where: {
                 pichangaId: id_pichanga,
@@ -568,6 +469,129 @@ export const actions = {
                 tiempoSalidaLista: null,
             },
         })
+
+        // ── Determinar si corresponde aplicar tarjeta ────────────────
+        // - Si está en lista de espera (posición > maxJugadores): nunca recibe tarjeta.
+        // - Si está en lista principal:
+        //   - Si hay lista de espera (cantidadEnLista > maxJugadores): aplica tarjeta.
+        //   - Si no hay lista de espera:
+        //     - Si después de su salida quedan ≤ 12 jugadores: aplica tarjeta (afecta el juego).
+        //     - Si quedan > 12: no aplica tarjeta.
+        let debeAplicarTarjeta = false
+        if (posicionEnLista <= pichanga.maxJugadores) {
+            const hayListaDeEspera = cantidadEnLista > pichanga.maxJugadores
+            if (hayListaDeEspera) {
+                debeAplicarTarjeta = true
+            } else {
+                const restantes = cantidadEnLista - 1
+                if (restantes <= 12) {
+                    debeAplicarTarjeta = true
+                }
+            }
+        }
+
+        if (debeAplicarTarjeta) {
+            if (isAfterHourChileOnMatchDay(pichanga.fecha, 12)) {
+                const ahora = new Date()
+                const venceEnRoja = new Date(
+                    ahora.getTime() + 6 * 24 * 60 * 60 * 1000
+                )
+
+                await prisma.tarjetas.create({
+                    data: {
+                        userId: user.id,
+                        tipoCarta: 'roja',
+                        razon: 'Salida tardía de la pichanga después de las 12:00 hora Chile del día del partido',
+                        usado: false,
+                        quienAsignoId: null,
+                        venceEn: venceEnRoja,
+                    },
+                })
+
+                logger.info(
+                    {
+                        accion: 'tarjeta_roja_salida_muy_tardia',
+                        usuarioId: user.id,
+                        pichangaId: id_pichanga,
+                        venceEn: venceEnRoja,
+                    },
+                    `Se asignó una tarjeta roja directa al usuario ${user.id} por salida muy tardía de la pichanga ${id_pichanga}`
+                )
+            } else if (isAfterHourChileOnMatchDay(pichanga.fecha, 8)) {
+                const ahora = new Date()
+                const venceEnAmarilla = new Date(
+                    ahora.getTime() + 6 * 24 * 60 * 60 * 1000
+                )
+
+                await prisma.tarjetas.create({
+                    data: {
+                        userId: user.id,
+                        tipoCarta: 'amarilla',
+                        razon: 'Salida tardía de la pichanga después de las 08:00 hora Chile del día del partido',
+                        usado: false,
+                        quienAsignoId: null,
+                        venceEn: venceEnAmarilla,
+                    },
+                })
+
+                logger.info(
+                    {
+                        accion: 'tarjeta_amarilla_salida_tardia',
+                        usuarioId: user.id,
+                        pichangaId: id_pichanga,
+                        venceEn: venceEnAmarilla,
+                    },
+                    `Se asignó una tarjeta amarilla al usuario ${user.id} por salida tardía de la pichanga ${id_pichanga}`
+                )
+
+                const amarillasPreviasSinUsar = await prisma.tarjetas.findMany({
+                    where: {
+                        userId: user.id,
+                        tipoCarta: 'amarilla',
+                        usado: false,
+                        venceEn: { gt: ahora },
+                    },
+                    select: { id: true },
+                })
+
+                if (amarillasPreviasSinUsar.length >= 2) {
+                    await prisma.tarjetas.updateMany({
+                        where: {
+                            id: {
+                                in: amarillasPreviasSinUsar.map((t) => t.id),
+                            },
+                        },
+                        data: { usado: true },
+                    })
+
+                    const venceEnRoja = new Date(
+                        ahora.getTime() + 6 * 24 * 60 * 60 * 1000
+                    )
+
+                    await prisma.tarjetas.create({
+                        data: {
+                            userId: user.id,
+                            tipoCarta: 'roja',
+                            razon: 'Acumulación de tarjetas amarillas sin usar',
+                            usado: false,
+                            quienAsignoId: null,
+                            venceEn: venceEnRoja,
+                        },
+                    })
+
+                    logger.info(
+                        {
+                            accion: 'tarjeta_roja_acumulacion_amarillas',
+                            usuarioId: user.id,
+                            pichangaId: id_pichanga,
+                            amarillasConsumidas: amarillasPreviasSinUsar.length,
+                            venceEn: venceEnRoja,
+                        },
+                        `Se asignó una tarjeta roja al usuario ${user.id} tras acumular amarillas sin usar`
+                    )
+                }
+            }
+        }
 
         let candidatoEspera: {
             user: { email: string; nombre: string }
