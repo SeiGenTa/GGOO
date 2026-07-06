@@ -162,6 +162,12 @@
     import { useSidebar } from '$lib/components/ui/sidebar/index.js'
     const sidebar = useSidebar()
 
+    const closeMobileSidebar = () => {
+        if (sidebar.isMobile) {
+            sidebar.setOpenMobile(false)
+        }
+    }
+
     import logo from '/src/public/logo.jpg'
 </script>
 
@@ -174,7 +180,7 @@
                     isActive={isRouteActive('/app')}
                 >
                     {#snippet child({ props })}
-                        <a href="/app" {...props}>
+                        <a href="/app" {...props} onclick={closeMobileSidebar}>
                             <img
                                 src={logo}
                                 alt="Volley Beauchef Logo"
@@ -203,7 +209,11 @@
                                         isActive={isRouteActive(item.href)}
                                     >
                                         {#snippet child({ props })}
-                                            <a href={item.href} {...props}>
+                                            <a
+                                                href={item.href}
+                                                {...props}
+                                                onclick={closeMobileSidebar}
+                                            >
                                                 {#if item.icon}
                                                     <item.icon />
                                                 {/if}
@@ -249,7 +259,13 @@
             <DropdownMenu.Content class="min-w-40">
                 <DropdownMenu.Item>
                     {#snippet child({ props })}
-                        <a {...props} href="/app/profile"> Perfil </a>
+                        <a
+                            {...props}
+                            href="/app/profile"
+                            onclick={closeMobileSidebar}
+                        >
+                            Perfil
+                        </a>
                     {/snippet}
                 </DropdownMenu.Item>
                 <DropdownMenu.Item onSelect={toggleMode}
