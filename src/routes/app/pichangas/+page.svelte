@@ -15,6 +15,7 @@
     import { onMount } from 'svelte'
     import { invalidateAll } from '$app/navigation'
     import { toast } from 'svelte-sonner'
+    import { formatChileDateTime } from '$lib/datetime'
 
     let { data } = $props()
 
@@ -252,7 +253,9 @@
                                                 Fecha
                                             </p>
                                             <p class="mt-1 text-sm font-medium">
-                                                {pichanga.date}
+                                                {formatChileDateTime(
+                                                    pichanga.date
+                                                )}
                                             </p>
                                         </div>
                                     </div>
