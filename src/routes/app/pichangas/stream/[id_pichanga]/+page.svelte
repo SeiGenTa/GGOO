@@ -12,9 +12,12 @@
     import Separator from '$lib/components/ui/separator/separator.svelte'
     import { Spinner } from '$lib/components/ui/spinner'
     import { page } from '$app/state'
+    import { env } from '$env/dynamic/public'
     import { onMount } from 'svelte'
     import { toast } from 'svelte-sonner'
     import Skeleton from './components/skeleton.svelte'
+    import { renderShareMessage } from '$lib/share'
+    import Share2 from '@lucide/svelte/icons/share-2'
     import {
         localDateTimeInputToUTCISO,
         utcISOToLocalDateTimeInput,
@@ -140,6 +143,25 @@
     })
 
     const toDateTimeLocal = utcISOToLocalDateTimeInput
+
+    const compartir = async () => {
+        if (!pichanga) return
+
+        const url = `${page.url.origin}/app/pichangas/stream/${pichanga.id}`
+        const plantilla = env.PUBLIC_SHARE_MESSAGE?.trim() || '{url}'
+        const mensaje = renderShareMessage(plantilla, { url, pichanga })
+
+        try {
+            if (typeof navigator !== 'undefined' && navigator.share) {
+                await navigator.share({ text: mensaje })
+            } else {
+                await navigator.clipboard.writeText(mensaje)
+                toast.success('Mensaje copiado')
+            }
+        } catch {
+            // El usuario canceló el diálogo de compartir.
+        }
+    }
 
     onMount(() => {
         const idPichanga = encodeURIComponent(page.params.id_pichanga!)
@@ -270,6 +292,15 @@
                     </div>
 
                     <Card.Action class="flex w-full flex-wrap gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            class="cursor-pointer"
+                            onclick={compartir}
+                        >
+                            <Share2 />
+                            Compartir
+                        </Button>
                         {#if data.user?.es_admin}
                             <Dialog.Root>
                                 <Dialog.Trigger>

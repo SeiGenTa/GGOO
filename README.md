@@ -130,6 +130,41 @@ make createsuperuser
 
 Al completar estos pasos, deberías poder acceder a la aplicación y comenzar a probarla.
 
+## Mensaje para compartir pichangas
+
+La vista de una pichanga (`/app/pichangas/stream/<id>`) tiene un botón **Compartir** que abre el diálogo nativo del sistema (o copia al portapapeles si no está disponible). El mensaje es configurable mediante la variable de entorno `PUBLIC_SHARE_MESSAGE`.
+
+> El prefijo `PUBLIC_` es obligatorio: SvelteKit solo expone al navegador las variables públicas, y este mensaje se arma en el cliente.
+
+### Configuración
+
+Agrega la variable a tu `.env` (o a `template.env` como plantilla). Puedes usar `\n` para representar saltos de línea:
+
+```env
+PUBLIC_SHARE_MESSAGE="**Pichanga VOLLEY GGOO 🏐**\n{url}\nNombre: {pichanga.nombre}\nAdmins: {pichanga.admins}\nUbicacion: {pichanga.lugar}\nFecha: {pichanga.fecha}\nInicio inscripcion: {pichanga.fechaInicioIncripcion}."
+```
+
+### Placeholders disponibles
+
+| Placeholder                        | Reemplazado por                                                        |
+| ---------------------------------- | ---------------------------------------------------------------------- |
+| `{url}`                            | Enlace público de la pichanga.                                         |
+| `{pichanga.nombre}`                | Nombre de la pichanga.                                                 |
+| `{pichanga.admins}`                | Admins separados por coma (usa el apodo si existe).                    |
+| `{pichanga.lugar}`                 | Ubicación de la pichanga.                                              |
+| `{pichanga.fecha}`                 | Fecha y hora del partido, formato `MA 13-10-2026, 14:30` (zona Chile). |
+| `{pichanga.fechaInicioIncripcion}` | Fecha y hora de inicio de inscripción, mismo formato.                  |
+
+Los placeholders desconocidos se dejan tal cual y no se produce ningún error.
+
+### Comportamiento por defecto
+
+Si `PUBLIC_SHARE_MESSAGE` no está definida o es vacía, se comparte únicamente el enlace:
+
+```env
+PUBLIC_SHARE_MESSAGE="{url}"
+```
+
 ## Cómo aportar
 
 Para contribuir, crea una rama nueva con tus cambios y luego abre un MR apuntando a la rama `desarrollo`, explicando claramente qué incluye. Un administrador del repositorio revisará el MR y decidirá su integración.

@@ -11,6 +11,7 @@
         type = 'text',
         required,
         disabled,
+        oninput,
     }: {
         name?: string
         id?: string
@@ -20,10 +21,20 @@
         type?: string
         required?: boolean
         disabled?: boolean
+        oninput?: (event: Event) => void
     } = $props()
 </script>
 
 <div class="space-y-2">
     <Label for={id}>{label}</Label>
-    <Input {id} {name} {placeholder} {type} {required} {value} {disabled} />
+    <Input
+        {id}
+        {name}
+        {placeholder}
+        {type}
+        {required}
+        {value}
+        {disabled}
+        {oninput}
+    />
 </div>
