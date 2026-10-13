@@ -27,5 +27,14 @@
 
 <div class="space-y-2">
     <Label for={id}>{label}</Label>
-    <Input {id} {name} {placeholder} {type} {required} {value} {disabled} {oninput} />
+    <Input
+        {id}
+        {name}
+        {placeholder}
+        {type}
+        {required}
+        {value}
+        {disabled}
+        {oninput}
+    />
 </div>
