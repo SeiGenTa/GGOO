@@ -21,7 +21,7 @@
             role: 'Creador y mantenedor',
             url: 'https://github.com/SeiGenTa',
             avatar: 'https://avatars.githubusercontent.com/u/104644283?v=4',
-            contributions: 152,
+            contributions: 158,
         },
         {
             login: 'AndresArriagada',
@@ -29,7 +29,23 @@
             role: 'Contribuidor',
             url: 'https://github.com/AndresArriagada',
             avatar: 'https://avatars.githubusercontent.com/u/89280744?v=4',
-            contributions: 13,
+            contributions: 18,
+        },
+        {
+            login: 'JFeliu01',
+            name: 'Jorge Feliú',
+            role: 'Mejoras de UX y fixes',
+            url: 'https://github.com/JFeliu01',
+            avatar: 'https://avatars.githubusercontent.com/u/111593524?v=4',
+            contributions: 2,
+        },
+        {
+            login: 'Sopademangos',
+            name: 'Sopademangos',
+            role: 'Contribuidor',
+            url: 'https://github.com/Sopademangos',
+            avatar: 'https://avatars.githubusercontent.com/u/177980883?v=4',
+            contributions: 1,
         },
     ]
 
