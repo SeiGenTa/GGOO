@@ -8,6 +8,7 @@
     import Switch from '$lib/components/ui/switch/switch.svelte'
     import { onMount } from 'svelte'
     import { toast } from 'svelte-sonner'
+    import SuggestRegisterDate from './suggest_register_date.svelte'
     import {
         localDateTimeInputToUTCISO,
         utcISOToLocalDateTimeInput,
@@ -21,6 +22,7 @@
     let options_admins: { value: string; label: string }[] = $derived(gestores)
     let switch_init_now = $state(false)
     let date_pichanga = $state('')
+    let date_init_register = $state('')
 
     const setFechaSugerida = () => {
         const d = new Date()
@@ -145,13 +147,20 @@
                 value="19"
             />
 
-            <InputApp
-                id="date-init_register"
-                name="date-init-register"
-                label="Fecha de inicio de registro"
-                type="datetime-local"
-                disabled={switch_init_now}
-            />
+            <div>
+                <InputApp
+                    id="date-init_register"
+                    name="date-init-register"
+                    label="Fecha de inicio de registro"
+                    type="datetime-local"
+                    disabled={switch_init_now}
+                    bind:value={date_init_register}
+                />
+                <SuggestRegisterDate
+                    bind:value={date_init_register}
+                    disabled={switch_init_now}
+                />
+            </div>
             <div class="flex flex-row gap-2">
                 <Switch
                     id="habilitar"
