@@ -23,6 +23,18 @@
     let switch_init_now = $state(false)
     let date_pichanga = $state('')
     let date_init_register = $state('')
+    let name_pichanga = $state('')
+    let nameTouched = $state(false)
+
+    $effect(() => {
+        const fecha = date_pichanga
+        if (nameTouched || !fecha) return
+        const d = new Date(fecha)
+        if (Number.isNaN(d.getTime())) return
+        const dd = String(d.getDate()).padStart(2, '0')
+        const mm = String(d.getMonth() + 1).padStart(2, '0')
+        name_pichanga = `Pichanga ${dd}/${mm}`
+    })
 
     const setFechaSugerida = () => {
         const d = new Date()
@@ -103,6 +115,8 @@
                 name="name-pichanga"
                 label="Nombre de la pichanga (Opcional)"
                 placeholder="Pichanga del sábado"
+                bind:value={name_pichanga}
+                oninput={() => (nameTouched = true)}
             />
 
             <div>
