@@ -24,7 +24,13 @@
             })
         }
     })
+
+    import { navigating } from '$app/state'
 </script>
+
+{#if navigating.type === 'goto' || navigating.type === 'link' || navigating.type === 'popstate'}
+    <div class="loading-bar"></div>
+{/if}
 
 <svelte:head>
     <link rel="icon" href={logo} />
@@ -33,3 +39,29 @@
 <Toaster />
 <ModeWatcher />
 {@render children()}
+
+<style>
+    .loading-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: #ff3e00; /* Color naranja de Svelte, cámbialo por el tuyo */
+        z-index: 9999;
+        animation: loading 2s ease-in-out infinite;
+        transform-origin: left;
+    }
+
+    @keyframes loading {
+        0% {
+            transform: scaleX(0);
+        }
+        50% {
+            transform: scaleX(0.7);
+        }
+        100% {
+            transform: scaleX(1);
+        }
+    }
+</style>
